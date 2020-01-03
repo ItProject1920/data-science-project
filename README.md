@@ -30,5 +30,5 @@
 - [ ] implementation
 - [ ] goals (convining statements)
 
-
+- [X] like thisput X
 
