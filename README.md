@@ -15,3 +15,20 @@
 [Rest of datasets](https://drive.google.com/open?id=1Uk8sL-BlhQp7aaIZxDENtJzhNe-1LiFf)
 
 [Project Report](https://www.overleaf.com/3872433191ntqbqmxnqtwz)
+
+**PPtlayout**
+- [ ] intro 
+- [ ] like report add points animation and expain the points
+- [ ] what is necessary for good machine larning algorithm
+- [ ] types of ml problems
+- [ ] problem statement
+- [ ] project ojective/appraoch
+- [ ] tools
+- [ ] implemention 
+- [ ] comparison
+- [ ] graph
+- [ ] implementation
+- [ ] goals (convining statements)
+
+
+
