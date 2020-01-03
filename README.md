@@ -20,13 +20,13 @@
 - [ ] intro 
 - [ ] like report add points animation and expain the points
 - [ ] what is necessary for good machine larning algorithm
-- [ ] types of ml problems
+- [X ] types of ml problems
 - [ ] problem statement
 - [ ] project ojective/appraoch
-- [ ] tools
+- [X ] tools
 - [ ] implemention 
-- [ ] comparison
-- [ ] graph
+- [X ] comparison
+- [X ] graph
 - [ ] implementation
 - [ ] goals (convining statements)
 
