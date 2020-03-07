@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+	
+	<title></title>
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+		
+</head>
+<body>
+
+	<div class="bgimage">
+		<div class="menu">
+			
+			<div class="leftmenu">
+				<h4>  </h4>
+			</div>
+
+			<div class="rightmenu">
+				<ul>
+					<li id="fisrtlist">  </li>
+					<li>  </li>
+					<li> </li>
+					<li> </li>
+					<li>   </li>
+					<li>MENU</li>
+				</ul>
+			</div>
+
+		</div>
+
+		<div class="text">
+			<h4> support text needed to help user choose their prediction type </h4><BR><BR>
+			<u><h3> Upload csv file: </h3></u><BR>
+	    <form action="/handleUpload" method="post" enctype="multipart/form-data">
+             <center><input  type="file" name="photo"/></center>
+                <input id="buttonone" type="submit" value="Upload"/>
+        </form>
+			<u><BR><BR><h3> Prediction Type </h3></u>
+			<button id="buttonone"> Predefined </button>
+			<button id="buttontwo" ><a href="{{ url_for('Display') }}"> Calculated </a></button>
+
+				<u><BR><BR><h3> Approximate Data size: </h3></u><BR>
+				<input type="text" placeholder="Data Size">
+				
+		</div>
+
+	</div>
+	
+	    {% block content %}
+    {% endblock %}
+
+	
+</body>
+</html>
