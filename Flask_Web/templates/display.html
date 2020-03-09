@@ -1,11 +1,32 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8" />
-  <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/style.css') }}"/>
-  <title>Show CSV</title>
-</head>
-<body>
-<p>jsadhkajshdjkashdkjashdkjhkjd</p>
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block head %}
+
+  <title>display</title>
+
+{% endblock %}
+
+{% block body %}
+Abcd
+
+<form>
+  {% for index in index %}
+  <input type="checkbox" >
+  {{ index|safe }}
+  {% endfor %}
+  <br>
+  <br>;
+  {% for index in index %}
+  <input type="radio" >
+  {{ index|safe }}
+  {% endfor %}
+
+</form>
+
+
+{% for table in tables %}
+    {{ table|safe }}
+{% endfor %}
+
+
+{% endblock %}

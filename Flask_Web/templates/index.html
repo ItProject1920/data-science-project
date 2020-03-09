@@ -1,14 +1,12 @@
-<!DOCTYPE html>
-<html>
-<head>
+{% extends 'base.html' %}
 
-	
-	<title></title>
-	<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-		
-</head>
-<body>
+{% block head %}
 
+<title>Home</title>
+
+{% endblock %}
+
+{% block body %}
 	<div class="bgimage">
 		<div class="menu">
 			
@@ -31,6 +29,7 @@
 
 		<div class="text">
 			<h4> support text needed to help user choose their prediction type </h4><BR><BR>
+			
 			<u><h3> Upload csv file: </h3></u><BR>
 	    <form action="/handleUpload" method="post" enctype="multipart/form-data">
              <center><input  type="file" name="photo"/></center>
@@ -47,9 +46,7 @@
 
 	</div>
 	
-	    {% block content %}
+
+
     {% endblock %}
 
-	
-</body>
-</html>
