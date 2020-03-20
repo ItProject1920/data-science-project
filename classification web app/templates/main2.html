@@ -59,7 +59,12 @@ form {
     {% endif %}
         {% if result %}
         <b> Confusion Matrix</b>
-        <p style="font-size:12px">{{ result1 }}</p>
+        <p style="font-size:12px">
+        {% for i in result1 %}
+            {{i}}<br>
+        {% endfor %}
+    
+    </p>
     {% endif %}
         {% if result %}
         <b> Classification Report</b>

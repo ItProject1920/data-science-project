@@ -13,6 +13,7 @@ from sklearn.linear_model import Ridge
 from sklearn.model_selection import GridSearchCV
 from sklearn.linear_model import Lasso
 from sklearn import neighbors
+import numpy as np
 
 app = Flask(__name__, template_folder='templates')
 #app.config['SQLALCHEMY_DATABASE_URL'] = 'sqlite:///test.db'
@@ -54,16 +55,16 @@ def history():
 @app.route('/comparison', methods=['GET', 'POST'])
 def comparison():
     if request.method == "POST":
-        selected_column = request.form.getlist("columnn")
+        selected_column = request.form.getlist("column")
 
     if request.method == "POST":
         selected_predict = request.form.getlist("predict")
 
     df = pd.read_csv('Upload/1.csv', sep=',')
 
-    
-    x = pd.DataFrame(df.iloc[:,:-1])
-    y = pd.DataFrame(df.iloc[:,-1])
+
+    x = df.loc[:,selected_column]
+    y = df.loc[:,selected_predict]
 
 
     
@@ -76,7 +77,7 @@ def comparison():
     
     if request.method == 'POST':
         # Extract the input
-        return render_template('main2.html',)
+        return render_template('main2.html',sc=selected_column)
 
                                     
 @app.route('/xgboost', methods=['GET', 'POST'])
@@ -117,10 +118,12 @@ def linearR():
 
         classifier.fit(X_train, y_train)
 
-        from sklearn.metrics import r2_score, explained_variance_score, mean_absolute_error
+        from sklearn.metrics import r2_score, explained_variance_score, mean_absolute_error, mean_squared_error
 
         predictions = classifier.predict(X_test)
         mae=mean_absolute_error(y_true=y_test, y_pred=predictions)
+        mse=mean_squared_error(y_true=y_test, y_pred=predictions)
+        rmse=np.sqrt(mae)
         evs=explained_variance_score(y_true=y_test, y_pred=predictions)
         acc=r2_score(y_true=y_test, y_pred=predictions)
         
@@ -128,6 +131,8 @@ def linearR():
                                      result=acc,
                                      result1=mae,
                                      result2=evs,
+                                     result3=mse,
+                                     result4=rmse,
                                      )          
 
 @app.route('/decisiontreeR', methods=['GET', 'POST'])
@@ -189,7 +194,7 @@ def lassoR():
         # Just render the initial form, to get input
         return(flask.render_template('main2.html'))
     
-    if flask.request.method == 'POST':
+    if request.method == 'POST':
         parameters = {'alpha': [1e-15, 1e-10, 1e-8, 1e-4, 1e-3,1e-2, 1, 5, 10, 20]}
         lasso=Lasso()
         lassoReg = GridSearchCV(lasso, parameters, scoring='neg_mean_squared_error', cv = 5)
@@ -204,7 +209,7 @@ def lassoR():
         evs=explained_variance_score(y_true=y_test, y_pred=predictions)
         acc=r2_score(y_true=y_test, y_pred=predictions)
         
-        return flask.render_template('main2.html',
+        return render_template('main2.html',
                                      result=acc,
                                      result1=mae,
                                      result2=evs,
