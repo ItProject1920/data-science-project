@@ -57,20 +57,18 @@ form {
     	<b>Accuracy</b>
    		<p style="font-size:12px">{{ result }}</p>
     {% endif %}
-        {% if result %}
+    {% if result %}
         <b> Confusion Matrix</b>
         <p style="font-size:12px">
         {% for i in result1 %}
             {{i}}<br>
         {% endfor %}
-    
     </p>
     {% endif %}
-        {% if result %}
+    {% if result %}
         <b> Classification Report</b>
-        <p style="font-size:12px">{{ result2 }}</p>
+        {{result2.to_html(classes="table") | safe}}
     {% endif %}
+
 </div>
-  
-}
 </html>
