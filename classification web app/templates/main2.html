@@ -14,6 +14,7 @@ form {
 </style>
 
 <head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <title>WEB APPLICATION</title>
 </head>
 
@@ -72,7 +73,7 @@ form {
     {% endif %}
     {% if result %}
         <b> Classification Report</b>
-        {{result2.to_html(classes="table") | safe}}
+        {{result2.to_html(classes="table table-striped") | safe}}
     {% endif %}
 
 </div>
