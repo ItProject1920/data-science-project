@@ -19,37 +19,72 @@ form {
 </head>
 
 <center><p>select the desired algorithms available below and get the metrics for comparison</p></center> 
-
 </form>
 <form action="{{ url_for('decisiontreeC') }}" method="POST">
     <fieldset>
 
-        <center><input type="submit" value="decisiontreeC"></center>
+        <center><input type="submit" value="decisiontree Classifier"></center>
     </fieldset>
 </form>
 </form>
 <form action="{{ url_for('randomforestC') }}" method="POST">
     <fieldset>
 
-        <center><input type="submit" value="randomforestC"></center>
+        <center><input type="submit" value="randomforest Classifier"></center>
     </fieldset>
 </form>
 <form action="{{ url_for('logisticR') }}" method="POST">
     <fieldset>
 
-        <center><input type="submit" value="logisticR"></center>
+        <center><input type="submit" value="logistic Regression"></center>
     </fieldset>
 </form>
 <form action="{{ url_for('svmC') }}" method="POST">
     <fieldset>
 
-        <center><input type="submit" value="svmC"></center>
+        <center><input type="submit" value="svm Classifier"></center>
     </fieldset>
 </form>
 <form action="{{ url_for('knnC') }}" method="POST">
     <fieldset>
 
-        <center><input type="submit" value="knnC"></center>
+        <center><input type="submit" value="knn Classifier"></center>
+    </fieldset>
+</form>
+<form action="{{ url_for('gpC') }}" method="POST">
+    <fieldset>
+
+        <center><input type="submit" value="Guassian Process Classifier"></center>
+    </fieldset>
+</form>
+<form action="{{ url_for('mlpC') }}" method="POST">
+    <fieldset>
+
+        <center><input type="submit" value="mlpClassifier"></center>
+    </fieldset>
+</form>
+<form action="{{ url_for('adC') }}" method="POST">
+    <fieldset>
+
+        <center><input type="submit" value="ada boost Classifier"></center>
+    </fieldset>
+</form>
+<form action="{{ url_for('nbC') }}" method="POST">
+    <fieldset>
+
+        <center><input type="submit" value="Gaussian naive bayes Classifier"></center>
+    </fieldset>
+</form>
+<form action="{{ url_for('qdaC') }}" method="POST">
+    <fieldset>
+
+        <center><input type="submit" value="Quadratic Discriminant Analysis"></center>
+    </fieldset>
+</form>
+<form action="{{ url_for('ngnbC') }}" method="POST">
+    <fieldset>
+
+        <center><input type="submit" value="MultinomialNB"></center>
     </fieldset>
 </form>
 <br>

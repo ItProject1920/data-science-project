@@ -3,7 +3,6 @@ from flask import Flask, request, render_template, url_for, redirect
 import pandas as pd
 import numpy as np
 from sklearn.linear_model import LogisticRegression
-from sklearn.ensemble import RandomForestClassifier
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.naive_bayes import GaussianNB
@@ -13,7 +12,16 @@ from sklearn.metrics import classification_report
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
-
+from sklearn.metrics import precision_recall_fscore_support
+from sklearn import metrics
+from sklearn.neural_network import MLPClassifier
+from sklearn.gaussian_process import GaussianProcessClassifier
+from sklearn.ensemble import  AdaBoostClassifier
+from sklearn.naive_bayes import GaussianNB
+from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.gaussian_process.kernels import RBF
+from sklearn.ensemble import RandomForestClassifier
 
 
 
@@ -91,14 +99,13 @@ def randomforestC():
 
         acc=accuracy_score(predictions, y_test)
         cf=confusion_matrix(predictions, y_test)
-        cr=classification_report(predictions, y_test, output_dict=True)
+        cr=classification_report(predictions, y_test, output_dict=True)        
         df = pd.DataFrame(cr).transpose()
-
         return flask.render_template('main2.html',
                                      result=acc,
                                      result1=cf,
                                      result2=df,
-                                     ) 
+                                     )   
 
 @app.route('/logisticR', methods=['GET', 'POST'])
 def logisticR():
@@ -113,9 +120,8 @@ def logisticR():
         predictions = logistic.predict(X_test)
         acc=accuracy_score(predictions, y_test)
         cf=confusion_matrix(predictions, y_test)
-        cr=classification_report(predictions, y_test, output_dict=True)
+        cr=classification_report(predictions, y_test, output_dict=True)        
         df = pd.DataFrame(cr).transpose()
-
         return flask.render_template('main2.html',
                                      result=acc,
                                      result1=cf,
@@ -136,14 +142,13 @@ def svmC():
         
         acc=accuracy_score(predictions, y_test)
         cf=confusion_matrix(predictions, y_test)
-        cr=classification_report(predictions, y_test, output_dict=True)
+        cr=classification_report(predictions, y_test, output_dict=True)        
         df = pd.DataFrame(cr).transpose()
-
         return flask.render_template('main2.html',
                                      result=acc,
                                      result1=cf,
                                      result2=df,
-                                     )  
+                                     ) 
 
 @app.route('/knnC', methods=['GET', 'POST'])
 def knnC():
@@ -157,14 +162,139 @@ def knnC():
         predictions = KNN.predict(X_test)
         acc=accuracy_score(predictions, y_test)
         cf=confusion_matrix(predictions, y_test)
-        cr=classification_report(predictions, y_test, output_dict=True)
+        cr=classification_report(predictions, y_test, output_dict=True)       
         df = pd.DataFrame(cr).transpose()
+        return flask.render_template('main2.html',
+                                     result=acc,
+                                     result1=cf,
+                                     result2=df,
+                                     )
+
+@app.route('/gpC', methods=['GET', 'POST'])
+def gpC():
+    if flask.request.method == 'GET':
+        # Just render the initial form, to get input
+        return(flask.render_template('main2.html'))
+    
+    if flask.request.method == 'POST':
+        gpC = GaussianProcessClassifier(1.0 * RBF(1.0))
+        gpC.fit(X_train,y_train)
+        predictions = gpC.predict(X_test)
+        acc=accuracy_score(predictions, y_test)
+        cf=confusion_matrix(predictions, y_test)
+        cr=classification_report(predictions, y_test, output_dict=True)       
+        df = pd.DataFrame(cr).transpose()       
 
         return flask.render_template('main2.html',
                                      result=acc,
                                      result1=cf,
                                      result2=df,
-                                     )  
+                                     )
+
+@app.route('/mlpC', methods=['GET', 'POST'])
+def mlpC():
+    if flask.request.method == 'GET':
+        # Just render the initial form, to get input
+        return(flask.render_template('main2.html'))
+    
+    if flask.request.method == 'POST':
+        mlpC =MLPClassifier(alpha=1, max_iter=1000)
+        mlpC.fit(X_train,y_train)
+        predictions = mlpC.predict(X_test)
+        acc=accuracy_score(predictions, y_test)
+        cf=confusion_matrix(predictions, y_test)
+        cr=classification_report(predictions, y_test, output_dict=True)       
+        df = pd.DataFrame(cr).transpose()       
+
+        return flask.render_template('main2.html',
+                                     result=acc,
+                                     result1=cf,
+                                     result2=df,
+                                     )
+@app.route('/adC', methods=['GET', 'POST'])
+def adC():
+    if flask.request.method == 'GET':
+        # Just render the initial form, to get input
+        return(flask.render_template('main2.html'))
+    
+    if flask.request.method == 'POST':
+        adC =AdaBoostClassifier()
+        adC.fit(X_train,y_train)
+        predictions = adC.predict(X_test)
+        acc=accuracy_score(predictions, y_test)
+        cf=confusion_matrix(predictions, y_test)
+        cr=classification_report(predictions, y_test, output_dict=True)       
+        df = pd.DataFrame(cr).transpose()       
+
+        return flask.render_template('main2.html',
+                                     result=acc,
+                                     result1=cf,
+                                     result2=df,
+                                     )
+
+@app.route('/nbC', methods=['GET', 'POST'])
+def nbC():
+    if flask.request.method == 'GET':
+        # Just render the initial form, to get input
+        return(flask.render_template('main2.html'))
+    
+    if flask.request.method == 'POST':
+        nbC =GaussianNB()
+        nbC.fit(X_train,y_train)
+        predictions = nbC.predict(X_test)
+        acc=accuracy_score(predictions, y_test)
+        cf=confusion_matrix(predictions, y_test)
+        cr=classification_report(predictions, y_test, output_dict=True)       
+        df = pd.DataFrame(cr).transpose()        
+
+        return flask.render_template('main2.html',
+                                     result=acc,
+                                     result1=cf,
+                                     result2=df,
+                                     )
+@app.route('/qdaC', methods=['GET', 'POST'])
+def qdaC():
+    if flask.request.method == 'GET':
+        # Just render the initial form, to get input
+        return(flask.render_template('main2.html'))
+    
+    if flask.request.method == 'POST':
+        qdaC =QuadraticDiscriminantAnalysis()
+        qdaC.fit(X_train,y_train)
+        predictions = qdaC.predict(X_test)
+        acc=accuracy_score(predictions, y_test)
+        cf=confusion_matrix(predictions, y_test)
+        cr=classification_report(predictions, y_test, output_dict=True)       
+        df = pd.DataFrame(cr).transpose()        
+
+        return flask.render_template('main2.html',
+                                     result=acc,
+                                     result1=cf,
+                                     result2=df,
+                                     )
+
+@app.route('/ngnbC', methods=['GET', 'POST'])
+def ngnbC():
+    if flask.request.method == 'GET':
+        # Just render the initial form, to get input
+        return(flask.render_template('main2.html'))
+    
+    if flask.request.method == 'POST':
+        ngnbC =MultinomialNB()
+        ngnbC.fit(X_train,y_train)
+        predictions = ngnbC.predict(X_test)
+        acc=accuracy_score(predictions, y_test)
+        cf=confusion_matrix(predictions, y_test)
+        cr=classification_report(predictions, y_test, output_dict=True)       
+        df = pd.DataFrame(cr).transpose()        
+
+        return flask.render_template('main2.html',
+                                     result=acc,
+                                     result1=cf,
+                                     result2=df,
+                                     )
+
+
 
 
 if __name__ == '__main__':
