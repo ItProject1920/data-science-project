@@ -60,9 +60,14 @@ form {
     {% if result %}
         <b> Confusion Matrix</b>
         <p style="font-size:12px">
+        <table border="1">
         {% for i in result1 %}
-            {{i}}<br>
+            <tr>
+            {% for j in i %}
+                <td>{{j}}</td>
+            {% endfor %}</tr>
         {% endfor %}
+    </table>
     </p>
     {% endif %}
     {% if result %}
