@@ -67,7 +67,7 @@ def decisiontreeC():
 # But Confusion Matrix and Classification Report give more details about performance
         cf=confusion_matrix(predictions, y_test)
         cr=classification_report(predictions, y_test, output_dict=True)
-        df = pd.DataFrame(cr)
+        df = pd.DataFrame(cr).transpose()
         a=np.array(cf)
         b=np.array(cr)
         
