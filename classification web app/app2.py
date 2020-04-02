@@ -66,17 +66,18 @@ def decisiontreeC():
         acc=accuracy_score(predictions, y_test)
 # But Confusion Matrix and Classification Report give more details about performance
         cf=confusion_matrix(predictions, y_test)
-        cr=classification_report(predictions, y_test)
+        cr=classification_report(predictions, y_test, output_dict=True)
+        df = pd.DataFrame(cr)
         a=np.array(cf)
         b=np.array(cr)
         
-        print(a)
+        #print(a)
         print(b)
 
         return flask.render_template('main2.html',
                                      result=acc,
-                                     result1=a,
-                                     result2=b,
+                                     result1=cf,
+                                     result2=df,
                                      )          
 
 @app.route('/randomforestC', methods=['GET', 'POST'])
@@ -157,7 +158,7 @@ def knnC():
         predictions = KNN.predict(X_test)
         acc=accuracy_score(predictions, y_test)
         cf=confusion_matrix(predictions, y_test)
-        cr=classification_report(predictions, y_test)        
+        cr=classification_report(predictions, y_test)       
 
         return flask.render_template('main2.html',
                                      result=acc,
