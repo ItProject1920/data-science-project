@@ -3,6 +3,7 @@ from flask import Flask, request, render_template, url_for, redirect
 import pandas as pd
 import numpy as np
 from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.naive_bayes import GaussianNB
@@ -68,11 +69,6 @@ def decisiontreeC():
         cf=confusion_matrix(predictions, y_test)
         cr=classification_report(predictions, y_test, output_dict=True)
         df = pd.DataFrame(cr).transpose()
-        a=np.array(cf)
-        b=np.array(cr)
-        
-        #print(a)
-        print(b)
 
         return flask.render_template('main2.html',
                                      result=acc,
@@ -95,13 +91,14 @@ def randomforestC():
 
         acc=accuracy_score(predictions, y_test)
         cf=confusion_matrix(predictions, y_test)
-        cr=classification_report(predictions, y_test)        
-        
+        cr=classification_report(predictions, y_test, output_dict=True)
+        df = pd.DataFrame(cr).transpose()
+
         return flask.render_template('main2.html',
                                      result=acc,
                                      result1=cf,
-                                     result2=cr,
-                                     )   
+                                     result2=df,
+                                     ) 
 
 @app.route('/logisticR', methods=['GET', 'POST'])
 def logisticR():
@@ -116,12 +113,13 @@ def logisticR():
         predictions = logistic.predict(X_test)
         acc=accuracy_score(predictions, y_test)
         cf=confusion_matrix(predictions, y_test)
-        cr=classification_report(predictions, y_test)        
+        cr=classification_report(predictions, y_test, output_dict=True)
+        df = pd.DataFrame(cr).transpose()
 
         return flask.render_template('main2.html',
                                      result=acc,
                                      result1=cf,
-                                     result2=cr,
+                                     result2=df,
                                      )  
 
 @app.route('/svmC', methods=['GET', 'POST'])
@@ -138,13 +136,14 @@ def svmC():
         
         acc=accuracy_score(predictions, y_test)
         cf=confusion_matrix(predictions, y_test)
-        cr=classification_report(predictions, y_test)        
+        cr=classification_report(predictions, y_test, output_dict=True)
+        df = pd.DataFrame(cr).transpose()
 
         return flask.render_template('main2.html',
                                      result=acc,
                                      result1=cf,
-                                     result2=cr,
-                                     ) 
+                                     result2=df,
+                                     )  
 
 @app.route('/knnC', methods=['GET', 'POST'])
 def knnC():
@@ -158,13 +157,14 @@ def knnC():
         predictions = KNN.predict(X_test)
         acc=accuracy_score(predictions, y_test)
         cf=confusion_matrix(predictions, y_test)
-        cr=classification_report(predictions, y_test)       
+        cr=classification_report(predictions, y_test, output_dict=True)
+        df = pd.DataFrame(cr).transpose()
 
         return flask.render_template('main2.html',
                                      result=acc,
                                      result1=cf,
-                                     result2=cr,
-                                     )
+                                     result2=df,
+                                     )  
 
 
 if __name__ == '__main__':
