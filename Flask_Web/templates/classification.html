@@ -18,6 +18,7 @@ form {
     <title>WEB APPLICATION</title>
 </head>
 {{sc}}
+
 <center><p>select the desired algorithms available below and get the metrics for comparison</p></center> 
 </form>
 <form action="{{ url_for('decisiontreeC') }}" method="POST">
@@ -89,6 +90,7 @@ form {
 </form>
 <br>
 <div class="result" align="center">
+    {{time}}<br>
     {% if result %}
     	<b>Accuracy</b>
    		<p style="font-size:12px">{{ result }}</p>

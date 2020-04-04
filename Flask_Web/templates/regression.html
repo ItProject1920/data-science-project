@@ -16,7 +16,8 @@ form {
 <head>
     <title>WEB APPLICATION</title>
 </head>
-{{sc}}
+<body>
+    {{sc}}
 <center><p>select the desired algorithms available below and get the metrics for comparison</p></center> 
 <form action="{{ url_for('xgboost') }}" method="POST">
     <fieldset>
@@ -79,5 +80,5 @@ form {
         <p style="font-size:12px">{{ result4 }}</p>
     {% endif %}
 </div>
-
+</body>
 </html>

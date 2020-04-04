@@ -6,6 +6,7 @@ import pandas as pd
 import numpy as np
 from werkzeug.utils import secure_filename
 import pickle
+import time
 #Regression imports
 import xgboost as xgb
 from sklearn.model_selection import train_test_split
@@ -300,10 +301,13 @@ def decisiontreeC():
         #decision tree classifier
         from sklearn.tree import DecisionTreeClassifier
         decision_tree = DecisionTreeClassifier()
+        start_time = time.time()
         decision_tree = decision_tree.fit(X_train,y_train)
+        end_time = time.time()
+        time_taken = 'DecisionTreeClassifier took {:.5f} s'.format(end_time - start_time)
         
         #from sklearn.metrics import r2_score, explained_variance_score, mean_absolute_error
-
+        
         predictions = decision_tree.predict(X_test)
     
         acc=accuracy_score(predictions, y_test)
@@ -316,6 +320,7 @@ def decisiontreeC():
                                      result=acc,
                                      result1=cf,
                                      result2=df,
+                                     time = time_taken,
                                      )          
 
 @app.route('/randomforestC', methods=['GET', 'POST'])
