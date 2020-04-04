@@ -2,6 +2,7 @@ import flask
 from flask import Flask, request, render_template, url_for, redirect
 import pandas as pd
 import numpy as np
+import time
 from sklearn.linear_model import LogisticRegression
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.neighbors import KNeighborsClassifier
@@ -66,9 +67,11 @@ def decisiontreeC():
         #decision tree classifier
         from sklearn.tree import DecisionTreeClassifier
         decision_tree = DecisionTreeClassifier()
+        start_time = time.time()
         decision_tree = decision_tree.fit(X_train,y_train)
-        
-        #from sklearn.metrics import r2_score, explained_variance_score, mean_absolute_error
+        end_time = time.time()
+        time_taken = 'DecisionTreeClassifier took {:.5f} s'.format(end_time - start_time)
+               #from sklearn.metrics import r2_score, explained_variance_score, mean_absolute_error
 
         predictions = decision_tree.predict(X_test)
     
@@ -87,6 +90,7 @@ def decisiontreeC():
                                      result=acc,
                                      result1=cf,
                                      result2=df,
+                                     time = time_taken
                                      )          
 
 @app.route('/randomforestC', methods=['GET', 'POST'])
