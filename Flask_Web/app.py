@@ -3,8 +3,10 @@ import os
 from flask import Flask, flash, request, render_template, url_for, redirect
 #from flask_sqlalchemy import SQLAlchemy
 import pandas as pd
+import numpy as np
 from werkzeug.utils import secure_filename
 import pickle
+#Regression imports
 import xgboost as xgb
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
@@ -13,7 +15,29 @@ from sklearn.linear_model import Ridge
 from sklearn.model_selection import GridSearchCV
 from sklearn.linear_model import Lasso
 from sklearn import neighbors
-import numpy as np
+#classification imports
+from sklearn.linear_model import LogisticRegression
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.naive_bayes import GaussianNB
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.svm import SVC
+from sklearn.metrics import classification_report
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import accuracy_score
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import precision_recall_fscore_support
+from sklearn import metrics
+from sklearn.neural_network import MLPClassifier
+from sklearn.gaussian_process import GaussianProcessClassifier
+from sklearn.ensemble import  AdaBoostClassifier
+from sklearn.naive_bayes import GaussianNB
+from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.gaussian_process.kernels import RBF
+from sklearn.ensemble import RandomForestClassifier
+
+
 
 app = Flask(__name__, template_folder='templates')
 #app.config['SQLALCHEMY_DATABASE_URL'] = 'sqlite:///test.db'
@@ -35,17 +59,20 @@ def handleFileUpload():
             path = os.path.join('Upload/', '1.csv')
             photo.save(path)
     return redirect(url_for('fileFrontPage'))
-
-@app.route("/suggest")
-def suggest():
-    return render_template('display.html')
 	
 @app.route("/display")
 def Display():
     df = pd.read_csv('Upload/1.csv', sep=',')
     sf = df.head(5)
     i = list(df.columns.values)
-    return render_template('display.html', tables=[sf.to_html()], index=i)
+    return render_template('display_cal.html', tables=[sf.to_html()], index=i)
+
+@app.route("/display_pre")
+def Display_pre():
+    df = pd.read_csv('Upload/1.csv', sep=',')
+    sf = df.head(5)
+    i = list(df.columns.values)
+    return render_template('display_pre.html', tables=[sf.to_html()], index=i)
 
 @app.route('/history')
 def history():
@@ -66,25 +93,24 @@ def comparison():
     x = df.loc[:,selected_column]
     y = df.loc[:,selected_predict]
 
-
     
     global X_train, X_test, y_train, y_test 
     X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.1, random_state=1)
 
     if request.method == 'GET':
         # Just render the initial form, to get input
-        return render_template('main2.html')
+        return render_template('regression.html')
     
     if request.method == 'POST':
         # Extract the input
-        return render_template('main2.html',sc=selected_column)
+        return render_template('regression.html',sc=selected_column)
 
                                     
 @app.route('/xgboost', methods=['GET', 'POST'])
 def xgboost():
     if request.method == 'GET':
         # Just render the initial form, to get input
-        return render_template('main2.html')
+        return render_template('regression.html')
     
     if request.method == 'POST':
         # Extract the input
@@ -99,7 +125,7 @@ def xgboost():
         evs=explained_variance_score(y_true=y_test, y_pred=predictions)
         acc=r2_score(y_true=y_test, y_pred=predictions)
         
-        return render_template('main2.html',
+        return render_template('regression.html',
                                      result=acc,
                                      result1=mae,
                                      result2=evs,
@@ -110,7 +136,7 @@ def xgboost():
 def linearR():
     if request.method == 'GET':
         # Just render the initial form, to get input
-        return render_template('main2.html')
+        return render_template('regression.html')
     
     if request.method == 'POST':
         # Extract the input
@@ -127,7 +153,7 @@ def linearR():
         evs=explained_variance_score(y_true=y_test, y_pred=predictions)
         acc=r2_score(y_true=y_test, y_pred=predictions)
         
-        return render_template('main2.html',
+        return render_template('regression.html',
                                      result=acc,
                                      result1=mae,
                                      result2=evs,
@@ -139,7 +165,7 @@ def linearR():
 def decisiontreeR():
     if request.method == 'GET':
         # Just render the initial form, to get input
-        return render_template('main2.html')
+        return render_template('regression.html')
     
     if request.method == 'POST':
         # Extract the input
@@ -154,7 +180,7 @@ def decisiontreeR():
         evs=explained_variance_score(y_true=y_test, y_pred=predictions)
         acc=r2_score(y_true=y_test, y_pred=predictions)
         
-        return render_template('main2.html',
+        return render_template('regression.html',
                                      result=acc,
                                      result1=mae,
                                      result2=evs,
@@ -164,7 +190,7 @@ def decisiontreeR():
 def ridgeR():
     if request.method == 'GET':
         # Just render the initial form, to get input
-        return render_template('main2.html')
+        return render_template('regression.html')
     
     if request.method == 'POST':
         alpha = [1e-15, 1e-10, 1e-8, 1e-4, 1e-3,1e-2, 1, 5, 10, 20]
@@ -182,7 +208,7 @@ def ridgeR():
         evs=explained_variance_score(y_true=y_test, y_pred=predictions)
         acc=r2_score(y_true=y_test, y_pred=predictions)
         
-        return render_template('main2.html',
+        return render_template('regression.html',
                                      result=acc,
                                      result1=mae,
                                      result2=evs,
@@ -190,9 +216,9 @@ def ridgeR():
 
 @app.route('/lassoR', methods=['GET', 'POST'])
 def lassoR():
-    if flask.request.method == 'GET':
+    if request.method == 'GET':
         # Just render the initial form, to get input
-        return(flask.render_template('main2.html'))
+        return(render_template('regression.html'))
     
     if request.method == 'POST':
         parameters = {'alpha': [1e-15, 1e-10, 1e-8, 1e-4, 1e-3,1e-2, 1, 5, 10, 20]}
@@ -209,7 +235,7 @@ def lassoR():
         evs=explained_variance_score(y_true=y_test, y_pred=predictions)
         acc=r2_score(y_true=y_test, y_pred=predictions)
         
-        return render_template('main2.html',
+        return render_template('regression.html',
                                      result=acc,
                                      result1=mae,
                                      result2=evs,
@@ -219,7 +245,7 @@ def lassoR():
 def knnR():
     if request.method == 'GET':
         # Just render the initial form, to get input
-        return render_template('main2.html')
+        return render_template('regression.html')
     
     if request.method == 'POST':
         knn=neighbors.KNeighborsRegressor(5,weights='distance')
@@ -233,12 +259,290 @@ def knnR():
         evs=explained_variance_score(y_true=y_test, y_pred=predictions)
         acc=r2_score(y_true=y_test, y_pred=predictions)
         
-        return render_template('main2.html',
+        return render_template('regression.html',
                                      result=acc,
                                      result1=mae,
                                      result2=evs,
                                      )                                            
 
+@app.route('/prediction_classification', methods=['GET', 'POST'])
+def Prediction_classification():
+    if request.method == "POST":
+        selected_column = request.form.getlist("column")
+
+    if request.method == "POST":
+        selected_predict = request.form.getlist("predict")
+
+    df = pd.read_csv('Upload/1.csv', sep=',')
+
+    x = df.loc[:,selected_column]
+    y = df.loc[:,selected_predict]
+
+    global X_train, X_test, y_train, y_test 
+    X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.1, random_state=1)
+
+    if request.method == 'GET':
+        # Just render the initial form, to get input
+        return render_template('classification.html')
+    
+    if request.method == 'POST':
+        # Extract the input
+        return render_template('classification.html',sc=selected_column)
+
+@app.route('/decisiontreeC', methods=['GET', 'POST'])
+def decisiontreeC():
+    if request.method == 'GET':
+        # Just render the initial form, to get input
+        return(render_template('classification.html'))
+    
+    if request.method == 'POST':
+        # Extract the input
+        #decision tree classifier
+        from sklearn.tree import DecisionTreeClassifier
+        decision_tree = DecisionTreeClassifier()
+        decision_tree = decision_tree.fit(X_train,y_train)
+        
+        #from sklearn.metrics import r2_score, explained_variance_score, mean_absolute_error
+
+        predictions = decision_tree.predict(X_test)
+    
+        acc=accuracy_score(predictions, y_test)
+# But Confusion Matrix and Classification Report give more details about performance
+        cf=confusion_matrix(predictions, y_test)
+        cr=classification_report(predictions, y_test, output_dict=True)
+        df = pd.DataFrame(cr).transpose()
+
+        return render_template('classification.html',
+                                     result=acc,
+                                     result1=cf,
+                                     result2=df,
+                                     )          
+
+@app.route('/randomforestC', methods=['GET', 'POST'])
+def randomforestC():
+    if request.method == 'GET':
+        # Just render the initial form, to get input
+        return(render_template('classification.html'))
+    
+    if request.method == 'POST':
+        # Extract the input
+        random_forest = RandomForestClassifier()
+        random_forest.fit(X_train,y_train)
+        
+        predictions = random_forest.predict(X_test)
+
+        acc=accuracy_score(predictions, y_test)
+        cf=confusion_matrix(predictions, y_test)
+        cr=classification_report(predictions, y_test, output_dict=True)        
+        df = pd.DataFrame(cr).transpose()
+        return render_template('classification.html',
+                                     result=acc,
+                                     result1=cf,
+                                     result2=df,
+                                     )   
+
+@app.route('/logisticR', methods=['GET', 'POST'])
+def logisticR():
+    if request.method == 'GET':
+        # Just render the initial form, to get input
+        return(render_template('classification.html'))
+    
+    if request.method == 'POST':
+        # Extract the input
+        logistic = LogisticRegression()
+        logistic.fit(X_train,y_train)
+        predictions = logistic.predict(X_test)
+        acc=accuracy_score(predictions, y_test)
+        cf=confusion_matrix(predictions, y_test)
+        cr=classification_report(predictions, y_test, output_dict=True)        
+        df = pd.DataFrame(cr).transpose()
+        return render_template('classification.html',
+                                     result=acc,
+                                     result1=cf,
+                                     result2=df,
+                                     )  
+
+@app.route('/svmC', methods=['GET', 'POST'])
+def svmC():
+    if request.method == 'GET':
+        # Just render the initial form, to get input
+        return(render_template('classification.html'))
+    
+    if request.method == 'POST':
+        # Extract the input
+        support_vector = SVC()
+        support_vector.fit(X_train,y_train)
+        predictions = support_vector.predict(X_test)        
+        
+        acc=accuracy_score(predictions, y_test)
+        cf=confusion_matrix(predictions, y_test)
+        cr=classification_report(predictions, y_test, output_dict=True)        
+        df = pd.DataFrame(cr).transpose()
+        return render_template('classification.html',
+                                     result=acc,
+                                     result1=cf,
+                                     result2=df,
+                                     ) 
+
+@app.route('/knnC', methods=['GET', 'POST'])
+def knnC():
+    if request.method == 'GET':
+        # Just render the initial form, to get input
+        return(render_template('classification.html'))
+    
+    if request.method == 'POST':
+        KNN = KNeighborsClassifier(n_neighbors=5)
+        KNN.fit(X_train,y_train)
+        predictions = KNN.predict(X_test)
+        acc=accuracy_score(predictions, y_test)
+        cf=confusion_matrix(predictions, y_test)
+        cr=classification_report(predictions, y_test, output_dict=True)       
+        df = pd.DataFrame(cr).transpose()
+        return render_template('classification.html',
+                                     result=acc,
+                                     result1=cf,
+                                     result2=df,
+                                     )
+
+@app.route('/gpC', methods=['GET', 'POST'])
+def gpC():
+    if request.method == 'GET':
+        # Just render the initial form, to get input
+        return(render_template('classification.html'))
+    
+    if request.method == 'POST':
+        gpC = GaussianProcessClassifier(1.0 * RBF(1.0))
+        gpC.fit(X_train,y_train)
+        predictions = gpC.predict(X_test)
+        acc=accuracy_score(predictions, y_test)
+        cf=confusion_matrix(predictions, y_test)
+        cr=classification_report(predictions, y_test, output_dict=True)       
+        df = pd.DataFrame(cr).transpose()       
+
+        return render_template('classification.html',
+                                     result=acc,
+                                     result1=cf,
+                                     result2=df,
+                                     )
+
+@app.route('/mlpC', methods=['GET', 'POST'])
+def mlpC():
+    if request.method == 'GET':
+        # Just render the initial form, to get input
+        return(render_template('classification.html'))
+    
+    if request.method == 'POST':
+        mlpC =MLPClassifier(alpha=1, max_iter=1000)
+        mlpC.fit(X_train,y_train)
+        predictions = mlpC.predict(X_test)
+        acc=accuracy_score(predictions, y_test)
+        cf=confusion_matrix(predictions, y_test)
+        cr=classification_report(predictions, y_test, output_dict=True)       
+        df = pd.DataFrame(cr).transpose()       
+
+        return render_template('classification.html',
+                                     result=acc,
+                                     result1=cf,
+                                     result2=df,
+                                     )
+@app.route('/adC', methods=['GET', 'POST'])
+def adC():
+    if request.method == 'GET':
+        # Just render the initial form, to get input
+        return(render_template('classification.html'))
+    
+    if request.method == 'POST':
+        adC =AdaBoostClassifier()
+        adC.fit(X_train,y_train)
+        predictions = adC.predict(X_test)
+        acc=accuracy_score(predictions, y_test)
+        cf=confusion_matrix(predictions, y_test)
+        cr=classification_report(predictions, y_test, output_dict=True)       
+        df = pd.DataFrame(cr).transpose()       
+
+        return render_template('classification.html',
+                                     result=acc,
+                                     result1=cf,
+                                     result2=df,
+                                     )
+
+@app.route('/nbC', methods=['GET', 'POST'])
+def nbC():
+    if request.method == 'GET':
+        # Just render the initial form, to get input
+        return(render_template('classification.html'))
+    
+    if request.method == 'POST':
+        nbC =GaussianNB()
+        nbC.fit(X_train,y_train)
+        predictions = nbC.predict(X_test)
+        acc=accuracy_score(predictions, y_test)
+        cf=confusion_matrix(predictions, y_test)
+        cr=classification_report(predictions, y_test, output_dict=True)       
+        df = pd.DataFrame(cr).transpose()        
+
+        return render_template('classification.html',
+                                     result=acc,
+                                     result1=cf,
+                                     result2=df,
+                                     )
+@app.route('/qdaC', methods=['GET', 'POST'])
+def qdaC():
+    if request.method == 'GET':
+        # Just render the initial form, to get input
+        return(render_template('classification.html'))
+    
+    if request.method == 'POST':
+        qdaC =QuadraticDiscriminantAnalysis()
+        qdaC.fit(X_train,y_train)
+        predictions = qdaC.predict(X_test)
+        acc=accuracy_score(predictions, y_test)
+        cf=confusion_matrix(predictions, y_test)
+        cr=classification_report(predictions, y_test, output_dict=True)       
+        df = pd.DataFrame(cr).transpose()        
+
+        return render_template('classification.html',
+                                     result=acc,
+                                     result1=cf,
+                                     result2=df,
+                                     )
+
+@app.route('/ngnbC', methods=['GET', 'POST'])
+def ngnbC():
+    if request.method == 'GET':
+        # Just render the initial form, to get input
+        return(render_template('classification.html'))
+    
+    if request.method == 'POST':
+        ngnbC =MultinomialNB()
+        ngnbC.fit(X_train,y_train)
+        predictions = ngnbC.predict(X_test)
+        acc=accuracy_score(predictions, y_test)
+        cf=confusion_matrix(predictions, y_test)
+        cr=classification_report(predictions, y_test, output_dict=True)       
+        df = pd.DataFrame(cr).transpose()        
+
+        return render_template('classification.html',
+                                     result=acc,
+                                     result1=cf,
+                                     result2=df,
+                                     )
+
+@app.route('/prediction_clustering', methods=['GET', 'POST'])
+def Prediction_clustering():
+    if request.method == "POST":
+        selected_column = request.form.getlist("column")
+
+    if request.method == "POST":
+        selected_predict = request.form.getlist("predict")
+
+    df = pd.read_csv('Upload/1.csv', sep=',')
+
+    x = df.loc[:,selected_column]
+    y = df.loc[:,selected_predict]
+
+    global X_train, X_test, y_train, y_test 
+    X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.1, random_state=1)
 
 
 
