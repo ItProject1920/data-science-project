@@ -9,7 +9,7 @@
 {% block body %}
 Abcd
 
-<form action="/comparison" method="post" enctype="multipart/form-data">
+<form action="" id="frm" method="post" enctype="multipart/form-data">
   {% for index in index %}
     <input type="checkbox" id="id_{{index}}" name="column" value="{{index}}">
     <label for="id_{{index}}">{{index}}</label>
@@ -21,13 +21,21 @@ Abcd
       <label for="id_{{index}}">{{index}}</label>
   {% endfor %}
   <br>
-  <input id="buttonone" type="submit" value="Compare"/>
+{% block buttons %}{% endblock %}
 </form>
-
-
+<script>
+  function submitMe(obj){
+    if(obj.value == "Labeled"){
+      document.getElementById('frm').action = "/prediction_classification";
+    }else if(obj.value == "Unlabeled"){
+     document.getElementById('frm').action = "";
+    }else{
+     document.getElementById('frm').action = "/comparison";
+    }
+   document.getElementById('frm').submit();
+  }
+</script>
 {% for table in tables %}
     {{ table|safe }}
 {% endfor %}
-
-
 {% endblock %}

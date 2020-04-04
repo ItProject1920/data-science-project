@@ -14,11 +14,11 @@ form {
 </style>
 
 <head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <title>WEB APPLICATION</title>
 </head>
-
+{{sc}}
 <center><p>select the desired algorithms available below and get the metrics for comparison</p></center> 
-
 </form>
 <form action="{{ url_for('decisiontreeC') }}" method="POST">
     <fieldset>
@@ -96,14 +96,19 @@ form {
     {% if result %}
         <b> Confusion Matrix</b>
         <p style="font-size:12px">
+        <table border="1">
         {% for i in result1 %}
-            {{i}}<br>
+            <tr>
+            {% for j in i %}
+                <td>{{j}}</td>
+            {% endfor %}</tr>
         {% endfor %}
+    </table>
     </p>
     {% endif %}
     {% if result %}
         <b> Classification Report</b>
-        {{result2.to_html(classes="table") | safe}}
+        {{result2.to_html(classes="table table-striped") | safe}}
     {% endif %}
 
 </div>
