@@ -37,6 +37,9 @@ from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.gaussian_process.kernels import RBF
 from sklearn.ensemble import RandomForestClassifier
+#clustering imports
+from sklearn.cluster import *
+from sklearn.preprocessing import StandardScaler
 
 
 
@@ -535,6 +538,8 @@ def ngnbC():
 
 @app.route('/prediction_clustering', methods=['GET', 'POST'])
 def Prediction_clustering():
+
+   
     if request.method == "POST":
         selected_column = request.form.getlist("column")
 
@@ -542,14 +547,21 @@ def Prediction_clustering():
         selected_predict = request.form.getlist("predict")
 
     df = pd.read_csv('Upload/1.csv', sep=',')
-
+    data = StandardScaler().fit_transform(df)
+    
     x = df.loc[:,selected_column]
     y = df.loc[:,selected_predict]
 
     global X_train, X_test, y_train, y_test 
     X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.1, random_state=1)
 
-
+    if request.method == 'GET':
+        # Just render the initial form, to get input
+        return render_template('classification.html')
+    
+    if request.method == 'POST':
+        # Extract the input
+        return render_template('classification.html',sc=selected_column)
 
 if __name__ == '__main__':
     app.run(debug=True)     
