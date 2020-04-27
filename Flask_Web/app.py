@@ -122,10 +122,12 @@ def xgboost():
         classifier = xgb.sklearn.XGBClassifier(nthread=-1, seed=1)
         classifier.fit(X_train, y_train)
 
-        from sklearn.metrics import r2_score, explained_variance_score, mean_absolute_error
+        from sklearn.metrics import r2_score, explained_variance_score, mean_absolute_error,mean_squared_error
 
         predictions = classifier.predict(X_test)
         mae=mean_absolute_error(y_true=y_test, y_pred=predictions)
+        mse=mean_squared_error(y_true=y_test, y_pred=predictions)
+        rmse=np.sqrt(mae)
         evs=explained_variance_score(y_true=y_test, y_pred=predictions)
         acc=r2_score(y_true=y_test, y_pred=predictions)
         
@@ -133,6 +135,8 @@ def xgboost():
                                      result=acc,
                                      result1=mae,
                                      result2=evs,
+                                     result3=mse,
+                                     result4=rmse,
                                      )    		
 
 
@@ -177,10 +181,12 @@ def decisiontreeR():
 
         classifier.fit(X_train, y_train)
 
-        from sklearn.metrics import r2_score, explained_variance_score, mean_absolute_error
+        from sklearn.metrics import r2_score, explained_variance_score, mean_absolute_error,mean_squared_error
 
         predictions = classifier.predict(X_test)
         mae=mean_absolute_error(y_true=y_test, y_pred=predictions)
+        mse=mean_squared_error(y_true=y_test, y_pred=predictions)
+        rmse=np.sqrt(mae)
         evs=explained_variance_score(y_true=y_test, y_pred=predictions)
         acc=r2_score(y_true=y_test, y_pred=predictions)
         
@@ -188,6 +194,8 @@ def decisiontreeR():
                                      result=acc,
                                      result1=mae,
                                      result2=evs,
+                                     result3=mse,
+                                     result4=rmse,
                                      )   
 
 @app.route('/ridgeR', methods=['GET', 'POST'])
@@ -205,10 +213,12 @@ def ridgeR():
         #ridge_reg = Ridge(alpha=0.01, solver="cholesky")
         ridge_reg.fit(X_train, y_train)
 
-        from sklearn.metrics import r2_score, explained_variance_score, mean_absolute_error
+        from sklearn.metrics import r2_score, explained_variance_score, mean_absolute_error, mean_squared_error
 
         predictions = ridge_reg.predict(X_test)
         mae=mean_absolute_error(y_true=y_test, y_pred=predictions)
+        mse=mean_squared_error(y_true=y_test, y_pred=predictions)
+        rmse=np.sqrt(mae)
         evs=explained_variance_score(y_true=y_test, y_pred=predictions)
         acc=r2_score(y_true=y_test, y_pred=predictions)
         
@@ -216,6 +226,8 @@ def ridgeR():
                                      result=acc,
                                      result1=mae,
                                      result2=evs,
+                                     result3=mse,
+                                     result4=rmse,
                                      )
 
 @app.route('/lassoR', methods=['GET', 'POST'])
@@ -232,10 +244,12 @@ def lassoR():
         lassoReg.fit(X_train,y_train)
 
 
-        from sklearn.metrics import r2_score, explained_variance_score, mean_absolute_error
+        from sklearn.metrics import r2_score, explained_variance_score, mean_absolute_error, mean_squared_error
 
         predictions = lassoReg.predict(X_test)
         mae=mean_absolute_error(y_true=y_test, y_pred=predictions)
+        mse=mean_squared_error(y_true=y_test, y_pred=predictions)
+        rmse=np.sqrt(mae)
         evs=explained_variance_score(y_true=y_test, y_pred=predictions)
         acc=r2_score(y_true=y_test, y_pred=predictions)
         
@@ -243,6 +257,8 @@ def lassoR():
                                      result=acc,
                                      result1=mae,
                                      result2=evs,
+                                     result3=mse,
+                                     result4=rmse,
                                      ) 
 
 @app.route('/knnR', methods=['GET', 'POST'])
@@ -256,10 +272,12 @@ def knnR():
         knn.fit(X_train,y_train)
 
 
-        from sklearn.metrics import r2_score, explained_variance_score, mean_absolute_error
+        from sklearn.metrics import r2_score, explained_variance_score, mean_absolute_error, mean_squared_error
 
         predictions = knn.predict(X_test)
         mae=mean_absolute_error(y_true=y_test, y_pred=predictions)
+        mse=mean_squared_error(y_true=y_test, y_pred=predictions)
+        rmse=np.sqrt(mae)
         evs=explained_variance_score(y_true=y_test, y_pred=predictions)
         acc=r2_score(y_true=y_test, y_pred=predictions)
         
@@ -267,6 +285,8 @@ def knnR():
                                      result=acc,
                                      result1=mae,
                                      result2=evs,
+                                     result3=mse,
+                                     result4=rmse,
                                      )                                            
 
 @app.route('/prediction_classification', methods=['GET', 'POST'])
