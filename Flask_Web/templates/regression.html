@@ -1,84 +1,97 @@
-<!doctype html>
-<html>
+{% extends 'base.html' %}
+{% block head %}
 <style>
-form {
-    margin: auto;
-    width: 35%;
+    h3{
+        width:40%;
+        border:2px solid;
+        margin-left: 321px;
+        padding-bottom: 0;
+    }
+#nav1{
+    align-items: left;
+    width: 320px;
+    position: relative;
+    top: 0;
+    left: 0;
+    height:84vh;
+    background: #254f63;
+    color: #fff;
+    transition: all 0.3s;
+    float:left;
+    margin-left: 5px;
 }
-
+nav ul{
+    list-style-type: none;
+    margin-right: 180px;
+    margin-top: 60px;
+}
+nav ul li{
+    padding-bottom:40px;
+}
+input[type="submit"]{
+    width:250px;
+    color: white;
+}
 .result {
-    margin: auto;
-    width: 35%;
-    border: 1px solid #ccc;
+    padding-top: 0;
+    margin-left:570px;
+    width: 40%;
+    border: 2px solid;
+    text-transform: capitalize;
+}
+.result b,p{
+    font-size: 16px;
+}
+#bottom-container{
+    margin-top: 50px;
 }
 </style>
-
-<head>
-    <title>WEB APPLICATION</title>
-</head>
-<body>
-    {{sc}}
-<center><p>select the desired algorithms available below and get the metrics for comparison</p></center> 
+{% endblock %}
+{% block body %} 
+<section id="menu1">
+    <nav id="nav1">
+        <ul>
 <form action="{{ url_for('xgboost') }}" method="POST">
-    <fieldset>
-
-        <center><input type="submit" value="Xgboost Regression"></center>
-    </fieldset>
-</form>
+        <li><input class="btn btn-outline-primary" type="submit" value="Xgboost Regression"> </li>
 </form>
 <form action="{{ url_for('linearR') }}" method="POST">
-    <fieldset>
-
-        <center><input type="submit" value="Linear Regression"></center>
-    </fieldset>
-</form>
+        <li><input class="btn btn-outline-primary" type="submit" value="Linear Regression"> </li>
 </form>
 <form action="{{ url_for('decisiontreeR') }}" method="POST">
-    <fieldset>
-
-        <center><input type="submit" value="Decision Tree Regression"></center>
-    </fieldset>
+        <li><input class="btn btn-outline-primary" type="submit" value="Decision Tree Regression"> </li>
 </form>
 <form action="{{ url_for('ridgeR') }}" method="POST">
-    <fieldset>
-
-        <center><input type="submit" value="Ridge Regression"></center>
-    </fieldset>
+        <li><input class="btn btn-outline-primary" type="submit" value="Ridge Regression"> </li>
 </form>
 <form action="{{ url_for('lassoR') }}" method="POST">
-    <fieldset>
-
-        <center><input type="submit" value="Lasso Regression"></center>
-    </fieldset>
+        <li><input class="btn btn-outline-primary" type="submit" value="Lasso Regression"> </li>
 </form>
 <form action="{{ url_for('knnR') }}" method="POST">
-    <fieldset>
-
-        <center><input type="submit" value="knn Regression"></center>
-    </fieldset>
+        <li><input class="btn btn-outline-primary" type="submit" value="K-nn Regression"> </li>
 </form>
+</ul>
+</nav>
+</section>
 <br>
+<center><h2>Select The Desired Algorithms Available Below And Get The Metrics For Comparison</h2></center>
+<div id="bottom-container">
+<center><h3>{{ result5 }}</h3></center>
 <div class="result" align="center">
     {% if result %}
-    	<b>R-squared value:</b>
-   		<p style="font-size:12px">{{ result }}</p>
-    {% endif %}
-        {% if result %}
-        <b> Mean Absolute Error:</b>
-        <p style="font-size:12px">{{ result1 }}</p>
-    {% endif %}
-        {% if result %}
-        <b> EVS:</b>
-        <p style="font-size:12px">{{ result2 }}</p>
+   		<p ><b>R-squared value:</b>&nbsp;{{ result }}</p>
     {% endif %}
     {% if result %}
-        <b> MSE:</b>
-        <p style="font-size:12px">{{ result3 }}</p>
+        <p ><b> Mean Absolute Error:</b>&nbsp;{{ result1 }}</p>
     {% endif %}
     {% if result %}
-        <b> RMSE:</b>
-        <p style="font-size:12px">{{ result4 }}</p>
+        <p ><b> EVS:</b>&nbsp;{{ result2 }}</p>
+    {% endif %}
+    {% if result %}
+        <p ><b> MSE:</b>&nbsp;{{ result3 }}</p>
+    {% endif %}
+    {% if result %}
+        <p ><b> RMSE:</b>&nbsp;{{ result4 }}</p>
     {% endif %}
 </div>
-</body>
-</html>
+</div>
+{% endblock %} 
