@@ -8,7 +8,7 @@ from werkzeug.utils import secure_filename
 import pickle
 import time
 #Regression imports
-#import xgboost as xgb
+import xgboost as xgb
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.tree import DecisionTreeRegressor
