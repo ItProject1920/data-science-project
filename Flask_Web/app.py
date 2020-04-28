@@ -8,7 +8,7 @@ from werkzeug.utils import secure_filename
 import pickle
 import time
 #Regression imports
-import xgboost as xgb
+#import xgboost as xgb
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.tree import DecisionTreeRegressor
@@ -365,8 +365,10 @@ def randomforestC():
     if request.method == 'POST':
         # Extract the input
         random_forest = RandomForestClassifier()
+        start_time = time.time()
         random_forest.fit(X_train,y_train)
-        
+        end_time = time.time()
+        time_taken = 'Decision Tree Classifier took {:.5f} s'.format(end_time - start_time)        
         predictions = random_forest.predict(X_test)
 
         acc=accuracy_score(predictions, y_test)
@@ -377,6 +379,7 @@ def randomforestC():
                                      result=acc,
                                      result1=cf,
                                      result2=df,
+                                     time = time_taken,
                                      )   
 
 @app.route('/logisticR', methods=['GET', 'POST'])
@@ -388,7 +391,10 @@ def logisticR():
     if request.method == 'POST':
         # Extract the input
         logistic = LogisticRegression()
+        start_time = time.time()
         logistic.fit(X_train,y_train)
+        end_time = time.time()
+        time_taken = 'Decision Tree Classifier took {:.5f} s'.format(end_time - start_time)
         predictions = logistic.predict(X_test)
         acc=accuracy_score(predictions, y_test)
         cf=confusion_matrix(predictions, y_test)
@@ -398,6 +404,7 @@ def logisticR():
                                      result=acc,
                                      result1=cf,
                                      result2=df,
+                                     time = time_taken,
                                      )  
 
 @app.route('/svmC', methods=['GET', 'POST'])
@@ -409,7 +416,10 @@ def svmC():
     if request.method == 'POST':
         # Extract the input
         support_vector = SVC()
+        start_time = time.time()
         support_vector.fit(X_train,y_train)
+        end_time = time.time()
+        time_taken = 'Decision Tree Classifier took {:.5f} s'.format(end_time - start_time)        
         predictions = support_vector.predict(X_test)        
         
         acc=accuracy_score(predictions, y_test)
@@ -420,6 +430,7 @@ def svmC():
                                      result=acc,
                                      result1=cf,
                                      result2=df,
+                                     time = time_taken,
                                      ) 
 
 @app.route('/knnC', methods=['GET', 'POST'])
@@ -430,7 +441,10 @@ def knnC():
     
     if request.method == 'POST':
         KNN = KNeighborsClassifier(n_neighbors=5)
+        start_time = time.time()
         KNN.fit(X_train,y_train)
+        end_time = time.time()
+        time_taken = 'Decision Tree Classifier took {:.5f} s'.format(end_time - start_time)        
         predictions = KNN.predict(X_test)
         acc=accuracy_score(predictions, y_test)
         cf=confusion_matrix(predictions, y_test)
@@ -440,6 +454,7 @@ def knnC():
                                      result=acc,
                                      result1=cf,
                                      result2=df,
+                                     time = time_taken,
                                      )
 
 @app.route('/gpC', methods=['GET', 'POST'])
@@ -450,7 +465,10 @@ def gpC():
     
     if request.method == 'POST':
         gpC = GaussianProcessClassifier(1.0 * RBF(1.0))
+        start_time = time.time()
         gpC.fit(X_train,y_train)
+        end_time = time.time()
+        time_taken = 'Decision Tree Classifier took {:.5f} s'.format(end_time - start_time)        
         predictions = gpC.predict(X_test)
         acc=accuracy_score(predictions, y_test)
         cf=confusion_matrix(predictions, y_test)
@@ -461,6 +479,7 @@ def gpC():
                                      result=acc,
                                      result1=cf,
                                      result2=df,
+                                     time = time_taken,
                                      )
 
 @app.route('/mlpC', methods=['GET', 'POST'])
@@ -471,7 +490,10 @@ def mlpC():
     
     if request.method == 'POST':
         mlpC =MLPClassifier(alpha=1, max_iter=1000)
+        start_time = time.time()
         mlpC.fit(X_train,y_train)
+        end_time = time.time()
+        time_taken = 'Decision Tree Classifier took {:.5f} s'.format(end_time - start_time)        
         predictions = mlpC.predict(X_test)
         acc=accuracy_score(predictions, y_test)
         cf=confusion_matrix(predictions, y_test)
@@ -482,6 +504,7 @@ def mlpC():
                                      result=acc,
                                      result1=cf,
                                      result2=df,
+                                     time = time_taken,
                                      )
 @app.route('/adC', methods=['GET', 'POST'])
 def adC():
@@ -491,7 +514,10 @@ def adC():
     
     if request.method == 'POST':
         adC =AdaBoostClassifier()
+        start_time = time.time()
         adC.fit(X_train,y_train)
+        end_time = time.time()
+        time_taken = 'Decision Tree Classifier took {:.5f} s'.format(end_time - start_time)        
         predictions = adC.predict(X_test)
         acc=accuracy_score(predictions, y_test)
         cf=confusion_matrix(predictions, y_test)
@@ -502,6 +528,7 @@ def adC():
                                      result=acc,
                                      result1=cf,
                                      result2=df,
+                                     time = time_taken,
                                      )
 
 @app.route('/nbC', methods=['GET', 'POST'])
@@ -512,7 +539,10 @@ def nbC():
     
     if request.method == 'POST':
         nbC =GaussianNB()
+        start_time = time.time()
         nbC.fit(X_train,y_train)
+        end_time = time.time()
+        time_taken = 'Decision Tree Classifier took {:.5f} s'.format(end_time - start_time)        
         predictions = nbC.predict(X_test)
         acc=accuracy_score(predictions, y_test)
         cf=confusion_matrix(predictions, y_test)
@@ -523,6 +553,7 @@ def nbC():
                                      result=acc,
                                      result1=cf,
                                      result2=df,
+                                     time = time_taken,
                                      )
 @app.route('/qdaC', methods=['GET', 'POST'])
 def qdaC():
@@ -532,7 +563,10 @@ def qdaC():
     
     if request.method == 'POST':
         qdaC =QuadraticDiscriminantAnalysis()
+        start_time = time.time()
         qdaC.fit(X_train,y_train)
+        end_time = time.time()
+        time_taken = 'Decision Tree Classifier took {:.5f} s'.format(end_time - start_time)        
         predictions = qdaC.predict(X_test)
         acc=accuracy_score(predictions, y_test)
         cf=confusion_matrix(predictions, y_test)
@@ -543,6 +577,7 @@ def qdaC():
                                      result=acc,
                                      result1=cf,
                                      result2=df,
+                                     time = time_taken,
                                      )
 
 @app.route('/ngnbC', methods=['GET', 'POST'])
@@ -553,7 +588,10 @@ def ngnbC():
     
     if request.method == 'POST':
         ngnbC =MultinomialNB()
+        start_time = time.time()
         ngnbC.fit(X_train,y_train)
+        end_time = time.time()
+        time_taken = 'Decision Tree Classifier took {:.5f} s'.format(end_time - start_time)        
         predictions = ngnbC.predict(X_test)
         acc=accuracy_score(predictions, y_test)
         cf=confusion_matrix(predictions, y_test)
@@ -564,6 +602,7 @@ def ngnbC():
                                      result=acc,
                                      result1=cf,
                                      result2=df,
+                                     time = time_taken,
                                      )
 
 @app.route('/prediction_clustering', methods=['GET', 'POST'])
