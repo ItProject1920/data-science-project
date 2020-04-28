@@ -8,7 +8,7 @@ from werkzeug.utils import secure_filename
 import pickle
 import time
 #Regression imports
-import xgboost as xgb
+#import xgboost as xgb
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.tree import DecisionTreeRegressor
@@ -118,7 +118,7 @@ def xgboost():
     
     if request.method == 'POST':
         # Extract the input
-        
+        name="XG Boost"
         classifier = xgb.sklearn.XGBClassifier(nthread=-1, seed=1)
         classifier.fit(X_train, y_train)
 
@@ -137,6 +137,7 @@ def xgboost():
                                      result2=evs,
                                      result3=mse,
                                      result4=rmse,
+                                     result5=name
                                      )    		
 
 
@@ -148,6 +149,7 @@ def linearR():
     
     if request.method == 'POST':
         # Extract the input
+        name="Linear Regression"
         classifier=LinearRegression()
 
         classifier.fit(X_train, y_train)
@@ -167,6 +169,7 @@ def linearR():
                                      result2=evs,
                                      result3=mse,
                                      result4=rmse,
+                                     result5=name
                                      )          
 
 @app.route('/decisiontreeR', methods=['GET', 'POST'])
@@ -177,11 +180,12 @@ def decisiontreeR():
     
     if request.method == 'POST':
         # Extract the input
+        name="Decision Tree Regression"
         classifier=DecisionTreeRegressor(max_depth=5,random_state=0)
 
         classifier.fit(X_train, y_train)
 
-        from sklearn.metrics import r2_score, explained_variance_score, mean_absolute_error,mean_squared_error
+        from sklearn.metrics import r2_score, explained_variance_score, mean_absolute_error, mean_squared_error
 
         predictions = classifier.predict(X_test)
         mae=mean_absolute_error(y_true=y_test, y_pred=predictions)
@@ -196,6 +200,7 @@ def decisiontreeR():
                                      result2=evs,
                                      result3=mse,
                                      result4=rmse,
+                                     result5=name
                                      )   
 
 @app.route('/ridgeR', methods=['GET', 'POST'])
@@ -210,6 +215,7 @@ def ridgeR():
         parameters = {'alpha': [1e-15, 1e-10, 1e-8, 1e-4, 1e-3,1e-2, 1, 5, 10, 20]}
         ridge_reg = GridSearchCV(ridge, parameters,scoring='neg_mean_squared_error', cv=5)
 
+        name="Ridge Regression"
         #ridge_reg = Ridge(alpha=0.01, solver="cholesky")
         ridge_reg.fit(X_train, y_train)
 
@@ -228,6 +234,7 @@ def ridgeR():
                                      result2=evs,
                                      result3=mse,
                                      result4=rmse,
+                                     result5=name
                                      )
 
 @app.route('/lassoR', methods=['GET', 'POST'])
@@ -241,6 +248,7 @@ def lassoR():
         lasso=Lasso()
         lassoReg = GridSearchCV(lasso, parameters, scoring='neg_mean_squared_error', cv = 5)
         #lassoReg = Lasso(alpha=0.0001,normalize=True)
+        name="Lasso Regression"
         lassoReg.fit(X_train,y_train)
 
 
@@ -259,6 +267,7 @@ def lassoR():
                                      result2=evs,
                                      result3=mse,
                                      result4=rmse,
+                                     result5=name
                                      ) 
 
 @app.route('/knnR', methods=['GET', 'POST'])
@@ -270,7 +279,7 @@ def knnR():
     if request.method == 'POST':
         knn=neighbors.KNeighborsRegressor(5,weights='distance')
         knn.fit(X_train,y_train)
-
+        name="K-nn Regression"
 
         from sklearn.metrics import r2_score, explained_variance_score, mean_absolute_error, mean_squared_error
 
@@ -287,6 +296,7 @@ def knnR():
                                      result2=evs,
                                      result3=mse,
                                      result4=rmse,
+                                     result5=name
                                      )                                            
 
 @app.route('/prediction_classification', methods=['GET', 'POST'])
@@ -327,7 +337,7 @@ def decisiontreeC():
         start_time = time.time()
         decision_tree = decision_tree.fit(X_train,y_train)
         end_time = time.time()
-        time_taken = 'DecisionTreeClassifier took {:.5f} s'.format(end_time - start_time)
+        time_taken = 'Decision Tree Classifier took {:.5f} s'.format(end_time - start_time)
         
         #from sklearn.metrics import r2_score, explained_variance_score, mean_absolute_error
         
