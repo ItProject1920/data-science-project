@@ -1,52 +1,82 @@
 {% extends 'base.html' %}
 
 {% block head %}
-
+<style type="text/css">
+	a{	
+		color:black;
+		text-decoration: none;
+	}
+	#dropBox{
+		margin-left: 450px;
+		width: 400px;
+		height: 300px;
+		border: 5px dashed #183d4e;
+		background-image: url('./static/uploadIcon.png');
+		background-size: 50%;
+		background-repeat: no-repeat;
+		background-position: center;
+		position: relative;
+	}
+	#predictBox{
+		margin-right:65px; 
+	}
+	#content{
+		padding-top:30px;
+		position: absolute;
+		bottom:0;
+	}
+	[type="file"] {
+		  border: 0;
+		  clip: rect(0, 0, 0, 0);
+		  height: 1px;
+		  overflow: hidden;
+		  padding: 0;
+		  position: absolute !important;
+		  white-space: nowrap;
+		  width: 1px;
+	}
+	[type="file"] + label {
+	  background-color: inherit;
+	  border-radius: 4rem;
+	  color: #000;
+	  cursor: pointer;
+	  display: inline-block;
+	  width:100px;
+	  padding-left: 2rem 4rem;
+	  margin-left: 120px;
+	  margin-bottom: 20px;
+	}
+	[type="file"]:focus + label,
+	[type="file"] + label:hover {
+	    background-color: #63b9f1;
+	} 
+	[type="file"]:focus + label {
+	  outline: 1px dotted #000;
+	}
+</style>
 <title>Home</title>
-
 {% endblock %}
 
 {% block body %}
+
 	<div class="bgimage">
-		<div class="menu">
+		<br><br>
 			
-			<div class="leftmenu">
-				<h4>  </h4>
+			<div id="dropBox">
+				<h3> Upload CSV File</h3>
+				<div id="content">
+				    <form action="/handleUpload" method="post" enctype="multipart/form-data">
+			         <input id="file" type="file" name="photo"/>
+			         <label for="file"/>Choose a file</label>
+			         <input id="buttonone" class="btn btn-outline-primary" type="submit" value="Upload"/>
+			        </form>
+			    </div>
+	    	</div>
+	    	<div id="predictBox">
+				<BR><h3> Prediction Type </h3>
+				<button id="buttonone" class="btn btn-primary"> <a href="{{ url_for('Display_pre') }}" style="text-decoration:none;"> Predefined </a></button>
+				<button id="buttontwo" class="btn btn-primary" src="static/uploadIcon.png"><a href="{{ url_for('Display') }}" style="text-decoration:none;"> Calculated </a></button>
 			</div>
-
-			<div class="rightmenu">
-				<ul>
-					<li id="fisrtlist">  </li>
-					<li>  </li>
-					<li> </li>
-					<li> </li>
-					<li>   </li>
-					<li>MENU</li>
-				</ul>
-			</div>
-
-		</div>
-
-		<div class="text">
-			<h4> support text needed to help user choose their prediction type </h4><BR><BR>
-			
-			<u><h3> Upload csv file: </h3></u><BR>
-	    <form action="/handleUpload" method="post" enctype="multipart/form-data">
-             <center><input  type="file" name="photo"/></center>
-                <input id="buttonone" type="submit" value="Upload"/>
-        </form>
-			<u><BR><BR><h3> Prediction Type </h3></u>
-			<button id="buttonone"> <a href="{{ url_for('Display_pre') }}"> Predefined </a></button>
-			<button id="buttontwo" ><a href="{{ url_for('Display') }}"> Calculated </a></button>
-
-				<u><BR><BR><h3> Approximate Data size: </h3></u><BR>
-				<input type="text" placeholder="Data Size">
-				
-		</div>
-
+				<BR><label style="font-size: 20px; font-weight: bold;"> Approximate Data Size</label>&nbsp;&nbsp;<input type="text" placeholder="Data Size" style="text-align: center; margin-right: 50px;">		
 	</div>
-	
-
-
     {% endblock %}
-
