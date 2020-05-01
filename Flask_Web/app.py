@@ -8,7 +8,7 @@ from werkzeug.utils import secure_filename
 import pickle
 import time
 #Regression imports
-import xgboost as xgb
+#import xgboost as xgb
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.tree import DecisionTreeRegressor
@@ -129,10 +129,11 @@ def xgboost():
     
     if request.method == 'POST':
         # Extract the input
-        
+        name="XG Boost"
         classifier = xgb.sklearn.XGBClassifier(nthread=-1, seed=1)
         classifier.fit(X_train, y_train)
 
+<<<<<<< HEAD
         from sklearn.metrics import r2_score, explained_variance_score, mean_absolute_error, mean_squared_error
 
         predictions = classifier.predict(X_test)
@@ -143,6 +144,26 @@ def xgboost():
         responce.append(explained_variance_score(y_true=y_test, y_pred=predictions))
         responce.append(r2_score(y_true=y_test, y_pred=predictions))
         return (responce)
+=======
+        from sklearn.metrics import r2_score, explained_variance_score, mean_absolute_error,mean_squared_error
+
+        predictions = classifier.predict(X_test)
+        mae=mean_absolute_error(y_true=y_test, y_pred=predictions)
+        mse=mean_squared_error(y_true=y_test, y_pred=predictions)
+        rmse=np.sqrt(mae)
+        evs=explained_variance_score(y_true=y_test, y_pred=predictions)
+        acc=r2_score(y_true=y_test, y_pred=predictions)
+        
+        return render_template('regression.html',
+                                     result=acc,
+                                     result1=mae,
+                                     result2=evs,
+                                     result3=mse,
+                                     result4=rmse,
+                                     result5=name
+                                     )    		
+
+>>>>>>> b70a0854573c1d5508c90635656fbe919ebf2050
 
 @app.route('/linearR', methods=['GET', 'POST'])
 def linearR():
@@ -152,6 +173,7 @@ def linearR():
     
     if request.method == 'POST':
         # Extract the input
+        name="Linear Regression"
         classifier=LinearRegression()
 
         classifier.fit(X_train, y_train)
@@ -159,6 +181,7 @@ def linearR():
         from sklearn.metrics import r2_score, explained_variance_score, mean_absolute_error, mean_squared_error
 
         predictions = classifier.predict(X_test)
+<<<<<<< HEAD
         responce=[]
         responce.append(mean_absolute_error(y_true=y_test, y_pred=predictions))
         responce.append(mean_squared_error(y_true=y_test, y_pred=predictions))
@@ -166,6 +189,22 @@ def linearR():
         responce.append(explained_variance_score(y_true=y_test, y_pred=predictions))
         responce.append(r2_score(y_true=y_test, y_pred=predictions))
         return (responce)
+=======
+        mae=mean_absolute_error(y_true=y_test, y_pred=predictions)
+        mse=mean_squared_error(y_true=y_test, y_pred=predictions)
+        rmse=np.sqrt(mae)
+        evs=explained_variance_score(y_true=y_test, y_pred=predictions)
+        acc=r2_score(y_true=y_test, y_pred=predictions)
+        
+        return render_template('regression.html',
+                                     result=acc,
+                                     result1=mae,
+                                     result2=evs,
+                                     result3=mse,
+                                     result4=rmse,
+                                     result5=name
+                                     )          
+>>>>>>> b70a0854573c1d5508c90635656fbe919ebf2050
 
 @app.route('/decisiontreeR', methods=['GET', 'POST'])
 def decisiontreeR():
@@ -175,10 +214,12 @@ def decisiontreeR():
     
     if request.method == 'POST':
         # Extract the input
+        name="Decision Tree Regression"
         classifier=DecisionTreeRegressor(max_depth=5,random_state=0)
 
         classifier.fit(X_train, y_train)
 
+<<<<<<< HEAD
         
         from sklearn.metrics import r2_score, explained_variance_score, mean_absolute_error, mean_squared_error
 
@@ -190,6 +231,25 @@ def decisiontreeR():
         responce.append(explained_variance_score(y_true=y_test, y_pred=predictions))
         responce.append(r2_score(y_true=y_test, y_pred=predictions))
         return (responce)
+=======
+        from sklearn.metrics import r2_score, explained_variance_score, mean_absolute_error, mean_squared_error
+
+        predictions = classifier.predict(X_test)
+        mae=mean_absolute_error(y_true=y_test, y_pred=predictions)
+        mse=mean_squared_error(y_true=y_test, y_pred=predictions)
+        rmse=np.sqrt(mae)
+        evs=explained_variance_score(y_true=y_test, y_pred=predictions)
+        acc=r2_score(y_true=y_test, y_pred=predictions)
+        
+        return render_template('regression.html',
+                                     result=acc,
+                                     result1=mae,
+                                     result2=evs,
+                                     result3=mse,
+                                     result4=rmse,
+                                     result5=name
+                                     )   
+>>>>>>> b70a0854573c1d5508c90635656fbe919ebf2050
 
 @app.route('/ridgeR', methods=['GET', 'POST'])
 def ridgeR():
@@ -203,12 +263,14 @@ def ridgeR():
         parameters = {'alpha': [1e-15, 1e-10, 1e-8, 1e-4, 1e-3,1e-2, 1, 5, 10, 20]}
         ridge_reg = GridSearchCV(ridge, parameters,scoring='neg_mean_squared_error', cv=5)
 
+        name="Ridge Regression"
         #ridge_reg = Ridge(alpha=0.01, solver="cholesky")
         ridge_reg.fit(X_train, y_train)
 
         from sklearn.metrics import r2_score, explained_variance_score, mean_absolute_error, mean_squared_error
 
         predictions = ridge_reg.predict(X_test)
+<<<<<<< HEAD
         responce=[]
         responce.append(mean_absolute_error(y_true=y_test, y_pred=predictions))
         responce.append(mean_squared_error(y_true=y_test, y_pred=predictions))
@@ -216,6 +278,22 @@ def ridgeR():
         responce.append(explained_variance_score(y_true=y_test, y_pred=predictions))
         responce.append(r2_score(y_true=y_test, y_pred=predictions))
         return (responce)
+=======
+        mae=mean_absolute_error(y_true=y_test, y_pred=predictions)
+        mse=mean_squared_error(y_true=y_test, y_pred=predictions)
+        rmse=np.sqrt(mae)
+        evs=explained_variance_score(y_true=y_test, y_pred=predictions)
+        acc=r2_score(y_true=y_test, y_pred=predictions)
+        
+        return render_template('regression.html',
+                                     result=acc,
+                                     result1=mae,
+                                     result2=evs,
+                                     result3=mse,
+                                     result4=rmse,
+                                     result5=name
+                                     )
+>>>>>>> b70a0854573c1d5508c90635656fbe919ebf2050
 
 @app.route('/lassoR', methods=['GET', 'POST'])
 def lassoR():
@@ -228,9 +306,11 @@ def lassoR():
         lasso=Lasso()
         lassoReg = GridSearchCV(lasso, parameters, scoring='neg_mean_squared_error', cv = 5)
         #lassoReg = Lasso(alpha=0.0001,normalize=True)
+        name="Lasso Regression"
         lassoReg.fit(X_train,y_train)
 
 
+<<<<<<< HEAD
         
         from sklearn.metrics import r2_score, explained_variance_score, mean_absolute_error, mean_squared_error
 
@@ -242,6 +322,25 @@ def lassoR():
         responce.append(explained_variance_score(y_true=y_test, y_pred=predictions))
         responce.append(r2_score(y_true=y_test, y_pred=predictions))
         return (responce)
+=======
+        from sklearn.metrics import r2_score, explained_variance_score, mean_absolute_error, mean_squared_error
+
+        predictions = lassoReg.predict(X_test)
+        mae=mean_absolute_error(y_true=y_test, y_pred=predictions)
+        mse=mean_squared_error(y_true=y_test, y_pred=predictions)
+        rmse=np.sqrt(mae)
+        evs=explained_variance_score(y_true=y_test, y_pred=predictions)
+        acc=r2_score(y_true=y_test, y_pred=predictions)
+        
+        return render_template('regression.html',
+                                     result=acc,
+                                     result1=mae,
+                                     result2=evs,
+                                     result3=mse,
+                                     result4=rmse,
+                                     result5=name
+                                     ) 
+>>>>>>> b70a0854573c1d5508c90635656fbe919ebf2050
 
 @app.route('/knnR', methods=['GET', 'POST'])
 def knnR():
@@ -252,6 +351,7 @@ def knnR():
     if request.method == 'POST':
         knn=neighbors.KNeighborsRegressor(5,weights='distance')
         knn.fit(X_train,y_train)
+<<<<<<< HEAD
         
         from sklearn.metrics import r2_score, explained_variance_score, mean_absolute_error, mean_squared_error
 
@@ -263,6 +363,27 @@ def knnR():
         responce.append(explained_variance_score(y_true=y_test, y_pred=predictions))
         responce.append(r2_score(y_true=y_test, y_pred=predictions))
         return (responce)                                  
+=======
+        name="K-nn Regression"
+
+        from sklearn.metrics import r2_score, explained_variance_score, mean_absolute_error, mean_squared_error
+
+        predictions = knn.predict(X_test)
+        mae=mean_absolute_error(y_true=y_test, y_pred=predictions)
+        mse=mean_squared_error(y_true=y_test, y_pred=predictions)
+        rmse=np.sqrt(mae)
+        evs=explained_variance_score(y_true=y_test, y_pred=predictions)
+        acc=r2_score(y_true=y_test, y_pred=predictions)
+        
+        return render_template('regression.html',
+                                     result=acc,
+                                     result1=mae,
+                                     result2=evs,
+                                     result3=mse,
+                                     result4=rmse,
+                                     result5=name
+                                     )                                            
+>>>>>>> b70a0854573c1d5508c90635656fbe919ebf2050
 
 @app.route('/prediction_classification', methods=['GET', 'POST'])
 def Prediction_classification():
@@ -302,7 +423,7 @@ def decisiontreeC():
         start_time = time.time()
         decision_tree = decision_tree.fit(X_train,y_train)
         end_time = time.time()
-        time_taken = 'DecisionTreeClassifier took {:.5f} s'.format(end_time - start_time)
+        time_taken = 'Decision Tree Classifier took {:.5f} s'.format(end_time - start_time)
         
         #from sklearn.metrics import r2_score, explained_variance_score, mean_absolute_error
         
@@ -330,8 +451,10 @@ def randomforestC():
     if request.method == 'POST':
         # Extract the input
         random_forest = RandomForestClassifier()
+        start_time = time.time()
         random_forest.fit(X_train,y_train)
-        
+        end_time = time.time()
+        time_taken = 'Decision Tree Classifier took {:.5f} s'.format(end_time - start_time)        
         predictions = random_forest.predict(X_test)
 
         acc=accuracy_score(predictions, y_test)
@@ -342,6 +465,7 @@ def randomforestC():
                                      result=acc,
                                      result1=cf,
                                      result2=df,
+                                     time = time_taken,
                                      )   
 
 @app.route('/logisticR', methods=['GET', 'POST'])
@@ -353,7 +477,10 @@ def logisticR():
     if request.method == 'POST':
         # Extract the input
         logistic = LogisticRegression()
+        start_time = time.time()
         logistic.fit(X_train,y_train)
+        end_time = time.time()
+        time_taken = 'Decision Tree Classifier took {:.5f} s'.format(end_time - start_time)
         predictions = logistic.predict(X_test)
         acc=accuracy_score(predictions, y_test)
         cf=confusion_matrix(predictions, y_test)
@@ -363,6 +490,7 @@ def logisticR():
                                      result=acc,
                                      result1=cf,
                                      result2=df,
+                                     time = time_taken,
                                      )  
 
 @app.route('/svmC', methods=['GET', 'POST'])
@@ -374,7 +502,10 @@ def svmC():
     if request.method == 'POST':
         # Extract the input
         support_vector = SVC()
+        start_time = time.time()
         support_vector.fit(X_train,y_train)
+        end_time = time.time()
+        time_taken = 'Decision Tree Classifier took {:.5f} s'.format(end_time - start_time)        
         predictions = support_vector.predict(X_test)        
         
         acc=accuracy_score(predictions, y_test)
@@ -385,6 +516,7 @@ def svmC():
                                      result=acc,
                                      result1=cf,
                                      result2=df,
+                                     time = time_taken,
                                      ) 
 
 @app.route('/knnC', methods=['GET', 'POST'])
@@ -395,7 +527,10 @@ def knnC():
     
     if request.method == 'POST':
         KNN = KNeighborsClassifier(n_neighbors=5)
+        start_time = time.time()
         KNN.fit(X_train,y_train)
+        end_time = time.time()
+        time_taken = 'Decision Tree Classifier took {:.5f} s'.format(end_time - start_time)        
         predictions = KNN.predict(X_test)
         acc=accuracy_score(predictions, y_test)
         cf=confusion_matrix(predictions, y_test)
@@ -405,6 +540,7 @@ def knnC():
                                      result=acc,
                                      result1=cf,
                                      result2=df,
+                                     time = time_taken,
                                      )
 
 @app.route('/gpC', methods=['GET', 'POST'])
@@ -415,7 +551,10 @@ def gpC():
     
     if request.method == 'POST':
         gpC = GaussianProcessClassifier(1.0 * RBF(1.0))
+        start_time = time.time()
         gpC.fit(X_train,y_train)
+        end_time = time.time()
+        time_taken = 'Decision Tree Classifier took {:.5f} s'.format(end_time - start_time)        
         predictions = gpC.predict(X_test)
         acc=accuracy_score(predictions, y_test)
         cf=confusion_matrix(predictions, y_test)
@@ -426,6 +565,7 @@ def gpC():
                                      result=acc,
                                      result1=cf,
                                      result2=df,
+                                     time = time_taken,
                                      )
 
 @app.route('/mlpC', methods=['GET', 'POST'])
@@ -436,7 +576,10 @@ def mlpC():
     
     if request.method == 'POST':
         mlpC =MLPClassifier(alpha=1, max_iter=1000)
+        start_time = time.time()
         mlpC.fit(X_train,y_train)
+        end_time = time.time()
+        time_taken = 'Decision Tree Classifier took {:.5f} s'.format(end_time - start_time)        
         predictions = mlpC.predict(X_test)
         acc=accuracy_score(predictions, y_test)
         cf=confusion_matrix(predictions, y_test)
@@ -447,6 +590,7 @@ def mlpC():
                                      result=acc,
                                      result1=cf,
                                      result2=df,
+                                     time = time_taken,
                                      )
 @app.route('/adC', methods=['GET', 'POST'])
 def adC():
@@ -456,7 +600,10 @@ def adC():
     
     if request.method == 'POST':
         adC =AdaBoostClassifier()
+        start_time = time.time()
         adC.fit(X_train,y_train)
+        end_time = time.time()
+        time_taken = 'Decision Tree Classifier took {:.5f} s'.format(end_time - start_time)        
         predictions = adC.predict(X_test)
         acc=accuracy_score(predictions, y_test)
         cf=confusion_matrix(predictions, y_test)
@@ -467,6 +614,7 @@ def adC():
                                      result=acc,
                                      result1=cf,
                                      result2=df,
+                                     time = time_taken,
                                      )
 
 @app.route('/nbC', methods=['GET', 'POST'])
@@ -477,7 +625,10 @@ def nbC():
     
     if request.method == 'POST':
         nbC =GaussianNB()
+        start_time = time.time()
         nbC.fit(X_train,y_train)
+        end_time = time.time()
+        time_taken = 'Decision Tree Classifier took {:.5f} s'.format(end_time - start_time)        
         predictions = nbC.predict(X_test)
         acc=accuracy_score(predictions, y_test)
         cf=confusion_matrix(predictions, y_test)
@@ -488,6 +639,7 @@ def nbC():
                                      result=acc,
                                      result1=cf,
                                      result2=df,
+                                     time = time_taken,
                                      )
 @app.route('/qdaC', methods=['GET', 'POST'])
 def qdaC():
@@ -497,7 +649,10 @@ def qdaC():
     
     if request.method == 'POST':
         qdaC =QuadraticDiscriminantAnalysis()
+        start_time = time.time()
         qdaC.fit(X_train,y_train)
+        end_time = time.time()
+        time_taken = 'Decision Tree Classifier took {:.5f} s'.format(end_time - start_time)        
         predictions = qdaC.predict(X_test)
         acc=accuracy_score(predictions, y_test)
         cf=confusion_matrix(predictions, y_test)
@@ -508,6 +663,7 @@ def qdaC():
                                      result=acc,
                                      result1=cf,
                                      result2=df,
+                                     time = time_taken,
                                      )
 
 @app.route('/ngnbC', methods=['GET', 'POST'])
@@ -518,7 +674,10 @@ def ngnbC():
     
     if request.method == 'POST':
         ngnbC =MultinomialNB()
+        start_time = time.time()
         ngnbC.fit(X_train,y_train)
+        end_time = time.time()
+        time_taken = 'Decision Tree Classifier took {:.5f} s'.format(end_time - start_time)        
         predictions = ngnbC.predict(X_test)
         acc=accuracy_score(predictions, y_test)
         cf=confusion_matrix(predictions, y_test)
@@ -529,6 +688,7 @@ def ngnbC():
                                      result=acc,
                                      result1=cf,
                                      result2=df,
+                                     time = time_taken,
                                      )
 
 @app.route('/prediction_clustering', methods=['GET', 'POST'])

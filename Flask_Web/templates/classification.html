@@ -1,96 +1,115 @@
-<!doctype html>
-<html>
+{% extends 'base.html' %}
+{% block head %}
 <style>
-form {
-    margin: auto;
-    width: 35%;
+#top-container{
+    color: rgba(0,0,0,.87);
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    font-family: "Helvetica", "Arial", sans-serif;
+    border-bottom: 1px solid #ddd;
+    padding: 18px 0;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    background: white;
+    display: inline-flex;
 }
 
+#nav1{
+    align-items: left;
+    width: 320px;
+    position: relative;
+    top: 0;
+    left: 0;
+    height:150vh;
+    background: #254f63;
+    color: #fff;
+    transition: all 0.3s;
+    float:left;
+    margin-left: 5px;
+}
+#nav2{
+    width: 320px;
+    position: relative;
+    top: 0;
+    left: 0;
+    height:150vh;
+    background: #254f63;
+    color: #fff;
+    transition: all 0.3s; 
+    margin-right: 5px;  
+    float: right;
+}
+nav ul{
+    list-style-type: none;
+    margin-right: 180px;
+    margin-top: 60px;
+}
+nav ul li{
+    padding-bottom:40px;
+}
+input[type="submit"]{
+    width:250px;
+    color: white;
+}
 .result {
     margin: auto;
-    width: 35%;
+    width: 40%;
     border: 1px solid #ccc;
+    text-transform: capitalize;
 }
 </style>
-
-<head>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <title>WEB APPLICATION</title>
-</head>
-{{sc}}
-
-<center><p>select the desired algorithms available below and get the metrics for comparison</p></center> 
-</form>
-<form action="{{ url_for('decisiontreeC') }}" method="POST">
-    <fieldset>
-
-        <center><input type="submit" value="decisiontree Classifier"></center>
-    </fieldset>
-</form>
-</form>
-<form action="{{ url_for('randomforestC') }}" method="POST">
-    <fieldset>
-
-        <center><input type="submit" value="randomforest Classifier"></center>
-    </fieldset>
-</form>
-<form action="{{ url_for('logisticR') }}" method="POST">
-    <fieldset>
-
-        <center><input type="submit" value="logistic Regression"></center>
-    </fieldset>
-</form>
-<form action="{{ url_for('svmC') }}" method="POST">
-    <fieldset>
-
-        <center><input type="submit" value="svm Classifier"></center>
-    </fieldset>
-</form>
-<form action="{{ url_for('knnC') }}" method="POST">
-    <fieldset>
-
-        <center><input type="submit" value="knn Classifier"></center>
-    </fieldset>
-</form>
-<form action="{{ url_for('gpC') }}" method="POST">
-    <fieldset>
-
-        <center><input type="submit" value="Guassian Process Classifier"></center>
-    </fieldset>
-</form>
-<form action="{{ url_for('mlpC') }}" method="POST">
-    <fieldset>
-
-        <center><input type="submit" value="mlpClassifier"></center>
-    </fieldset>
-</form>
-<form action="{{ url_for('adC') }}" method="POST">
-    <fieldset>
-
-        <center><input type="submit" value="ada boost Classifier"></center>
-    </fieldset>
-</form>
-<form action="{{ url_for('nbC') }}" method="POST">
-    <fieldset>
-
-        <center><input type="submit" value="Gaussian naive bayes Classifier"></center>
-    </fieldset>
-</form>
-<form action="{{ url_for('qdaC') }}" method="POST">
-    <fieldset>
-
-        <center><input type="submit" value="Quadratic Discriminant Analysis"></center>
-    </fieldset>
-</form>
-<form action="{{ url_for('ngnbC') }}" method="POST">
-    <fieldset>
-
-        <center><input type="submit" value="MultinomialNB"></center>
-    </fieldset>
-</form>
+{% endblock %}
+{% block body %}
+ 
+<!--div id="top-container"-->
+<section id="menu1">
+    <nav id="nav1">
+        <ul>
+    <form action="{{ url_for('decisiontreeC') }}" method="POST">
+       <li>  <input class="btn btn-outline-primary" type="submit" value="Decision Tree"> </li>
+    </form>
+   <form action="{{ url_for('randomforestC') }}" method="POST">
+        <li> <input class="btn btn-outline-primary" type="submit" value="Randomforest"> </li>
+    </form>
+   <form action="{{ url_for('logisticR') }}" method="POST">
+       <li> <input class="btn btn-outline-primary" type="submit" value="Logistic Regression"> </li>
+    </form>
+    <form action="{{ url_for('svmC') }}" method="POST">
+         <li><input class="btn btn-outline-primary" type="submit" value="SVM Classifier"> </li>
+    </form>
+    <form action="{{ url_for('knnC') }}" method="POST">
+           <li><input class="btn btn-outline-primary" type="submit" value="Knn Classifier"> </li>
+    </form>
+    <form action="{{ url_for('gpC') }}" method="POST">
+             <li><input class="btn btn-outline-primary" type="submit" value="Guassian Process"> </li>
+    </form>
+</nav>
+</section>
+<section id="menu2">
+    <nav id="nav2">
+        <ul>
+    <form action="{{ url_for('mlpC') }}" method="POST">
+            <li> <input class="btn btn-outline-primary" type="submit" value="MLP Classifier"> </li>
+    </form>
+    <form action="{{ url_for('adC') }}" method="POST">
+        <li>     <input class="btn btn-outline-primary" type="submit" value="ADA Boost"> </li>
+    </form>
+    <form action="{{ url_for('nbC') }}" method="POST">
+         <li>    <input class="btn btn-outline-primary" type="submit" value="Gaussian Naive Bayes"> </li>
+    </form>
+    <form action="{{ url_for('qdaC') }}" method="POST">
+        <li>     <input class="btn btn-outline-primary" type="submit" value="Quadratic Discriminant Analysis"> </li>
+    </form>
+    <form action="{{ url_for('ngnbC') }}" method="POST">
+        <li>     <input class="btn btn-outline-primary" type="submit" value="MultinomialNB"> </li>
+    </form>
+</nav>
+</section>
+<!--/div-->
 <br>
+<h3>Select The Desired Algorithms Available Below And Get The Metrics For Comparison</h3>
 <div class="result" align="center">
-    {{time}}<br>
+    <b>{{time}}</b><br>
     {% if result %}
     	<b>Accuracy</b>
    		<p style="font-size:12px">{{ result }}</p>
@@ -98,7 +117,7 @@ form {
     {% if result %}
         <b> Confusion Matrix</b>
         <p style="font-size:12px">
-        <table border="1">
+    <table class="table table-striped">
         {% for i in result1 %}
             <tr>
             {% for j in i %}
@@ -112,6 +131,5 @@ form {
         <b> Classification Report</b>
         {{result2.to_html(classes="table table-striped") | safe}}
     {% endif %}
-
 </div>
-</html>
+{% endblock %} 

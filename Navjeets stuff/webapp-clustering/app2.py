@@ -78,15 +78,9 @@ def kmeansC():
             
 
 
-
-    
-
-
-            return flask.render_template('main2.html',
-                                   
-                                     result=km_silhouette,
-                                     result2=db_score,
-                                     )          
+    return flask.render_template('main2.html', result=km_silhouette,
+                                result2=db_score,
+                                )          
 
 
 

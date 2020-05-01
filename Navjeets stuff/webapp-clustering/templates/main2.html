@@ -33,17 +33,11 @@ form {
 <div class="result" align="center">
 
    
-<b>for each cluster</b>
+<b>for each cluster</b><br>
 {% for j in range(11) %}
-    {% for i in km_silhouette %}
-        {{i}} 
-        
-    {% endfor %}    
-        {% for k in db_score %}
-            {{k}} 
-			{% break %}
-           
-        {% endfor %}    
+    cluster_no={{j}} <br>
+    km_silhouette={{result[j]}} <br>
+    db_score={{result2[j]}} <br>  
 {% endfor %}
 </div>
 </html>
