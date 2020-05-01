@@ -18,67 +18,27 @@ form {
 </head>
 <body>
     {{sc}}
-<center><p>select the desired algorithms available below and get the metrics for comparison</p></center> 
-<form action="{{ url_for('xgboost') }}" method="POST">
-    <fieldset>
+    {{ JSGlue.include() }}
+    <table border="1">
+        <tr>
+            <th><b>Algorithms</b></th>
+          <th><b>R-squared value</b></th>
+          <th><b> Mean Absolute Error</b></th>
+          <th><b> EVS</b></th>
+          <th><b> MSE</b></th>
+          <th><b> RMSE</b></th>
+        </tr>
+        {% for i in range(6) %}
+        <tr>
+            <td><b>{{algo[i]}}</b></td>
+            {% for j in range(5) %}
+          <td>
+              {{mat[i][j]}}
+            </td>
+        {% endfor %}
+        {% endfor %}
+    </table>
 
-        <center><input type="submit" value="Xgboost Regression"></center>
-    </fieldset>
-</form>
-</form>
-<form action="{{ url_for('linearR') }}" method="POST">
-    <fieldset>
 
-        <center><input type="submit" value="Linear Regression"></center>
-    </fieldset>
-</form>
-</form>
-<form action="{{ url_for('decisiontreeR') }}" method="POST">
-    <fieldset>
-
-        <center><input type="submit" value="Decision Tree Regression"></center>
-    </fieldset>
-</form>
-<form action="{{ url_for('ridgeR') }}" method="POST">
-    <fieldset>
-
-        <center><input type="submit" value="Ridge Regression"></center>
-    </fieldset>
-</form>
-<form action="{{ url_for('lassoR') }}" method="POST">
-    <fieldset>
-
-        <center><input type="submit" value="Lasso Regression"></center>
-    </fieldset>
-</form>
-<form action="{{ url_for('knnR') }}" method="POST">
-    <fieldset>
-
-        <center><input type="submit" value="knn Regression"></center>
-    </fieldset>
-</form>
-<br>
-<div class="result" align="center">
-    {% if result %}
-    	<b>R-squared value:</b>
-   		<p style="font-size:12px">{{ result }}</p>
-    {% endif %}
-        {% if result %}
-        <b> Mean Absolute Error:</b>
-        <p style="font-size:12px">{{ result1 }}</p>
-    {% endif %}
-        {% if result %}
-        <b> EVS:</b>
-        <p style="font-size:12px">{{ result2 }}</p>
-    {% endif %}
-    {% if result %}
-        <b> MSE:</b>
-        <p style="font-size:12px">{{ result3 }}</p>
-    {% endif %}
-    {% if result %}
-        <b> RMSE:</b>
-        <p style="font-size:12px">{{ result4 }}</p>
-    {% endif %}
-</div>
 </body>
 </html>

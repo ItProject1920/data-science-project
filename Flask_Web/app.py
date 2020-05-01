@@ -40,14 +40,14 @@ from sklearn.ensemble import RandomForestClassifier
 #clustering imports
 from sklearn.cluster import *
 from sklearn.preprocessing import StandardScaler
-
+from flask_jsglue import JSGlue
 
 
 app = Flask(__name__, template_folder='templates')
 #app.config['SQLALCHEMY_DATABASE_URL'] = 'sqlite:///test.db'
 #rom flask_sqlalchemy import SQLAlchemydb = SQLAlchemy(app)
 
- 
+jsglue = JSGlue(app)
 
 @app.route("/")
 def fileFrontPage():
@@ -85,6 +85,9 @@ def history():
 
 @app.route('/comparison', methods=['GET', 'POST'])
 def comparison():
+    algorithms=['xgboost','linearR','decisiontreeR', 'ridgeR', 'lassoR', 'knnR']
+    
+    
     if request.method == "POST":
         selected_column = request.form.getlist("column")
 
@@ -100,6 +103,14 @@ def comparison():
     
     global X_train, X_test, y_train, y_test 
     X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.1, random_state=1)
+    
+    matrix=[]
+    matrix.append(xgboost())
+    matrix.append(linearR())
+    matrix.append(decisiontreeR())
+    matrix.append(ridgeR())
+    matrix.append(lassoR())
+    matrix.append(knnR())
 
     if request.method == 'GET':
         # Just render the initial form, to get input
@@ -107,7 +118,7 @@ def comparison():
     
     if request.method == 'POST':
         # Extract the input
-        return render_template('regression.html',sc=selected_column)
+        return render_template('regression.html',sc=selected_column, algo= algorithms, mat=matrix)
 
                                     
 @app.route('/xgboost', methods=['GET', 'POST'])
@@ -122,19 +133,16 @@ def xgboost():
         classifier = xgb.sklearn.XGBClassifier(nthread=-1, seed=1)
         classifier.fit(X_train, y_train)
 
-        from sklearn.metrics import r2_score, explained_variance_score, mean_absolute_error
+        from sklearn.metrics import r2_score, explained_variance_score, mean_absolute_error, mean_squared_error
 
         predictions = classifier.predict(X_test)
-        mae=mean_absolute_error(y_true=y_test, y_pred=predictions)
-        evs=explained_variance_score(y_true=y_test, y_pred=predictions)
-        acc=r2_score(y_true=y_test, y_pred=predictions)
-        
-        return render_template('regression.html',
-                                     result=acc,
-                                     result1=mae,
-                                     result2=evs,
-                                     )    		
-
+        responce=[]
+        responce.append(mean_absolute_error(y_true=y_test, y_pred=predictions))
+        responce.append(mean_squared_error(y_true=y_test, y_pred=predictions))
+        responce.append(np.sqrt(mean_squared_error(y_true=y_test, y_pred=predictions)))
+        responce.append(explained_variance_score(y_true=y_test, y_pred=predictions))
+        responce.append(r2_score(y_true=y_test, y_pred=predictions))
+        return (responce)
 
 @app.route('/linearR', methods=['GET', 'POST'])
 def linearR():
@@ -151,19 +159,13 @@ def linearR():
         from sklearn.metrics import r2_score, explained_variance_score, mean_absolute_error, mean_squared_error
 
         predictions = classifier.predict(X_test)
-        mae=mean_absolute_error(y_true=y_test, y_pred=predictions)
-        mse=mean_squared_error(y_true=y_test, y_pred=predictions)
-        rmse=np.sqrt(mae)
-        evs=explained_variance_score(y_true=y_test, y_pred=predictions)
-        acc=r2_score(y_true=y_test, y_pred=predictions)
-        
-        return render_template('regression.html',
-                                     result=acc,
-                                     result1=mae,
-                                     result2=evs,
-                                     result3=mse,
-                                     result4=rmse,
-                                     )          
+        responce=[]
+        responce.append(mean_absolute_error(y_true=y_test, y_pred=predictions))
+        responce.append(mean_squared_error(y_true=y_test, y_pred=predictions))
+        responce.append(np.sqrt(mean_squared_error(y_true=y_test, y_pred=predictions)))
+        responce.append(explained_variance_score(y_true=y_test, y_pred=predictions))
+        responce.append(r2_score(y_true=y_test, y_pred=predictions))
+        return (responce)
 
 @app.route('/decisiontreeR', methods=['GET', 'POST'])
 def decisiontreeR():
@@ -177,18 +179,17 @@ def decisiontreeR():
 
         classifier.fit(X_train, y_train)
 
-        from sklearn.metrics import r2_score, explained_variance_score, mean_absolute_error
+        
+        from sklearn.metrics import r2_score, explained_variance_score, mean_absolute_error, mean_squared_error
 
         predictions = classifier.predict(X_test)
-        mae=mean_absolute_error(y_true=y_test, y_pred=predictions)
-        evs=explained_variance_score(y_true=y_test, y_pred=predictions)
-        acc=r2_score(y_true=y_test, y_pred=predictions)
-        
-        return render_template('regression.html',
-                                     result=acc,
-                                     result1=mae,
-                                     result2=evs,
-                                     )   
+        responce=[]
+        responce.append(mean_absolute_error(y_true=y_test, y_pred=predictions))
+        responce.append(mean_squared_error(y_true=y_test, y_pred=predictions))
+        responce.append(np.sqrt(mean_squared_error(y_true=y_test, y_pred=predictions)))
+        responce.append(explained_variance_score(y_true=y_test, y_pred=predictions))
+        responce.append(r2_score(y_true=y_test, y_pred=predictions))
+        return (responce)
 
 @app.route('/ridgeR', methods=['GET', 'POST'])
 def ridgeR():
@@ -205,18 +206,16 @@ def ridgeR():
         #ridge_reg = Ridge(alpha=0.01, solver="cholesky")
         ridge_reg.fit(X_train, y_train)
 
-        from sklearn.metrics import r2_score, explained_variance_score, mean_absolute_error
+        from sklearn.metrics import r2_score, explained_variance_score, mean_absolute_error, mean_squared_error
 
         predictions = ridge_reg.predict(X_test)
-        mae=mean_absolute_error(y_true=y_test, y_pred=predictions)
-        evs=explained_variance_score(y_true=y_test, y_pred=predictions)
-        acc=r2_score(y_true=y_test, y_pred=predictions)
-        
-        return render_template('regression.html',
-                                     result=acc,
-                                     result1=mae,
-                                     result2=evs,
-                                     )
+        responce=[]
+        responce.append(mean_absolute_error(y_true=y_test, y_pred=predictions))
+        responce.append(mean_squared_error(y_true=y_test, y_pred=predictions))
+        responce.append(np.sqrt(mean_squared_error(y_true=y_test, y_pred=predictions)))
+        responce.append(explained_variance_score(y_true=y_test, y_pred=predictions))
+        responce.append(r2_score(y_true=y_test, y_pred=predictions))
+        return (responce)
 
 @app.route('/lassoR', methods=['GET', 'POST'])
 def lassoR():
@@ -232,18 +231,17 @@ def lassoR():
         lassoReg.fit(X_train,y_train)
 
 
-        from sklearn.metrics import r2_score, explained_variance_score, mean_absolute_error
+        
+        from sklearn.metrics import r2_score, explained_variance_score, mean_absolute_error, mean_squared_error
 
         predictions = lassoReg.predict(X_test)
-        mae=mean_absolute_error(y_true=y_test, y_pred=predictions)
-        evs=explained_variance_score(y_true=y_test, y_pred=predictions)
-        acc=r2_score(y_true=y_test, y_pred=predictions)
-        
-        return render_template('regression.html',
-                                     result=acc,
-                                     result1=mae,
-                                     result2=evs,
-                                     ) 
+        responce=[]
+        responce.append(mean_absolute_error(y_true=y_test, y_pred=predictions))
+        responce.append(mean_squared_error(y_true=y_test, y_pred=predictions))
+        responce.append(np.sqrt(mean_squared_error(y_true=y_test, y_pred=predictions)))
+        responce.append(explained_variance_score(y_true=y_test, y_pred=predictions))
+        responce.append(r2_score(y_true=y_test, y_pred=predictions))
+        return (responce)
 
 @app.route('/knnR', methods=['GET', 'POST'])
 def knnR():
@@ -254,20 +252,17 @@ def knnR():
     if request.method == 'POST':
         knn=neighbors.KNeighborsRegressor(5,weights='distance')
         knn.fit(X_train,y_train)
-
-
-        from sklearn.metrics import r2_score, explained_variance_score, mean_absolute_error
+        
+        from sklearn.metrics import r2_score, explained_variance_score, mean_absolute_error, mean_squared_error
 
         predictions = knn.predict(X_test)
-        mae=mean_absolute_error(y_true=y_test, y_pred=predictions)
-        evs=explained_variance_score(y_true=y_test, y_pred=predictions)
-        acc=r2_score(y_true=y_test, y_pred=predictions)
-        
-        return render_template('regression.html',
-                                     result=acc,
-                                     result1=mae,
-                                     result2=evs,
-                                     )                                            
+        responce=[]
+        responce.append(mean_absolute_error(y_true=y_test, y_pred=predictions))
+        responce.append(mean_squared_error(y_true=y_test, y_pred=predictions))
+        responce.append(np.sqrt(mean_squared_error(y_true=y_test, y_pred=predictions)))
+        responce.append(explained_variance_score(y_true=y_test, y_pred=predictions))
+        responce.append(r2_score(y_true=y_test, y_pred=predictions))
+        return (responce)                                  
 
 @app.route('/prediction_classification', methods=['GET', 'POST'])
 def Prediction_classification():
@@ -564,4 +559,6 @@ def Prediction_clustering():
         return render_template('classification.html',sc=selected_column)
 
 if __name__ == '__main__':
-    app.run(debug=True)     
+    app.run(debug=True)
+
+     
