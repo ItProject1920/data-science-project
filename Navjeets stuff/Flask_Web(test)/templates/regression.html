@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+{% block head %}
+<style>
+#top-container{
+    color: rgba(0,0,0,.87);
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    font-family: "Helvetica", "Arial", sans-serif;
+    border-bottom: 1px solid #ddd;
+    padding: 18px 0;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    background: white;
+    display: inline-flex;
+}
+
+#nav1{
+    align-items: left;
+    width: 320px;
+    position: relative;
+    top: 0;
+    left: 0;
+    height:150vh;
+    background: #254f63;
+    color: #fff;
+    transition: all 0.3s;
+    float:left;
+    margin-left: 5px;
+}
+#nav2{
+    width: 320px;
+    position: relative;
+    top: 0;
+    left: 0;
+    height:150vh;
+    background: #254f63;
+    color: #fff;
+    transition: all 0.3s; 
+    margin-right: 5px;  
+    float: right;
+}
+nav ul{
+    list-style-type: none;
+    margin-right: 180px;
+    margin-top: 60px;
+}
+nav ul li{
+    padding-bottom:40px;
+}
+input[type="submit"]{
+    width:250px;
+    color: white;
+}
+.result {
+    margin: auto;
+    width: 40%;
+    border: 1px solid #ccc;
+    text-transform: capitalize;
+}
+</style>
+{% endblock %}
+{% block body %}
+<html>
+<style type="text/css"> 
+.panel,.flip
+{
+padding:5px;
+text-align:center;
+
+border:solid 2px #c3c3c3;
+margin: auto;
+width: 35%;
+}
+.panel
+{
+padding:50px;
+display:none;
+}
+
+form {
+    margin: auto;
+    width: 35%;
+}
+
+
+
+</style>
+
+<head>
+    <title>WEB APPLICATION</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script> 
+$(document).ready(function(){
+  $(".flip").click(function(){
+    $(this).next().slideToggle("slow");
+  });
+});
+</script>
+</head>
+<body>
+   
+    {{ JSGlue.include() }}
+
+<br><div class="flip">LINEAR REGRESSION</div>
+<div class="panel"><br/>
+	<center>
+		<b>R-squared value:</b>{{mat[0][0]}}<br><br>
+		<b> Mean Absolute Error:</b>{{mat[0][1]}}<br><br>
+		<b> EVS:</b>{{mat[0][2]}}<br><br>
+		<b> MSE:</b>{{mat[0][3]}}<br><br>
+		<b> RMSE:</b>{{mat[0][4]}}	
+
+   </center>
+</div>
+<br>
+<div class="flip">DECISION TREE REGRESSION</div>
+<div class="panel"><br/>
+	<center>
+		<b>R-squared value:</b>{{mat[1][0]}}<br><br>
+		<b> Mean Absolute Error:</b>{{mat[1][1]}}<br><br>
+		<b> EVS:</b>{{mat[1][2]}}<br><br>
+		<b> MSE:</b>{{mat[1][3]}}<br><br>
+		<b> RMSE:</b>{{mat[1][4]}}	
+
+	</center>
+</div>
+
+<br>
+<div class="flip">RIDGE REGRESSION</div>
+<div class="panel"><br/>
+	<center>
+		<b>R-squared value:</b>{{mat[2][0]}}<br><br>
+		<b> Mean Absolute Error:</b>{{mat[2][1]}}<br><br>
+		<b> EVS:</b>{{mat[2][2]}}<br><br>
+		<b> MSE:</b>{{mat[2][3]}}<br><br>
+		<b> RMSE:</b>{{mat[2][4]}}	
+
+	</center>
+</div>
+
+<br>
+<div class="flip">LASSO REGRESSION</div>
+<div class="panel"><br/>
+	<center>
+		<b>R-squared value:</b>{{mat[3][0]}}<br><br>
+		<b> Mean Absolute Error:</b>{{mat[3][1]}}<br><br>
+		<b> EVS:</b>{{mat[3][2]}}<br><br>
+		<b> MSE:</b>{{mat[3][3]}}<br><br>
+		<b> RMSE:</b>{{mat[3][4]}}	
+
+	</center>
+</div>
+
+<br>
+<div class="flip">KNN REGRESSION</div>
+<div class="panel"><br/>
+	<center>
+
+		<b>R-squared value:</b>{{mat[4][0]}}<br><br>
+		<b> Mean Absolute Error:</b>{{mat[4][1]}}<br><br>
+		<b> EVS:</b>{{mat[4][2]}}<br><br>
+		<b> MSE:</b>{{mat[4][3]}}<br><br>
+		<b> RMSE:</b>{{mat[4][4]}}
+	</center>
+</div>
+	
+
+
+
+</body>
+</html>
+{% endblock %} 

@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+<style>
+form {
+    margin: auto;
+    width: 35%;
+}
+
+.result {
+    margin: auto;
+    width: 35%;
+    border: 1px solid #ccc;
+}
+</style>
+
+<head>
+    <title>WEB APPLICATION</title>
+</head>
+<body>
+    {{sc}}
+    {{ JSGlue.include() }}
+    <table border="1">
+        <tr>
+            <th><b>Algorithms</b></th>
+          <th><b>Accuracy</b></th>
+          <th><b> confusion matrix</b></th>
+          <th><b> Classification report</b></th>
+
+
+        </tr>
+        {% for i in range(10) %}
+        <tr>
+            <td><b>{{algo[i]}}</b></td>
+            {% for j in range(3) %}
+          <td>
+              {{mat[i][j]}}
+            </td>
+        {% endfor %}
+        {% endfor %}
+    </table>
+
+
+</body>
+</html>

@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.css" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.js"></script>
+<title>Display</title>
+
+<style type="text/css">
+  #container{
+    display: flex;
+    justify-content: center;
+    margin-bottom:100px;
+  }
+  #dropdown1{
+    display:inline;
+    margin-right: 0px;
+  }
+  
+
+</style>
+{% endblock %}
+
+{% block body %}
+<center><h3>Your Data Set Looks Like:</h3></center>
+<center><div class="table table-striped" id="table-container">
+  
+{% for table in tables %}
+    {{ table|safe }}
+{% endfor %}
+</div>
+</center>
+<div id="container">
+  
+<form action="" id="frm" method="post" enctype="multipart/form-data">
+  <fieldset class="border p-2">
+    <legend class="w-auto">Choose</legend>
+<div class="dropdown" id="dropdown1">
+  <button class="btn btn-outline-primary" type="button" id="dropdownMenu1" data-toggle="dropdown">
+    <i class="glyphicon glyphicon-plus-sign">Predictors</i>
+    <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu checkbox-menu allow-focus" aria-labelledby="dropdownMenu1">
+  {% for index in index %}
+  <li>
+    <input type="checkbox" id="id_{{index}}" name="column" value="{{index}}">
+    <label for="id_{{index}}">{{index}}</label>
+  </li>
+{% endfor %}
+</ul>
+</div>
+<div class="btn-group" id="dropdown2">
+  <button class="btn btn-outline-primary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <i class="glyphicon glyphicon-ok">&nbsp;Predict</i><span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu">
+    {% for index in index %}
+     <li>
+     <input type="radio" id="id_{{index}}" name="predict" value="{{index}}">
+      <label for="id_{{index}}">{{index}}</label>
+    </li>
+  {% endfor %}
+</ul>
+</div>
+  <br>
+  <br>
+  {% block buttons %}{% endblock %}
+</fieldset>
+</form>
+</div>
+<script>
+  function submitMe(obj){
+    if(obj.value == "Labelled"){
+      document.getElementById('frm').action = "/prediction_classification";
+    }else if(obj.value == "Unlabelled"){
+     document.getElementById('frm').action = "";
+    }else{
+     document.getElementById('frm').action = "/comparison";
+    }
+   document.getElementById('frm').submit();
+  }
+</script>
+
+{% endblock %}
