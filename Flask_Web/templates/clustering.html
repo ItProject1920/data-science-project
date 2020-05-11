@@ -19,7 +19,30 @@
 {% endblock %}
 
 {% block body %}
-    he
+Kmeans
+<table border="1">
+    <tr>
+        <th><b>No of Clusters</b></th>
+        <th><b>Kmeans Score</b></th>
+        <th><b> silhouette_score</b></th>
+        <th><b> davies_bouldin_score</b></th>
+        <th><b> calinski_harabasz_score</b></th>
+        <th><b> GaussianMixture_BIC</b></th>
+        <th><b> GaussianMixture_log</b></th>
+    </tr>
+    {% for i in range(2) %}
+    <tr>
+        <td><b>{{i+2}}</b></td>
+            {% for j in range(5) %}
+        <td>
+                {{mat[i][j]}}
+        </td>
+            {% endfor %}
+    {% endfor %}
+    
+    </tr>
+        
+</table>
 
 
 

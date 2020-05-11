@@ -12,6 +12,30 @@ form {
     border: 1px solid #ccc;
 }
 </style>
+<style type="text/css"> 
+    .panel,.flip
+    {
+    padding:5px;
+    text-align:center;
+    
+    border:solid 2px #c3c3c3;
+    margin: auto;
+    width: 35%;
+    }
+    .panel
+    {
+    padding:50px;
+    display:none;
+    }
+    
+    form {
+        margin: auto;
+        width: 35%;
+    }
+    
+    
+    
+    </style>
 
 <head>
     <title>WEB APPLICATION</title>
@@ -20,25 +44,27 @@ form {
     {{sc}}
     {{ JSGlue.include() }}
     <table border="1">
-        <tr>
-            <th><b>Algorithms</b></th>
-          <th><b>R-squared value</b></th>
-          <th><b> Mean Absolute Error</b></th>
-          <th><b> EVS</b></th>
-          <th><b> MSE</b></th>
-          <th><b> RMSE</b></th>
-        </tr>
-        {% for i in range(6) %}
-        <tr>
-            <td><b>{{algo[i]}}</b></td>
-            {% for j in range(5) %}
-          <td>
-              {{mat[i][j]}}
-            </td>
-        {% endfor %}
-        {% endfor %}
+            <tr>
+                <th><b>Algorithms</b></th>
+                <th><b>R-squared value</b></th>
+                <th><b> Mean Absolute Error</b></th>
+                <th><b> EVS</b></th>
+                <th><b> MSE</b></th>
+                <th><b> RMSE</b></th>
+            </tr>
+            {% for i in range(6) %}
+            <tr>
+                <td><b>{{algo[i]}}</b></td>
+                    {% for j in range(5) %}
+                <td>
+                        {{mat[i][j]}}
+                </td>
+                    {% endfor %}
+            {% endfor %}
+            
+            </tr>
+                
     </table>
-
 
 </body>
 </html>
