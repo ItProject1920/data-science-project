@@ -115,15 +115,10 @@ input[type="submit"]{
    		<p style="font-size:12px">{{ result }}</p>
     {% endif %}
     {% if result %}
-        <b> Confusion Matrix</b>
+        
         <p style="font-size:12px">
     <table class="table table-striped">
-        {% for i in result1 %}
-            <tr>
-            {% for j in i %}
-                <td>{{j}}</td>
-            {% endfor %}</tr>
-        {% endfor %}
+        
     </table>
     </p>
     {% endif %}
@@ -132,4 +127,30 @@ input[type="submit"]{
         {{result2.to_html(classes="table table-striped") | safe}}
     {% endif %}
 </div>
+<table border="1">
+    <tr>
+        <th><b>Algorithms</b></th>
+      <th><b> Confusion Matrix</b></th>
+      <th><b> Classification Report</b></th>
+    </tr>
+    
+    {% for i in range(6) %}
+    <tr>
+        <td><b>{{algo[i]}}<br>Accuracy:</b>{{mat[i][0]}}</td>
+        <td>
+            <p style="font-size:12px">
+            <table class="table table-striped">
+            {% for j in mat[i][1] %}
+            <tr>
+            {% for k in j %}
+                <td>{{k}}</td>
+            {% endfor %}</tr>
+            {% endfor %}
+            </table>
+            </p>
+        </td>
+        <td>{{mat[i][2].to_html(classes="table table-striped") | safe}}</td>
+    </tr>
+    {% endfor %}
+</table>
 {% endblock %} 
