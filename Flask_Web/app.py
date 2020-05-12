@@ -346,7 +346,7 @@ def randomforestC():
         start_time = time.time()
         random_forest.fit(X_train,y_train)
         end_time = time.time()
-        time_taken = 'Decision Tree Classifier took {:.5f} s'.format(end_time - start_time)        
+        time_taken = 'Random Forest Classifier took {:.5f} s'.format(end_time - start_time)        
         predictions = random_forest.predict(X_test)
 
         responce=[]
@@ -367,7 +367,7 @@ def logisticR():
         start_time = time.time()
         logistic.fit(X_train,y_train)
         end_time = time.time()
-        time_taken = 'Decision Tree Classifier took {:.5f} s'.format(end_time - start_time)
+        time_taken = 'Logistic Regression Classifier took {:.5f} s'.format(end_time - start_time)
         predictions = logistic.predict(X_test)
         responce=[]
         responce.append(accuracy_score(predictions, y_test))
@@ -387,7 +387,7 @@ def svmC():
         start_time = time.time()
         support_vector.fit(X_train,y_train)
         end_time = time.time()
-        time_taken = 'Decision Tree Classifier took {:.5f} s'.format(end_time - start_time)        
+        time_taken = 'SVM Classifier took {:.5f} s'.format(end_time - start_time)        
         predictions = support_vector.predict(X_test)        
         
         responce=[]
@@ -407,7 +407,7 @@ def knnC():
         start_time = time.time()
         KNN.fit(X_train,y_train)
         end_time = time.time()
-        time_taken = 'Decision Tree Classifier took {:.5f} s'.format(end_time - start_time)        
+        time_taken = 'K-nn Classifier took {:.5f} s'.format(end_time - start_time)        
         predictions = KNN.predict(X_test)
         responce=[]
         responce.append(accuracy_score(predictions, y_test))
@@ -426,7 +426,7 @@ def gpC():
         start_time = time.time()
         gpC.fit(X_train,y_train)
         end_time = time.time()
-        time_taken = 'Decision Tree Classifier took {:.5f} s'.format(end_time - start_time)        
+        time_taken = 'Gaussian Process Classifier took {:.5f} s'.format(end_time - start_time)        
         predictions = gpC.predict(X_test)
         acc=accuracy_score(predictions, y_test)
         cf=confusion_matrix(predictions, y_test)
@@ -451,7 +451,7 @@ def mlpC():
         start_time = time.time()
         mlpC.fit(X_train,y_train)
         end_time = time.time()
-        time_taken = 'Decision Tree Classifier took {:.5f} s'.format(end_time - start_time)        
+        time_taken = 'MLP Classifier took {:.5f} s'.format(end_time - start_time)        
         predictions = mlpC.predict(X_test)
         responce=[]
         responce.append(accuracy_score(predictions, y_test))
@@ -470,7 +470,7 @@ def adC():
         start_time = time.time()
         adC.fit(X_train,y_train)
         end_time = time.time()
-        time_taken = 'Decision Tree Classifier took {:.5f} s'.format(end_time - start_time)        
+        time_taken = 'Ada Boost Classifier took {:.5f} s'.format(end_time - start_time)        
         predictions = adC.predict(X_test)
         
         responce=[]
@@ -490,7 +490,7 @@ def nbC():
         start_time = time.time()
         nbC.fit(X_train,y_train)
         end_time = time.time()
-        time_taken = 'Decision Tree Classifier took {:.5f} s'.format(end_time - start_time)        
+        time_taken = 'Gaussian Naive Bayes Classifier took {:.5f} s'.format(end_time - start_time)        
         predictions = nbC.predict(X_test)
         responce=[]
         responce.append(accuracy_score(predictions, y_test))
@@ -509,7 +509,7 @@ def qdaC():
         start_time = time.time()
         qdaC.fit(X_train,y_train)
         end_time = time.time()
-        time_taken = 'Decision Tree Classifier took {:.5f} s'.format(end_time - start_time)        
+        time_taken = 'Quadratic Discriminant Classifier took {:.5f} s'.format(end_time - start_time)        
         predictions = qdaC.predict(X_test)
         responce=[]
         responce.append(accuracy_score(predictions, y_test))
@@ -528,7 +528,7 @@ def ngnbC():
         start_time = time.time()
         ngnbC.fit(X_train,y_train)
         end_time = time.time()
-        time_taken = 'Decision Tree Classifier took {:.5f} s'.format(end_time - start_time)        
+        time_taken = 'MultinomialNB Classifier took {:.5f} s'.format(end_time - start_time)        
         predictions = ngnbC.predict(X_test)
         responce=[]
         responce.append(accuracy_score(predictions, y_test))
