@@ -556,7 +556,7 @@ def Prediction_clustering():
     
     if request.method == 'POST':
         # Extract the input
-        return render_template('clustering.html',sc=selected_column, mat=kmean())
+        return render_template('clustering.html',sc=selected_column, mat=MShift())
 
 
 
@@ -625,8 +625,8 @@ def AffPropagation():
             sil.append(silhouette_score(data, labels, metric='sqeuclidean'))
             db.append(davies_bouldin_score(data, labels))
             ch.append(calinski_harabasz_score(data, labels))
-            gm_bic.append(GaussianMixture(n_components=i,n_init=10,tol=1e-3,max_iter=1000).fit(data).bic(data))
-            gm.append(GaussianMixture(n_components=i,n_init=10,tol=1e-3,max_iter=1000).fit(data).score(data))
+            gm_bic.append(GaussianMixture(n_components=len(cluster_centers_indices),n_init=10,tol=1e-3,max_iter=1000).fit(data).bic(data))
+            gm.append(GaussianMixture(n_components=len(cluster_centers_indices),n_init=10,tol=1e-3,max_iter=1000).fit(data).score(data))
             i += 10
 
         responce=[]
@@ -637,7 +637,6 @@ def AffPropagation():
         responce.append(gm_bic)
         responce.append(gm)
         
-
     return (responce)
 
 
@@ -659,7 +658,7 @@ def MShift():
         gm_bic=[]
         nc=[]
         i = 0.1
-        while i < 1:
+        while i < 0.4:
             bandwidth = estimate_bandwidth(data, quantile=i, n_samples=1000)
 
             ms = MeanShift(bandwidth=bandwidth, bin_seeding=True)
@@ -671,8 +670,8 @@ def MShift():
             sil.append(silhouette_score(data, labels, metric='sqeuclidean'))
             db.append(davies_bouldin_score(data, labels))
             ch.append(calinski_harabasz_score(data, labels))
-            gm_bic.append(GaussianMixture(n_components=i,n_init=10,tol=1e-3,max_iter=1000).fit(data).bic(data))
-            gm.append(GaussianMixture(n_components=i,n_init=10,tol=1e-3,max_iter=1000).fit(data).score(data))
+            gm_bic.append(GaussianMixture(n_components=n_clusters,n_init=10,tol=1e-3,max_iter=1000).fit(data).bic(data))
+            gm.append(GaussianMixture(n_components=n_clusters,n_init=10,tol=1e-3,max_iter=1000).fit(data).score(data))
             i +=0.1
         responce=[]
         responce.append(nc)
