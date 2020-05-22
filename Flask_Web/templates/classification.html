@@ -60,16 +60,22 @@ input[type="submit"]{
 </style>
 {% endblock %}
 {% block body %}
+ 
+
 <br>
+
+
 <center>
 <table border="3">
+    
 	<tr>
         <th><center><b>Algorithms</b></center></th>
 		<th><center><b> Accuracy</b></center></th>
       <th><center><b> Confusion Matrix</b></center></th>
       <th><center><b> Classification Report</b></center></th>
     </tr>
-    {% for i in range(11) %}
+    
+    {% for i in range(10) %}
     <tr>
 		<td><center><b>{{algo[i]}}</b></center></td>
         <td><b><br></b>{{mat[i][0]}}</td>
