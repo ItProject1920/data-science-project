@@ -279,7 +279,7 @@ def Prediction_classification():
         selected_predict = request.form.getlist("predict")
 
     df = pd.read_csv('Upload/1.csv', sep=',')
-    algorithms=['Decision Tree','Randomforest','Logistic Regression', 'SVM Classifier', 'Knn Classifier','Gaussian Process Classifier' , 'MLP Classifier', 'ADA Boost', 'Gaussian Naive Bayes', 'Quadratic Discriminant Analysis', 'MultinomialNB']
+    algorithms=['Decision Tree','Randomforest','Logistic Regression', 'SVM Classifier', 'Knn Classifier', 'MLP Classifier', 'ADA Boost', 'Gaussian Naive Bayes', 'Quadratic Discriminant Analysis', 'MultinomialNB']
 
     x = df.loc[:,selected_column]
     y = df.loc[:,selected_predict]
@@ -287,14 +287,12 @@ def Prediction_classification():
     global X_train, X_test, y_train, y_test 
     X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.1, random_state=1)
 
-
     matrix=[]
     matrix.append(decisiontreeC())
     matrix.append(randomforestC())
     matrix.append(logisticR())
     matrix.append(svmC())
     matrix.append(knnC())
-    matrix.append(gpC())
     matrix.append(mlpC())
     matrix.append(adC())
     matrix.append(nbC())
@@ -430,11 +428,18 @@ def gpC():
         end_time = time.time()
         time_taken = 'Gaussian Process Classifier took {:.5f} s'.format(end_time - start_time)        
         predictions = gpC.predict(X_test)
-        responce=[]
-        responce.append(accuracy_score(predictions, y_test))
-        responce.append(confusion_matrix(predictions, y_test))
-        responce.append(pd.DataFrame(classification_report(predictions, y_test, output_dict=True)).transpose())
-        return (responce)
+        acc=accuracy_score(predictions, y_test)
+        cf=confusion_matrix(predictions, y_test)
+        cr=classification_report(predictions, y_test, output_dict=True)       
+        df = pd.DataFrame(cr).transpose()       
+
+        return render_template('classification.html',
+                                     result=acc,
+                                     result1=cf,
+                                     result2=df,
+                                     time = time_taken,
+                                     )
+
 @app.route('/mlpC', methods=['GET', 'POST'])
 def mlpC():
     if request.method == 'GET':
