@@ -61,30 +61,89 @@ input[type="submit"]{
 {% endblock %}
 {% block body %}
  
-
+<!--div id="top-container"-->
+<section id="menu1">
+    <nav id="nav1">
+        <ul>
+    <form action="{{ url_for('decisiontreeC') }}" method="POST">
+       <li>  <input class="btn btn-outline-primary" type="submit" value="Decision Tree"> </li>
+    </form>
+   <form action="{{ url_for('randomforestC') }}" method="POST">
+        <li> <input class="btn btn-outline-primary" type="submit" value="Randomforest"> </li>
+    </form>
+   <form action="{{ url_for('logisticR') }}" method="POST">
+       <li> <input class="btn btn-outline-primary" type="submit" value="Logistic Regression"> </li>
+    </form>
+    <form action="{{ url_for('svmC') }}" method="POST">
+         <li><input class="btn btn-outline-primary" type="submit" value="SVM Classifier"> </li>
+    </form>
+    <form action="{{ url_for('knnC') }}" method="POST">
+           <li><input class="btn btn-outline-primary" type="submit" value="Knn Classifier"> </li>
+    </form>
+    <form action="{{ url_for('gpC') }}" method="POST">
+             <li><input class="btn btn-outline-primary" type="submit" value="Guassian Process"> </li>
+    </form>
+</nav>
+</section>
+<section id="menu2">
+    <nav id="nav2">
+        <ul>
+    <form action="{{ url_for('mlpC') }}" method="POST">
+            <li> <input class="btn btn-outline-primary" type="submit" value="MLP Classifier"> </li>
+    </form>
+    <form action="{{ url_for('adC') }}" method="POST">
+        <li>     <input class="btn btn-outline-primary" type="submit" value="ADA Boost"> </li>
+    </form>
+    <form action="{{ url_for('nbC') }}" method="POST">
+         <li>    <input class="btn btn-outline-primary" type="submit" value="Gaussian Naive Bayes"> </li>
+    </form>
+    <form action="{{ url_for('qdaC') }}" method="POST">
+        <li>     <input class="btn btn-outline-primary" type="submit" value="Quadratic Discriminant Analysis"> </li>
+    </form>
+    <form action="{{ url_for('ngnbC') }}" method="POST">
+        <li>     <input class="btn btn-outline-primary" type="submit" value="MultinomialNB"> </li>
+    </form>
+</nav>
+</section>
+<!--/div-->
 <br>
-
-
-<center>
-<table border="3">
-    
-	<tr>
-        <th><center><b>Algorithms</b></center></th>
-		<th><center><b> Accuracy</b></center></th>
-      <th><center><b> Confusion Matrix</b></center></th>
-      <th><center><b> Classification Report</b></center></th>
+<h3>Select The Desired Algorithms Available Below And Get The Metrics For Comparison</h3>
+<div class="result" align="center">
+    <b>{{time}}</b><br>
+    {% if result %}
+    	<b>Accuracy</b>
+   		<p style="font-size:12px">{{ result }}</p>
+    {% endif %}
+    {% if result %}
+        
+        <p style="font-size:12px">
+    <table class="table table-striped">
+        
+    </table>
+    </p>
+    {% endif %}
+    {% if result %}
+        <b> Classification Report</b>
+        {{result2.to_html(classes="table table-striped") | safe}}
+    {% endif %}
+</div>
+<table border="1">
+    <tr>
+        <th><b>Algorithms</b></th>
+      <th><b> Confusion Matrix</b></th>
+      <th><b> Classification Report</b></th>
     </tr>
+    
     {% for i in range(11) %}
     <tr>
-		<td><center><b>{{algo[i]}}</b></center></td>
-        <td><b><br></b>{{mat[i][0]}}</td>
+        <td><b>{{algo[i]}}<br>Accuracy:</b>{{mat[i][0]}}</td>
         <td>
             <p style="font-size:12px">
             <table class="table table-striped">
             {% for j in mat[i][1] %}
             <tr>
             {% for k in j %}
-                <td><center>{{k}}</center></td>
+                <td>{{k}}</td>
             {% endfor %}</tr>
             {% endfor %}
             </table>
@@ -94,5 +153,4 @@ input[type="submit"]{
     </tr>
     {% endfor %}
 </table>
-</center>
 {% endblock %} 
