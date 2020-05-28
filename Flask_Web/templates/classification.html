@@ -60,12 +60,11 @@ input[type="submit"]{
 </style>
 {% endblock %}
 {% block body %}
- 
-
 <br>
-
-
 <center>
+ <p>{{ranks.to_html(classes="table table-striped") | safe}}</p>
+ <br>
+ <br>
 <table border="3">
     
 	<tr>
