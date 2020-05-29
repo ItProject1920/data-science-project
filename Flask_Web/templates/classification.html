@@ -57,31 +57,39 @@ input[type="submit"]{
     border: 1px solid #ccc;
     text-transform: capitalize;
 }
+#maintable{
+    width:100%;
+}
 </style>
 {% endblock %}
 {% block body %}
+<br>
+<h3> Ranked List Of Algorithms</h3>
 <br>
 <center>
  <p>{{ranks.to_html(classes="table table-striped") | safe}}</p>
  <br>
  <br>
-<table border="3">
+ <h3> Detailed Report</h3>
+ <br>
+<table id="maintable" border="3">
     
 	<tr>
-        <th><center><b>Algorithms</b></center></th>
+        <th><center><b>Algorithm</b></center></th>
 		<th><center><b> Accuracy</b></center></th>
       <th><center><b> Confusion Matrix</b></center></th>
       <th><center><b> Classification Report</b></center></th>
+      <th><center><b> Rank </b></center></th>
     </tr>
     
     {% for i in range(10) %}
     <tr>
-		<td><center><b>{{algo[i]}}</b></center></td>
-        <td><b><br></b>{{mat[i][0]}}</td>
+		<td><center><b>{{mat[i][0]}}</b></center></td>
+        <td><b><br></b>{{mat[i][1]}}</td>
         <td>
             <p style="font-size:12px">
             <table class="table table-striped">
-            {% for j in mat[i][1] %}
+            {% for j in mat[i][2] %}
             <tr>
             {% for k in j %}
                 <td><center>{{k}}</center></td>
@@ -90,7 +98,8 @@ input[type="submit"]{
             </table>
             </p>
         </td>
-        <td>{{mat[i][2].to_html(classes="table table-striped") | safe}}</td>
+        <td>{{mat[i][3].to_html(classes="table table-striped") | safe}}</td>
+        <td>{{mat[i][4]}}</td>
     </tr>
     {% endfor %}
 </table>
