@@ -117,7 +117,6 @@ def comparison():
     matrix.append(ridgeR())
     matrix.append(lassoR())
     matrix.append(knnR())
-
     if request.method == 'GET':
         # Just render the initial form, to get input
         return render_template('regression.html')
@@ -305,6 +304,24 @@ def Prediction_classification():
     matrix.append(qdaC())
     matrix.append(ngnbC())
 
+    copy_matrix=[]
+    ranker=[]
+    copy_matrix=matrix
+
+    for i in range(10):
+        temp = copy_matrix[i][3]
+        a=temp.at['accuracy','support']
+        f=temp.at['weighted avg','f1-score']
+        p=temp.at['weighted avg','precision']
+        r=temp.at['weighted avg','recall']
+        sum=a+f+p+r
+        ranker.append(sum)
+    e=np.array(matrix)
+    f=np.array(ranker)
+    final=np.column_stack((e,f))
+    final = final[np.argsort(final[:, 4])]
+    final=final[::-1]
+
     dataF=pd.DataFrame({
         'Algorithm':algorithms,
         'Accuracy':ac,
@@ -321,7 +338,7 @@ def Prediction_classification():
     
     if request.method == 'POST':
         # Extract the input
-        return render_template('classification.html',sc=selected_column, algo=algorithms, mat=matrix,ranks=dataF)
+        return render_template('classification.html',sc=selected_column, mat=final,ranks=dataF)
 
 @app.route('/decisiontreeC', methods=['GET', 'POST'])
 def decisiontreeC():
@@ -344,6 +361,7 @@ def decisiontreeC():
         predictions = decision_tree.predict(X_test)
 
         responce=[]
+        responce.append('Decision Tree Classifier')
         responce.append(accuracy_score(y_test,predictions))
         responce.append(confusion_matrix(y_test,predictions))
         responce.append(pd.DataFrame(classification_report(y_test,predictions, output_dict=True)).transpose())
@@ -373,6 +391,7 @@ def randomforestC():
         predictions = random_forest.predict(X_test)
 
         responce=[]
+        responce.append('Random Forest Classifier')
         responce.append(accuracy_score(y_test,predictions))
         responce.append(confusion_matrix(y_test,predictions))
         responce.append(pd.DataFrame(classification_report(y_test,predictions, output_dict=True)).transpose())
@@ -401,6 +420,7 @@ def logisticR():
         time_taken = 'Logistic Regression Classifier took {:.5f} s'.format(end_time - start_time)
         predictions = logistic.predict(X_test)
         responce=[]
+        responce.append('Logistic Regression Classifier')
         responce.append(accuracy_score(y_test,predictions))
         responce.append(confusion_matrix(y_test,predictions))
         responce.append(pd.DataFrame(classification_report(y_test,predictions, output_dict=True)).transpose())
@@ -430,6 +450,7 @@ def svmC():
         predictions = support_vector.predict(X_test)        
         
         responce=[]
+        responce.append('SVM Classifier')
         responce.append(accuracy_score(y_test,predictions))
         responce.append(confusion_matrix(y_test,predictions))
         responce.append(pd.DataFrame(classification_report(y_test,predictions, output_dict=True)).transpose())
@@ -457,6 +478,7 @@ def knnC():
         time_taken = 'K-nn Classifier took {:.5f} s'.format(end_time - start_time)        
         predictions = KNN.predict(X_test)
         responce=[]
+        responce.append('K-nn Classifier')
         responce.append(accuracy_score(y_test,predictions))
         responce.append(confusion_matrix(y_test,predictions))
         responce.append(pd.DataFrame(classification_report(y_test,predictions, output_dict=True)).transpose())
@@ -509,6 +531,7 @@ def mlpC():
         time_taken = 'MLP Classifier took {:.5f} s'.format(end_time - start_time)        
         predictions = mlpC.predict(X_test)
         responce=[]
+        responce.append('MLP Classifier')
         responce.append(accuracy_score(y_test,predictions))
         responce.append(confusion_matrix(y_test,predictions))
         responce.append(pd.DataFrame(classification_report(y_test,predictions, output_dict=True)).transpose())
@@ -537,6 +560,7 @@ def adC():
         predictions = adC.predict(X_test)
         
         responce=[]
+        responce.append('Ada Boost Classifier')
         responce.append(accuracy_score(y_test,predictions))
         responce.append(confusion_matrix(y_test,predictions))
         responce.append(pd.DataFrame(classification_report(y_test,predictions, output_dict=True)).transpose())
@@ -564,6 +588,7 @@ def nbC():
         time_taken = 'Gaussian Naive Bayes Classifier took {:.5f} s'.format(end_time - start_time)        
         predictions = nbC.predict(X_test)
         responce=[]
+        responce.append('Gaussian Naive Bayes Classifier')
         responce.append(accuracy_score(y_test,predictions))
         responce.append(confusion_matrix(y_test,predictions))
         responce.append(pd.DataFrame(classification_report(y_test,predictions, output_dict=True)).transpose())
@@ -591,6 +616,7 @@ def qdaC():
         time_taken = 'Quadratic Discriminant Classifier took {:.5f} s'.format(end_time - start_time)        
         predictions = qdaC.predict(X_test)
         responce=[]
+        responce.append('Quadratic Discriminant Classifier')
         responce.append(accuracy_score(y_test,predictions))
         responce.append(confusion_matrix(y_test,predictions))
         responce.append(pd.DataFrame(classification_report(y_test,predictions, output_dict=True)).transpose())
@@ -618,6 +644,7 @@ def ngnbC():
         time_taken = 'MultinomialNB Classifier took {:.5f} s'.format(end_time - start_time)        
         predictions = ngnbC.predict(X_test)
         responce=[]
+        responce.append('MultinomialNB Classifier')
         responce.append(accuracy_score(y_test,predictions))
         responce.append(confusion_matrix(y_test,predictions))
         responce.append(pd.DataFrame(classification_report(y_test,predictions, output_dict=True)).transpose())
