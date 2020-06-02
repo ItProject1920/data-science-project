@@ -13,9 +13,14 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.linear_model import Ridge
+from sklearn.linear_model import ElasticNet
 from sklearn.model_selection import GridSearchCV
 from sklearn.linear_model import Lasso
 from sklearn import neighbors
+from sklearn.ensemble import ExtraTreesRegressor
+from sklearn.svm import SVR
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import StandardScaler
 #classification imports
 from sklearn.linear_model import LogisticRegression
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
@@ -45,6 +50,7 @@ from sklearn.mixture import GaussianMixture
 from sklearn.metrics import *
 from sklearn.mixture import GaussianMixture
 from flask_jsglue import JSGlue
+from sklearn.feature_selection import RFE
 
 
 app = Flask(__name__, template_folder='templates')
@@ -91,7 +97,7 @@ def history():
 
 @app.route('/comparison', methods=['GET', 'POST'])
 def comparison():
-    algorithms=['xgboost','linearR','decisiontreeR', 'ridgeR', 'lassoR', 'knnR']
+    algorithms=['XGBoost Regression','Linear Regression','Decisiontree Regression', 'Ridge Regression', 'Lasso Regression','Elastic Net Regression', 'K-nn Regression','Support Vector Regression']
     
     
     if request.method == "POST":
@@ -106,9 +112,23 @@ def comparison():
     x = df.loc[:,selected_column]
     y = df.loc[:,selected_predict]
 
+    model = ExtraTreesRegressor()
+    rfe = RFE(model, 3)
+    fit = rfe.fit(x,y)
+
+    print("Number of Features: ", fit.n_features_)
+    print("Selected Features: ", fit.support_)
+    print("Feature Ranking: ", fit.ranking_) 
     
     global X_train, X_test, y_train, y_test 
     X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.1, random_state=1)
+    
+    global mae,mse,rmse,evs,r2
+    mae=[]
+    mse=[]
+    rmse=[]
+    evs=[] 
+    r2=[]
     
     matrix=[]
     matrix.append(xgboost())
@@ -116,14 +136,33 @@ def comparison():
     matrix.append(decisiontreeR())
     matrix.append(ridgeR())
     matrix.append(lassoR())
+    matrix.append(elastNetR())
     matrix.append(knnR())
+    matrix.append(svR())
+
+    dataF=pd.DataFrame({
+        'Algorithm':algorithms,
+        'EVS':evs,
+        'R2':r2,
+        'MSE':mse,
+        'MAE':mae,
+        'RMSE':rmse    
+        })
+    #dataF['Rank'] = dataF.evs + dataF.r2 
+    #dataF['Rank2'] = dataF.mse + dataF.mae+ dataF.rmse
+    dataF.sort_values(by=['EVS'], inplace=True, ascending=False)
+    dataF.sort_values(by=['R2'], inplace=True, ascending=False)
+    dataF.sort_values(by=['MSE'], inplace=True, ascending=True)
+    dataF.sort_values(by=['MAE'], inplace=True, ascending=True)
+    dataF.sort_values(by=['RMSE'], inplace=True, ascending=True)
+
     if request.method == 'GET':
         # Just render the initial form, to get input
         return render_template('regression.html')
     
     if request.method == 'POST':
         # Extract the input
-        return render_template('regression.html',sc=selected_column, algo= algorithms, mat=matrix)
+        return render_template('regression.html',sc=selected_column, algo= algorithms, mat=matrix,ranks=dataF)
 
                                     
 @app.route('/xgboost', methods=['GET', 'POST'])
@@ -135,7 +174,7 @@ def xgboost():
     if request.method == 'POST':
         # Extract the input
         
-        classifier = xgb.sklearn.XGBRegressor(nthread=-1, seed=1)
+        classifier = xg_reg = xgb.XGBRegressor()
         classifier.fit(X_train, y_train)
 
         from sklearn.metrics import r2_score, explained_variance_score, mean_absolute_error, mean_squared_error
@@ -147,6 +186,16 @@ def xgboost():
         responce.append(np.sqrt(mean_squared_error(y_true=y_test, y_pred=predictions)))
         responce.append(explained_variance_score(y_true=y_test, y_pred=predictions))
         responce.append(r2_score(y_true=y_test, y_pred=predictions))
+        mae1=mean_absolute_error(y_true=y_test, y_pred=predictions)
+        mse1=mean_squared_error(y_true=y_test, y_pred=predictions)
+        rmse1=np.sqrt(mean_squared_error(y_true=y_test, y_pred=predictions))
+        rsquare=r2_score(y_true=y_test, y_pred=predictions)
+        explainedv=explained_variance_score(y_true=y_test, y_pred=predictions)
+        evs.append(explainedv)
+        r2.append(rsquare)
+        mae.append(mae1)
+        mse.append(mse1)
+        rmse.append(rmse1)
         return (responce)
 
 @app.route('/linearR', methods=['GET', 'POST'])
@@ -170,6 +219,16 @@ def linearR():
         responce.append(np.sqrt(mean_squared_error(y_true=y_test, y_pred=predictions)))
         responce.append(explained_variance_score(y_true=y_test, y_pred=predictions))
         responce.append(r2_score(y_true=y_test, y_pred=predictions))
+        mae1=mean_absolute_error(y_true=y_test, y_pred=predictions)
+        mse1=mean_squared_error(y_true=y_test, y_pred=predictions)
+        rmse1=np.sqrt(mean_squared_error(y_true=y_test, y_pred=predictions))
+        rsquare=r2_score(y_true=y_test, y_pred=predictions)
+        explainedv=explained_variance_score(y_true=y_test, y_pred=predictions)
+        evs.append(explainedv)
+        r2.append(rsquare)
+        mae.append(mae1)
+        mse.append(mse1)
+        rmse.append(rmse1)
         return (responce)
 
 @app.route('/decisiontreeR', methods=['GET', 'POST'])
@@ -180,7 +239,7 @@ def decisiontreeR():
     
     if request.method == 'POST':
         # Extract the input
-        classifier=DecisionTreeRegressor(max_depth=5,random_state=0)
+        classifier=DecisionTreeRegressor()
 
         classifier.fit(X_train, y_train)
 
@@ -194,6 +253,16 @@ def decisiontreeR():
         responce.append(np.sqrt(mean_squared_error(y_true=y_test, y_pred=predictions)))
         responce.append(explained_variance_score(y_true=y_test, y_pred=predictions))
         responce.append(r2_score(y_true=y_test, y_pred=predictions))
+        mae1=mean_absolute_error(y_true=y_test, y_pred=predictions)
+        mse1=mean_squared_error(y_true=y_test, y_pred=predictions)
+        rmse1=np.sqrt(mean_squared_error(y_true=y_test, y_pred=predictions))
+        rsquare=r2_score(y_true=y_test, y_pred=predictions)
+        explainedv=explained_variance_score(y_true=y_test, y_pred=predictions)
+        evs.append(explainedv)
+        r2.append(rsquare)
+        mae.append(mae1)
+        mse.append(mse1)
+        rmse.append(rmse1)
         return (responce)
 
 @app.route('/ridgeR', methods=['GET', 'POST'])
@@ -220,6 +289,16 @@ def ridgeR():
         responce.append(np.sqrt(mean_squared_error(y_true=y_test, y_pred=predictions)))
         responce.append(explained_variance_score(y_true=y_test, y_pred=predictions))
         responce.append(r2_score(y_true=y_test, y_pred=predictions))
+        mae1=mean_absolute_error(y_true=y_test, y_pred=predictions)
+        mse1=mean_squared_error(y_true=y_test, y_pred=predictions)
+        rmse1=np.sqrt(mean_squared_error(y_true=y_test, y_pred=predictions))
+        rsquare=r2_score(y_true=y_test, y_pred=predictions)
+        explainedv=explained_variance_score(y_true=y_test, y_pred=predictions)
+        evs.append(explainedv)
+        r2.append(rsquare)
+        mae.append(mae1)
+        mse.append(mse1)
+        rmse.append(rmse1)
         return (responce)
 
 @app.route('/lassoR', methods=['GET', 'POST'])
@@ -246,6 +325,51 @@ def lassoR():
         responce.append(np.sqrt(mean_squared_error(y_true=y_test, y_pred=predictions)))
         responce.append(explained_variance_score(y_true=y_test, y_pred=predictions))
         responce.append(r2_score(y_true=y_test, y_pred=predictions))
+        mae1=mean_absolute_error(y_true=y_test, y_pred=predictions)
+        mse1=mean_squared_error(y_true=y_test, y_pred=predictions)
+        rmse1=np.sqrt(mean_squared_error(y_true=y_test, y_pred=predictions))
+        rsquare=r2_score(y_true=y_test, y_pred=predictions)
+        explainedv=explained_variance_score(y_true=y_test, y_pred=predictions)
+        evs.append(explainedv)
+        r2.append(rsquare)
+        mae.append(mae1)
+        mse.append(mse1)
+        rmse.append(rmse1)
+        return (responce)
+
+
+
+@app.route('/elastNetR', methods=['GET', 'POST'])
+def elastNetR():
+    if request.method == 'GET':
+        # Just render the initial form, to get input
+        return(render_template('regression.html'))
+    
+    if request.method == 'POST':
+        parameters = {'alpha': [1e-15, 1e-10, 1e-8, 1e-4, 1e-3,1e-2, 1, 5, 10, 20],'l1_ratio':[0.1]}
+        elasticNet=ElasticNet()
+        elasNetReg = GridSearchCV(elasticNet, parameters, scoring='neg_mean_squared_error', cv = 5)
+        # Fit/train LASSO
+        elasNetReg.fit(X_train,y_train)
+        from sklearn.metrics import r2_score, explained_variance_score, mean_absolute_error, mean_squared_error
+
+        predictions = elasNetReg.predict(X_test)
+        responce=[]
+        responce.append(mean_absolute_error(y_true=y_test, y_pred=predictions))
+        responce.append(mean_squared_error(y_true=y_test, y_pred=predictions))
+        responce.append(np.sqrt(mean_squared_error(y_true=y_test, y_pred=predictions)))
+        responce.append(explained_variance_score(y_true=y_test, y_pred=predictions))
+        responce.append(r2_score(y_true=y_test, y_pred=predictions))
+        mae1=mean_absolute_error(y_true=y_test, y_pred=predictions)
+        mse1=mean_squared_error(y_true=y_test, y_pred=predictions)
+        rmse1=np.sqrt(mean_squared_error(y_true=y_test, y_pred=predictions))
+        rsquare=r2_score(y_true=y_test, y_pred=predictions)
+        explainedv=explained_variance_score(y_true=y_test, y_pred=predictions)
+        evs.append(explainedv)
+        r2.append(rsquare)
+        mae.append(mae1)
+        mse.append(mse1)
+        rmse.append(rmse1)
         return (responce)
 
 @app.route('/knnR', methods=['GET', 'POST'])
@@ -267,7 +391,48 @@ def knnR():
         responce.append(np.sqrt(mean_squared_error(y_true=y_test, y_pred=predictions)))
         responce.append(explained_variance_score(y_true=y_test, y_pred=predictions))
         responce.append(r2_score(y_true=y_test, y_pred=predictions))
-        return (responce)                                                            
+        mae1=mean_absolute_error(y_true=y_test, y_pred=predictions)
+        mse1=mean_squared_error(y_true=y_test, y_pred=predictions)
+        rmse1=np.sqrt(mean_squared_error(y_true=y_test, y_pred=predictions))
+        rsquare=r2_score(y_true=y_test, y_pred=predictions)
+        explainedv=explained_variance_score(y_true=y_test, y_pred=predictions)
+        evs.append(explainedv)
+        r2.append(rsquare)
+        mae.append(mae1)
+        mse.append(mse1)
+        rmse.append(rmse1)
+        return (responce)
+
+@app.route('/SVR', methods=['GET', 'POST'])
+def svR():
+    if request.method == 'GET':
+        # Just render the initial form, to get input
+        return render_template('regression.html')
+    
+    if request.method == 'POST':
+        regr = make_pipeline(StandardScaler(), SVR())
+        regr.fit(X_train, y_train)
+        
+        from sklearn.metrics import r2_score, explained_variance_score, mean_absolute_error, mean_squared_error
+
+        predictions = regr.predict(X_test)
+        responce=[]
+        responce.append(mean_absolute_error(y_true=y_test, y_pred=predictions))
+        responce.append(mean_squared_error(y_true=y_test, y_pred=predictions))
+        responce.append(np.sqrt(mean_squared_error(y_true=y_test, y_pred=predictions)))
+        responce.append(explained_variance_score(y_true=y_test, y_pred=predictions))
+        responce.append(r2_score(y_true=y_test, y_pred=predictions))
+        mae1=mean_absolute_error(y_true=y_test, y_pred=predictions)
+        mse1=mean_squared_error(y_true=y_test, y_pred=predictions)
+        rmse1=np.sqrt(mean_squared_error(y_true=y_test, y_pred=predictions))
+        rsquare=r2_score(y_true=y_test, y_pred=predictions)
+        explainedv=explained_variance_score(y_true=y_test, y_pred=predictions)
+        evs.append(explainedv)
+        r2.append(rsquare)
+        mae.append(mae1)
+        mse.append(mse1)
+        rmse.append(rmse1)
+        return (responce)                                                        
 
 @app.route('/prediction_classification', methods=['GET', 'POST'])
 def Prediction_classification():
