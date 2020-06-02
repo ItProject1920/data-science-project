@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block head %}
+
+  <title>Clustering</title>
+  <style>
+    form {
+        margin: auto;
+        width: 35%;
+    }
+    
+    .result {
+        margin: auto;
+        width: 35%;
+        border: 1px solid #ccc;
+    }
+    </style>
+
+{% endblock %}
+
+{% block body %}
+<form action="/prediction_clustering" id="frm" method="post" enctype="multipart/form-data">
+    <fieldset class="border p-2">
+      <legend class="w-auto">Choose</legend>
+        <label for="Pattern">Does your data contain Pattern:</label>
+        <input type="radio"  name="pattern" value="yes">
+        <label for="pattern">Yes </label>
+        <input type="radio"  name="pattern" value="no">
+        <label for="pattern">no</label><br>
+        <label for="catagories">Are the no of catagories Known:</label>
+        <input type="radio"  name="catagories" value="yes">
+        <label for="catagories">Yes </label>
+        <input type="radio"  name="catagories" value="no">
+        <label for="catagories">no</label><br>
+        <label>EPS</label><p>(The maximum distance between two samples for one to be considered as in the neighborhood of the other.)</p>
+        <div class="slidecontainer">
+        <input name="eps" type="range" min="0" max="100" value="0" class="slider" id="myRange">
+        <p>Value: <span id="demo"></span></p>
+        </div>
+        <label for="quantile">Min quantile:</label>
+        <input type="number" name="minquantile"><br>
+        <label for="quantile">Max quantile:</label>
+        <input type="number" name="maxquantile"><br>
+        <br>
+        <input type="submit" value="Submit">
+</fieldset>
+</form>
+
+<script>
+var slider = document.getElementById("myRange");
+var output = document.getElementById("demo");
+output.innerHTML = slider.value;
+
+slider.oninput = function() {
+  output.innerHTML = this.value*.01;
+}
+</script>
+
+
+
+{% endblock %}

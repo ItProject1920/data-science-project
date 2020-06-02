@@ -19,31 +19,537 @@
 {% endblock %}
 
 {% block body %}
-Kmeans
-<table border="1">
+<center><h3>Clustering Analysiis</h3></center>
+<br><br>
+<div class="table table-striped" id="table-container">
+<h4 style="background-color:{{color[0]}};">MinBatchKmeans</h4>
+<img src="static/plot1.png" width="100%" height="15%">
+<table border="1" style="background-color:{{color[0]}}; width: 100%;">
     <tr>
         <th><b>No of Clusters</b></th>
-        <th><b>Kmeans Score</b></th>
-        <th><b> silhouette_score</b></th>
-        <th><b> davies_bouldin_score</b></th>
-        <th><b> calinski_harabasz_score</b></th>
-        <th><b> GaussianMixture_BIC</b></th>
-        <th><b> GaussianMixture_log</b></th>
-    </tr>
-    {% for i in range(2) %}
-    <tr>
+        {% for i in range(10) %}
         <td><b>{{i+2}}</b></td>
-            {% for j in range(6) %}
+        {% endfor %}
+    </tr>
+    <tr>
+        <th><b>Kmeans Score</b></th>
+        {% for j in mat[0][0] %}
         <td>
-                {{mat[i][j]}}
+                {{j}}
         </td>
             {% endfor %}
-    {% endfor %}
-    
     </tr>
-        
+    <tr>
+        <th><b> silhouette_score</b></th>
+        {% for j in mat[0][1] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> davies_bouldin_score</b></th>
+        {% for j in mat[0][2] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> calinski_harabasz_score</b></th>
+        {% for j in mat[0][3] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> GaussianMixture_BIC</b></th>
+        {% for j in mat[0][4] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> GaussianMixture_log</b></th>
+            {% for j in mat[0][5] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+</table>
+<br>
+<h4 style="background-color:{{color[1]}};">Kmeans</h4>
+<img src="static/plot2.png" width="100%" height="15%">
+<table border="1" style="background-color:{{color[1]}}; width: 100%;">
+
+    <tr>
+        <th><b>No of Clusters</b></th>
+        {% for i in range(10) %}
+        <td><b>{{i+2}}</b></td>
+        {% endfor %}
+    </tr>
+    <tr>
+        <th><b>Kmeans Score</b></th>
+        {% for j in mat[1][0] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> silhouette_score</b></th>
+        {% for j in mat[1][1] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> davies_bouldin_score</b></th>
+        {% for j in mat[1][2] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> calinski_harabasz_score</b></th>
+        {% for j in mat[1][3] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> GaussianMixture_BIC</b></th>
+        {% for j in mat[1][4] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> GaussianMixture_log</b></th>
+            {% for j in mat[1][5] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+</table>
+<br>
+<h4 style="background-color:{{color[2]}};">Affinity Propagation</h4>
+<img src="static/plot3.png" width="100%" height="15%">
+<table border="1" style="background-color:{{color[2]}}; width: 100%;">
+    <tr>
+
+        <th><b>Preference</b></th>
+        {% for i in range(10) %}
+        <td><b>{{(i+1)*10}}</b></td>
+        {% endfor %}
+    </tr>
+    <tr>
+        <th><b>Number of Clusters</b></th>
+        {% for j in mat[2][0] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> silhouette_score</b></th>
+        {% for j in mat[2][1] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> davies_bouldin_score</b></th>
+        {% for j in mat[2][2] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> calinski_harabasz_score</b></th>
+        {% for j in mat[2][3] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> GaussianMixture_BIC</b></th>
+        {% for j in mat[2][4] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> GaussianMixture_log</b></th>
+            {% for j in mat[2][5] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+</table>
+<br>
+<h4 style="background-color:{{color[3]}};">Mean Shift</h4>
+<img src="static/plot4.png" width="100%" height="15%">
+<table border="1" style="background-color:{{color[3]}}; width: 100%;">
+    <tr>
+        <th><b>Quantile</b></th>
+        {% for i in range(10) %}
+        <td><b>{{(i+1)}}</b></td>
+        {% endfor %}
+    </tr>
+    <tr>
+        <th><b>Number of Clusters</b></th>
+        {% for j in mat[3][0] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> silhouette_score</b></th>
+        {% for j in mat[3][1] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> davies_bouldin_score</b></th>
+        {% for j in mat[3][2] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> calinski_harabasz_score</b></th>
+        {% for j in mat[3][3] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> GaussianMixture_BIC</b></th>
+        {% for j in mat[3][4] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> GaussianMixture_log</b></th>
+            {% for j in mat[3][5] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+</table>
+<br>
+<h4 style="background-color:{{color[4]}};">DBSCAN</h4>
+<img src="static/plot5.png" width="100%" height="15%">
+<table border="1" style="background-color:{{color[4]}}; width: 100%;">
+    <tr>
+        <th><b>EPS</b></th>
+        {% for i in range(10) %}
+        <td><b>{{(i+1)*0.10}}</b></td>
+        {% endfor %}
+    </tr>
+    <tr>
+        <th><b>No of Clusters</b></th>
+        {% for j in mat[4][0] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b>No of Noise</b></th>
+        {% for j in mat[4][1] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> silhouette_score</b></th>
+        {% for j in mat[4][2] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> davies_bouldin_score</b></th>
+        {% for j in mat[4][3] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> calinski_harabasz_score</b></th>
+        {% for j in mat[4][4] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> GaussianMixture_BIC</b></th>
+        {% for j in mat[4][5] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> GaussianMixture_log</b></th>
+            {% for j in mat[4][6] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+</table>
+<br>
+<h4 style="background-color:{{color[5]}};">OPTICS</h4>
+<img src="static/plot6.png" width="100%" height="15%">
+
+<table border="1" style="background-color:{{color[5]}}; width: 100%;">
+    <tr>
+        <th><b>EPS</b></th>
+        {% for i in range(10) %}
+        <td><b>{{(i+1)*0.10}}</b></td>
+        {% endfor %}
+    </tr>
+    <tr>
+        <th><b>No of Clusters</b></th>
+        {% for j in mat[5][0] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    
+    <tr>
+        <th><b> silhouette_score</b></th>
+        {% for j in mat[5][1] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> davies_bouldin_score</b></th>
+        {% for j in mat[5][2] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> calinski_harabasz_score</b></th>
+        {% for j in mat[5][3] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> GaussianMixture_BIC</b></th>
+        {% for j in mat[5][4] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> GaussianMixture_log</b></th>
+            {% for j in mat[5][5] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
 </table>
 
-
-
+<br>
+<h4 style="background-color:{{color[8]}};">Spectral Clustering</h4>
+<img src="static/plot7.png" width="100%" height="15%">
+<table border="1" style="background-color:{{color[6]}}; width: 100%;">
+    <tr>
+        <th><b>No of Clusters</b></th>
+        {% for i in range(10) %}
+        <td><b>{{i+2}}</b></td>
+        {% endfor %}
+    </tr>
+    
+    <tr>
+        <th><b> silhouette_score</b></th>
+        {% for j in mat[6][0] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> davies_bouldin_score</b></th>
+        {% for j in mat[6][1] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> calinski_harabasz_score</b></th>
+        {% for j in mat[6][2] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> GaussianMixture_BIC</b></th>
+        {% for j in mat[6][3] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> GaussianMixture_log</b></th>
+            {% for j in mat[6][4] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+</table>
+<br>
+<h4 style="background-color:{{color[7]}};">Birch</h4>
+<img src="static/plot10.png" width="100%" height="15%">
+<table border="1" style="background-color:{{color[7]}}; width: 100%;">
+    <tr>
+        <th><b>No of Clusters</b></th>
+        {% for i in range(10) %}
+        <td><b>{{i+2}}</b></td>
+        {% endfor %}
+    </tr>
+    
+    <tr>
+        <th><b> silhouette_score</b></th>
+        {% for j in mat[7][0] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> davies_bouldin_score</b></th>
+        {% for j in mat[7][1] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> calinski_harabasz_score</b></th>
+        {% for j in mat[7][2] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> GaussianMixture_BIC</b></th>
+        {% for j in mat[7][3] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> GaussianMixture_log</b></th>
+            {% for j in mat[7][4] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+</table>
+<br>
+<h4 style="background-color:{{color[8]}};">Gaussian Mixture</h4>
+<img src="static/plot11.png" width="100%" height="15%">
+<table border="1" style="background-color:{{color[8]}}; width: 100%;">
+    <tr>
+        <th><b>No of Clusters</b></th>
+        {% for i in range(10) %}
+        <td><b>{{i+2}}</b></td>
+        {% endfor %}
+    </tr>
+    <tr>
+        <th><b>Kmeans Score</b></th>
+        {% for j in mat[8][0] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> silhouette_score</b></th>
+        {% for j in mat[8][1] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> davies_bouldin_score</b></th>
+        {% for j in mat[8][2] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> calinski_harabasz_score</b></th>
+        {% for j in mat[8][3] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> GaussianMixture_BIC</b></th>
+        {% for j in mat[8][4] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> GaussianMixture_log</b></th>
+            {% for j in mat[8][5] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+</table>
+</div>
 {% endblock %}

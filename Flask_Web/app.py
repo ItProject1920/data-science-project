@@ -39,19 +39,25 @@ from sklearn.gaussian_process.kernels import RBF
 from sklearn.ensemble import RandomForestClassifier
 #clustering imports
 from sklearn.cluster import *
+from sklearn import cluster, datasets, mixture
+from sklearn.neighbors import kneighbors_graph
+from sklearn.cluster import AgglomerativeClustering
 from sklearn.cluster import AffinityPropagation
 from sklearn.preprocessing import StandardScaler
 from sklearn.mixture import GaussianMixture
 from sklearn.metrics import *
 from sklearn.mixture import GaussianMixture
 from flask_jsglue import JSGlue
-
+import matplotlib.pyplot as plt
+from itertools import cycle, islice
 
 app = Flask(__name__, template_folder='templates')
 #app.config['SQLALCHEMY_DATABASE_URL'] = 'sqlite:///test.db'
 #rom flask_sqlalchemy import SQLAlchemydb = SQLAlchemy(app)
 
+
 jsglue = JSGlue(app)
+
 
 @app.route("/")
 def fileFrontPage():
@@ -123,7 +129,9 @@ def comparison():
         return render_template('regression.html')
     
     if request.method == 'POST':
+        
         # Extract the input
+
         return render_template('regression.html',sc=selected_column, algo= algorithms, mat=matrix)
 
                                     
@@ -536,28 +544,123 @@ def ngnbC():
         responce.append(pd.DataFrame(classification_report(predictions, y_test, output_dict=True)).transpose())
         return (responce)
 
+@app.route("/preclustering", methods=['GET', 'POST'])
+def Preclustering():
+    if request.method == 'POST':
+        # Just render the initial form, to get input
+        return render_template('preclustering.html')
+
+
 @app.route('/prediction_clustering', methods=['GET', 'POST'])
 def Prediction_clustering():
     if request.method == "POST":
         selected_column = request.form.getlist("column")
 
     if request.method == "POST":
-        selected_predict = request.form.getlist("predict")
+        df = pd.read_csv('Upload/1.csv', sep=',')
+        size=df.size
+        pattern = request.form["pattern"]
+        catagories = request.form["catagories"]
+        eps = request.form["eps"]
+        minq = request.form["minquantile"]
+        maxq =request.form["maxquantile"]
 
     if request.method == 'GET':
         # Just render the initial form, to get input
         return render_template('clustering.html')
+    select=[]
+    for i in range(9):
+        select.append('white')
+    if pattern=='no' and catagories=='yes':
+        select[6]='green'
+        select[4]='aqua'
+    if pattern=='no' and catagories=='yes' :
+        if size>10000:
+            select[0]='green'
+            select[1]= 'green'
+        else:
+            select[1]='green'
+            select[6]='aqua'
+            select[8]='aqua'
+    elif pattern=='no' and catagories=='no' :
+        select[4]='green'
+        select[5]='aqua'
+    elif pattern=='yes' and catagories=='no' : 
+        select[3]='green'
+        select[2]='aqua'
+
     matrix=[]
-    #matrix.append(kmean())
-    #matrix.append(AffPropagation())
-    #matrix.append(MShift())
-    #matrix.append(dbs())
-    #matrix.append(opt())
+    matrix.append(mbkmean())
+    matrix.append(kmean())
+    matrix.append(AffPropagation())
+    matrix.append(MShift())
+    matrix.append(dbs())
+    matrix.append(opt())
+    matrix.append(spectral())
+    matrix.append(birch())
+    matrix.append(gmm())
     
     if request.method == 'POST':
         # Extract the input
-        return render_template('clustering.html',sc=selected_column, mat=MShift())
+        return render_template('clustering.html', mat=matrix,color=select,i=2)
 
+
+@app.route('/mbkmean', methods=['GET', 'POST'])
+def mbkmean():
+
+    df = pd.read_csv('Upload/1.csv', sep=',')
+    data = StandardScaler().fit_transform(df)
+    
+    if request.method == 'POST':
+        km=[]
+        sil=[]
+        db=[]
+        ch=[]
+        gm=[]
+        gm_bic=[]
+
+        plt.figure(figsize=(9 * 2 + 3, 2.5))
+        plt.subplots_adjust(left=.02, right=.98, bottom=.001, top=.96, wspace=.05,hspace=.01)
+        plot_num = 1
+
+        for i in range(2,12):
+            print("mbk ",i)
+            kmeans = MiniBatchKMeans(n_clusters=i, random_state=0, batch_size=6)
+            start_time = time.time()
+            labels = kmeans.fit_predict(data)
+            end_time = time.time()
+            km.append(kmeans.score(data))
+            sil.append(silhouette_score(data,labels))
+            db.append(davies_bouldin_score(data, labels))
+            ch.append(calinski_harabasz_score(data, labels))
+            gm_bic.append(GaussianMixture(n_components=i,n_init=10,tol=1e-3,max_iter=1000).fit(data).bic(data))
+            gm.append(GaussianMixture(n_components=i,n_init=10,tol=1e-3,max_iter=1000).fit(data).score(data))
+            
+            plt.subplot(1, 10, plot_num)
+            colors = np.array(list(islice(cycle(['#377eb8', '#ff7f00', '#4daf4a',
+                                                '#f781bf', '#a65628', '#984ea3',
+                                                '#7c5999', '#e41a1c', '#dede00','#600628']),
+                                        int(max(labels) + 1))))
+            # add black color for outliers (if any)
+            colors = np.append(colors, ["#000000"])
+            plt.scatter(data[:,0], data[:,1], s=10, color=colors[labels])
+            plt.xlim(-2.5, 2.5)
+            plt.ylim(-2.5, 2.5)
+            plt.xticks(())
+            plt.yticks(())
+            plot_num += 1
+
+        plt.savefig('static/plot1.png', dpi=300, bbox_inches='tight')
+
+        responce=[]
+        responce.append(km)
+        responce.append(sil)
+        responce.append(db)
+        responce.append(ch)
+        responce.append(gm_bic)
+        responce.append(gm)
+        print('kmeans complete')
+        return (responce)
 
 
 @app.route('/kmean', methods=['GET', 'POST'])
@@ -576,8 +679,13 @@ def kmean():
         ch=[]
         gm=[]
         gm_bic=[]
-        for i in range(2,4):
-            print(i)
+
+        plt.figure(figsize=(9 * 2 + 3, 2.5))
+        plt.subplots_adjust(left=.02, right=.98, bottom=.001, top=.96, wspace=.05,hspace=.01)
+        plot_num = 1
+
+        for i in range(2,12):
+            print("k ",i)
             kmeans = KMeans(n_clusters=i)
             start_time = time.time()
             labels = kmeans.fit_predict(data)
@@ -588,6 +696,23 @@ def kmean():
             ch.append(calinski_harabasz_score(data, labels))
             gm_bic.append(GaussianMixture(n_components=i,n_init=10,tol=1e-3,max_iter=1000).fit(data).bic(data))
             gm.append(GaussianMixture(n_components=i,n_init=10,tol=1e-3,max_iter=1000).fit(data).score(data))
+
+            plt.subplot(1, 10, plot_num)
+            colors = np.array(list(islice(cycle(['#377eb8', '#ff7f00', '#4daf4a',
+                                                '#f781bf', '#a65628', '#984ea3',
+                                                '#7c5999', '#e41a1c', '#dede00','#600628']),
+                                        int(max(labels) + 1))))
+            # add black color for outliers (if any)
+            colors = np.append(colors, ["#000000"])
+            plt.scatter(data[:,0], data[:,1], s=10, color=colors[labels])
+            plt.xlim(-2.5, 2.5)
+            plt.ylim(-2.5, 2.5)
+            plt.xticks(())
+            plt.yticks(())
+            plot_num += 1
+
+        plt.savefig('static/plot2.png', dpi=300, bbox_inches='tight')
+
         responce=[]
         responce.append(km)
         responce.append(sil)
@@ -615,19 +740,45 @@ def AffPropagation():
         gm=[]
         gm_bic=[]
         nc=[]
-        i = 10
-        while i < 100:
-            print('Cluster %d' %i)
-            af_model=AffinityPropagation(preference=-i).fit(data)
-            cluster_centers_indices = af_model.cluster_centers_indices_
-            labels = af_model.labels_
-            nc.append(len(cluster_centers_indices))
-            sil.append(silhouette_score(data, labels, metric='sqeuclidean'))
-            db.append(davies_bouldin_score(data, labels))
-            ch.append(calinski_harabasz_score(data, labels))
-            gm_bic.append(GaussianMixture(n_components=len(cluster_centers_indices),n_init=10,tol=1e-3,max_iter=1000).fit(data).bic(data))
-            gm.append(GaussianMixture(n_components=len(cluster_centers_indices),n_init=10,tol=1e-3,max_iter=1000).fit(data).score(data))
-            i += 10
+        i = 20
+
+        plt.figure(figsize=(9 * 2 + 3, 2.5))
+        plt.subplots_adjust(left=.02, right=.98, bottom=.001, top=.96, wspace=.05,hspace=.01)
+        plot_num = 1
+
+        while i < 200:
+            try:
+                print('aff %d' %i)
+                af_model= AffinityPropagation(damping=0.9, preference=-i).fit(data)
+                cluster_centers_indices = af_model.cluster_centers_indices_
+                labels = af_model.labels_
+                nc.append(len(cluster_centers_indices))
+                if len(labels)>1:
+                    sil.append(silhouette_score(data, labels, metric='sqeuclidean'))
+                    db.append(davies_bouldin_score(data, labels))
+                    ch.append(calinski_harabasz_score(data, labels))
+                    gm_bic.append(GaussianMixture(n_components=len(cluster_centers_indices),n_init=10,tol=1e-3,max_iter=1000).fit(data).bic(data))
+                    gm.append(GaussianMixture(n_components=len(cluster_centers_indices),n_init=10,tol=1e-3,max_iter=1000).fit(data).score(data))
+                i += 20
+
+                plt.subplot(1, 10, plot_num)
+                colors = np.array(list(islice(cycle(['#377eb8', '#ff7f00', '#4daf4a',
+                                                    '#f781bf', '#a65628', '#984ea3',
+                                                    '#7c5999', '#e41a1c', '#dede00','#600628']),
+                                            int(max(labels) + 1))))
+                # add black color for outliers (if any)
+                colors = np.append(colors, ["#000000"])
+                plt.scatter(data[:,0], data[:,1], s=10, color=colors[labels])
+                plt.xlim(-2.5, 2.5)
+                plt.ylim(-2.5, 2.5)
+                plt.xticks(())
+                plt.yticks(())
+                plot_num += 1
+            except ValueError as err:
+                print(err) 
+
+        plt.savefig('static/plot3.png', dpi=300, bbox_inches='tight')
+
 
         responce=[]
         responce.append(nc)
@@ -657,22 +808,51 @@ def MShift():
         gm=[]
         gm_bic=[]
         nc=[]
-        i = 0.1
-        while i < 0.4:
-            bandwidth = estimate_bandwidth(data, quantile=i, n_samples=1000)
+        i = 0.02
 
-            ms = MeanShift(bandwidth=bandwidth, bin_seeding=True)
-            ms.fit(data)
-            labels = ms.labels_
-            cluster_centers = ms.cluster_centers_
-            n_clusters = len(cluster_centers)
-            nc.append(n_clusters)
-            sil.append(silhouette_score(data, labels, metric='sqeuclidean'))
-            db.append(davies_bouldin_score(data, labels))
-            ch.append(calinski_harabasz_score(data, labels))
-            gm_bic.append(GaussianMixture(n_components=n_clusters,n_init=10,tol=1e-3,max_iter=1000).fit(data).bic(data))
-            gm.append(GaussianMixture(n_components=n_clusters,n_init=10,tol=1e-3,max_iter=1000).fit(data).score(data))
-            i +=0.1
+        plt.figure(figsize=(9 * 2 + 3, 2.5))
+        plt.subplots_adjust(left=.02, right=.98, bottom=.001, top=.96, wspace=.05,hspace=.01)
+        plot_num = 1
+
+        while i < 0.23:
+            try:
+                bandwidth = estimate_bandwidth(data, quantile=i)
+                print("quantile %d", i)
+                ms = MeanShift(bandwidth=bandwidth, bin_seeding=True)
+                ms.fit(data)
+                labels = ms.labels_
+                cluster_centers = ms.cluster_centers_
+                n_clusters = len(cluster_centers)
+                nc.append(n_clusters)
+                if len(labels)>1:
+                    sil.append(silhouette_score(data, labels, metric='sqeuclidean'))
+                    db.append(davies_bouldin_score(data, labels))
+                    ch.append(calinski_harabasz_score(data, labels))
+                    gm_bic.append(GaussianMixture(n_components=n_clusters,n_init=10,tol=1e-3,max_iter=1000).fit(data).bic(data))
+                    gm.append(GaussianMixture(n_components=n_clusters,n_init=10,tol=1e-3,max_iter=1000).fit(data).score(data))
+                i +=0.02
+
+                plt.subplot(1, 10, plot_num)
+                colors = np.array(list(islice(cycle(['#377eb8', '#ff7f00', '#4daf4a',
+                                                    '#f781bf', '#a65628', '#984ea3',
+                                                    '#7c5999', '#e41a1c', '#dede00','#600628']),
+                                            int(max(labels) + 1))))
+                # add black color for outliers (if any)
+                colors = np.append(colors, ["#000000"])
+                plt.scatter(data[:,0], data[:,1], s=10, color=colors[labels])
+                plt.xlim(-2.5, 2.5)
+                plt.ylim(-2.5, 2.5)
+                plt.xticks(())
+                plt.yticks(())
+                plot_num += 1
+            except ValueError as err:
+                print(err)
+                break
+            
+
+
+        plt.savefig('static/plot4.png', dpi=300, bbox_inches='tight')
+
         responce=[]
         responce.append(nc)
         responce.append(sil)
@@ -701,25 +881,52 @@ def dbs():
         gm_bic=[]
         nc=[]
         nn=[]
+        #0.1 is min value
         i = 0.1
-        while i < 1:
-            db = DBSCAN(eps=i, min_samples=10).fit(data)
-            core_samples_mask = np.zeros_like(db.labels_, dtype=bool)
-            core_samples_mask[db.core_sample_indices_] = True
-            labels = db.labels_
 
-            # Number of clusters in labels, ignoring noise if present.
-            n_clusters = len(set(labels)) - (1 if -1 in labels else 0)
-            n_noise = list(labels).count(-1)
-            nc.append(n_clusters)
-            nn.append(n_noise)
-            sil.append(silhouette_score(data, labels, metric='sqeuclidean'))
-            dbm.append(davies_bouldin_score(data, labels))
-            ch.append(calinski_harabasz_score(data, labels))
-            gm_bic.append(GaussianMixture(n_components=i,n_init=10,tol=1e-3,max_iter=1000).fit(data).bic(data))
-            gm.append(GaussianMixture(n_components=i,n_init=10,tol=1e-3,max_iter=1000).fit(data).score(data))
-            
-            i+=0.1
+        plt.figure(figsize=(9 * 2 + 3, 2.5))
+        plt.subplots_adjust(left=.02, right=.98, bottom=.001, top=.96, wspace=.05,hspace=.01)
+        plot_num = 1
+        
+        while i < 0.3:
+            try:
+                print("eps %d", i)
+                db = DBSCAN(eps=i).fit(data)
+                core_samples_mask = np.zeros_like(db.labels_, dtype=bool)
+                core_samples_mask[db.core_sample_indices_] = True
+                labels = db.labels_
+                # Number of clusters in labels, ignoring noise if present.
+                n_clusters = len(set(labels)) - (1 if -1 in labels else 0)
+                n_noise = list(labels).count(-1)
+                nc.append(n_clusters)
+                nn.append(n_noise)
+                if len(labels)>1:
+                    sil.append(silhouette_score(data, labels, metric='sqeuclidean'))
+                    dbm.append(davies_bouldin_score(data, labels))
+                    ch.append(calinski_harabasz_score(data, labels))
+                    gm_bic.append(GaussianMixture(n_components=2,n_init=10,tol=1e-3,max_iter=1000).fit(data).bic(data))
+                    gm.append(GaussianMixture(n_components=2,n_init=10,tol=1e-3,max_iter=1000).fit(data).score(data))
+                i+=0.02
+
+                plt.subplot(1, 10, plot_num)
+                colors = np.array(list(islice(cycle(['#377eb8', '#ff7f00', '#4daf4a',
+                                                    '#f781bf', '#a65628', '#984ea3',
+                                                    '#7c5999', '#e41a1c', '#dede00','#600628']),
+                                            int(max(labels) + 1))))
+                # add black color for outliers (if any)
+                colors = np.append(colors, ["#000000"])
+                plt.scatter(data[:,0], data[:,1], s=10, color=colors[labels])
+                plt.xlim(-2.5, 2.5)
+                plt.ylim(-2.5, 2.5)
+                plt.xticks(())
+                plt.yticks(())
+                plot_num += 1
+            except ValueError as err:
+                print(err)
+                break
+
+        plt.savefig('static/plot5.png', dpi=300, bbox_inches='tight')
+
         responce=[]
         responce.append(nc)
         responce.append(nn)
@@ -749,26 +956,51 @@ def opt():
         gm=[]
         gm_bic=[]
         nc=[]
-        clust = OPTICS(min_samples=50, xi=.05, min_cluster_size=.05)
-        # Run the fit
-        clust.fit(data)
-        i = 0.1
-        while i < 1:
-            labels = cluster_optics_dbscan(reachability=clust.reachability_,
-                                    core_distances=clust.core_distances_,
-                                    ordering=clust.ordering_, eps=i)
-            space = np.arange(len(data))
-            reachability = clust.reachability_[clust.ordering_]
-            labels = clust.labels_[clust.ordering_]
-            labels_unique = np.unique(labels)
-            n_clusters = len(labels_unique)
-            nc.append(n_clusters)
-            sil.append(silhouette_score(data, labels, metric='sqeuclidean'))
-            db.append(davies_bouldin_score(data, labels))
-            ch.append(calinski_harabasz_score(data, labels))
-            gm_bic.append(GaussianMixture(n_components=i,n_init=10,tol=1e-3,max_iter=1000).fit(data).bic(data))
-            gm.append(GaussianMixture(n_components=i,n_init=10,tol=1e-3,max_iter=1000).fit(data).score(data))
-            i +=0.1
+
+        plt.figure(figsize=(9 * 2 + 3, 2.5))
+        plt.subplots_adjust(left=.02, right=.98, bottom=.001, top=.96, wspace=.05,hspace=.01)
+        plot_num = 1
+
+        i = 0.025
+        #1
+        while i < 0.26:
+            try:
+                print("opt",i)
+                clust = OPTICS(min_samples=20, xi=i, min_cluster_size=0.1)
+                # Run the fit
+                clust.fit(data)
+                labels = clust.labels_.astype(np.int)
+                space = np.arange(len(data))
+                reachability = clust.reachability_[clust.ordering_]
+                labels = clust.labels_[clust.ordering_]
+                labels_unique = np.unique(labels)
+                n_clusters = len(labels_unique)
+                nc.append(n_clusters)
+                sil.append(silhouette_score(data, labels, metric='sqeuclidean'))
+                db.append(davies_bouldin_score(data, labels))
+                ch.append(calinski_harabasz_score(data, labels))
+                gm_bic.append(GaussianMixture(n_components=2,n_init=10,tol=1e-3,max_iter=1000).fit(data).bic(data))
+                gm.append(GaussianMixture(n_components=2,n_init=10,tol=1e-3,max_iter=1000).fit(data).score(data))
+                i +=0.025
+
+                plt.subplot(1, 10, plot_num)
+                colors = np.array(list(islice(cycle(['#377eb8', '#ff7f00', '#4daf4a',
+                                                    '#f781bf', '#a65628', '#984ea3',
+                                                    '#7c5999', '#e41a1c', '#dede00','#600628']),
+                                            int(max(labels) + 1))))
+                # add black color for outliers (if any)
+                colors = np.append(colors, ["#000000"])
+                plt.scatter(data[:,0], data[:,1], s=10, color=colors[labels])
+                plt.xlim(-2.5, 2.5)
+                plt.ylim(-2.5, 2.5)
+                plt.xticks(())
+                plt.yticks(())
+                plot_num += 1
+            except ValueError as err:
+                print(err)
+                break
+        plt.savefig('static/plot6.png', dpi=300, bbox_inches='tight')
+
         responce=[]
         responce.append(nc)
         responce.append(sil)
@@ -779,6 +1011,310 @@ def opt():
 
     return (responce)
 
+
+@app.route('/spectral', methods=['GET', 'POST'])
+def spectral():
+
+    df = pd.read_csv('Upload/1.csv', sep=',')
+    data = StandardScaler().fit_transform(df)
+    if request.method == 'GET':
+        # Just render the initial form, to get input
+        return(render_template('clustering.html'))
+    
+    if request.method == 'POST':
+        sil=[]
+        db=[]
+        ch=[]
+        gm=[]
+        gm_bic=[]
+
+        plt.figure(figsize=(9 * 2 + 3, 2.5))
+        plt.subplots_adjust(left=.02, right=.98, bottom=.001, top=.96, wspace=.05,hspace=.01)
+        plot_num = 1
+
+        for i in range(2,12):
+            print("spec",i)
+            start_time = time.time()
+            spectral = SpectralClustering(n_clusters=i, eigen_solver='arpack', affinity="nearest_neighbors")
+            labels = spectral.fit_predict(data)
+            end_time = time.time()
+            sil.append(silhouette_score(data,labels))
+            db.append(davies_bouldin_score(data, labels))
+            ch.append(calinski_harabasz_score(data, labels))
+            gm_bic.append(GaussianMixture(n_components=i,n_init=10,tol=1e-3,max_iter=1000).fit(data).bic(data))
+            gm.append(GaussianMixture(n_components=i,n_init=10,tol=1e-3,max_iter=1000).fit(data).score(data))
+
+            plt.subplot(1, 10, plot_num)
+            colors = np.array(list(islice(cycle(['#377eb8', '#ff7f00', '#4daf4a',
+                                                '#f781bf', '#a65628', '#984ea3',
+                                                '#7c5999', '#e41a1c', '#dede00','#600628']),
+                                        int(max(labels) + 1))))
+            # add black color for outliers (if any)
+            colors = np.append(colors, ["#000000"])
+            plt.scatter(data[:,0], data[:,1], s=10, color=colors[labels])
+            plt.xlim(-2.5, 2.5)
+            plt.ylim(-2.5, 2.5)
+            plt.xticks(())
+            plt.yticks(())
+            plot_num += 1
+
+        plt.savefig('static/plot7.png', dpi=300, bbox_inches='tight')
+
+        responce=[]
+        responce.append(sil)
+        responce.append(db)
+        responce.append(ch)
+        responce.append(gm_bic)
+        responce.append(gm)
+        print('spectral complete')
+        
+        return (responce)
+
+@app.route('/ward', methods=['GET', 'POST'])
+def ward():
+
+    df = pd.read_csv('Upload/1.csv', sep=',')
+    data = StandardScaler().fit_transform(df)
+    if request.method == 'GET':
+        # Just render the initial form, to get input
+        return(render_template('clustering.html'))
+    
+    if request.method == 'POST':
+        al=[]
+        sil=[]
+        db=[]
+        ch=[]
+        gm=[]
+        gm_bic=[]
+
+        plt.figure(figsize=(9 * 2 + 3, 2.5))
+        plt.subplots_adjust(left=.02, right=.98, bottom=.001, top=.96, wspace=.05,hspace=.01)
+        plot_num = 1
+
+        for i in range(2,12):
+            print("ward",i)
+            start_time = time.time()
+            connectivity = kneighbors_graph(data, n_neighbors=i, include_self=False)
+            ward = AgglomerativeClustering(linkage='ward', n_clusters=i, connectivity=connectivity)
+            labels = ward.fit_predict(data)
+            end_time = time.time()
+            ws.append(ward.score(data))
+            sil.append(silhouette_score(data,labels))
+            db.append(davies_bouldin_score(data, labels))
+            ch.append(calinski_harabasz_score(data, labels))
+            gm_bic.append(GaussianMixture(n_components=i,n_init=10,tol=1e-3,max_iter=1000).fit(data).bic(data))
+            gm.append(GaussianMixture(n_components=i,n_init=10,tol=1e-3,max_iter=1000).fit(data).score(data))
+
+            plt.subplot(1, 10, plot_num)
+            colors = np.array(list(islice(cycle(['#377eb8', '#ff7f00', '#4daf4a',
+                                                '#f781bf', '#a65628', '#984ea3',
+                                                '#7c5999', '#e41a1c', '#dede00','#600628']),
+                                        int(max(labels) + 1))))
+            # add black color for outliers (if any)
+            colors = np.append(colors, ["#000000"])
+            plt.scatter(data[:,0], data[:,1], s=10, color=colors[labels])
+            plt.xlim(-2.5, 2.5)
+            plt.ylim(-2.5, 2.5)
+            plt.xticks(())
+            plt.yticks(())
+            plot_num += 1
+
+        plt.savefig('static/plot8.png', dpi=300, bbox_inches='tight')
+
+        responce=[]
+        responce.append(ws)
+        responce.append(sil)
+        responce.append(db)
+        responce.append(ch)
+        responce.append(gm_bic)
+        responce.append(gm)
+        print('agg complete')
+        
+        return (responce)
+
+
+@app.route('/AgglomerativeClustering', methods=['GET', 'POST'])
+def AgglomerativeClustering():
+
+    df = pd.read_csv('Upload/1.csv', sep=',')
+    data = StandardScaler().fit_transform(df)
+    if request.method == 'GET':
+        # Just render the initial form, to get input
+        return(render_template('clustering.html'))
+    
+    if request.method == 'POST':
+        al=[]
+        sil=[]
+        db=[]
+        ch=[]
+        gm=[]
+        gm_bic=[]
+
+        plt.figure(figsize=(9 * 2 + 3, 2.5))
+        plt.subplots_adjust(left=.02, right=.98, bottom=.001, top=.96, wspace=.05,hspace=.01)
+        plot_num = 1
+
+        for i in range(2,12):
+            print("agg",i)
+            start_time = time.time()
+            connectivity = kneighbors_graph(data, n_neighbors=i, include_self=False)
+            connectivity = 0.5 * (connectivity + connectivity.T)
+            average_linkage = AgglomerativeClustering(linkage="average", affinity="cityblock",n_clusters=i, connectivity=connectivity)
+            labels = spectral.fit_predict(data)
+            end_time = time.time()
+            al.append(average_linkage.score(data))
+            sil.append(silhouette_score(data,labels))
+            db.append(davies_bouldin_score(data, labels))
+            ch.append(calinski_harabasz_score(data, labels))
+            gm_bic.append(GaussianMixture(n_components=i,n_init=10,tol=1e-3,max_iter=1000).fit(data).bic(data))
+            gm.append(GaussianMixture(n_components=i,n_init=10,tol=1e-3,max_iter=1000).fit(data).score(data))
+
+            plt.subplot(1, 10, plot_num)
+            colors = np.array(list(islice(cycle(['#377eb8', '#ff7f00', '#4daf4a',
+                                                '#f781bf', '#a65628', '#984ea3',
+                                                '#7c5999', '#e41a1c', '#dede00','#600628']),
+                                        int(max(labels) + 1))))
+            # add black color for outliers (if any)
+            colors = np.append(colors, ["#000000"])
+            plt.scatter(data[:,0], data[:,1], s=10, color=colors[labels])
+            plt.xlim(-2.5, 2.5)
+            plt.ylim(-2.5, 2.5)
+            plt.xticks(())
+            plt.yticks(())
+            plot_num += 1
+
+        plt.savefig('static/plot9.png', dpi=300, bbox_inches='tight')
+
+        responce=[]
+        responce.append(al)
+        responce.append(sil)
+        responce.append(db)
+        responce.append(ch)
+        responce.append(gm_bic)
+        responce.append(gm)
+        print('agg complete')
+        
+        return (responce)
+
+@app.route('/birch', methods=['GET', 'POST'])
+def birch():
+
+    df = pd.read_csv('Upload/1.csv', sep=',')
+    data = StandardScaler().fit_transform(df)
+    if request.method == 'GET':
+        # Just render the initial form, to get input
+        return(render_template('clustering.html'))
+    
+    if request.method == 'POST':
+        bs=[]
+        sil=[]
+        db=[]
+        ch=[]
+        gm=[]
+        gm_bic=[]
+
+        plt.figure(figsize=(9 * 2 + 3, 2.5))
+        plt.subplots_adjust(left=.02, right=.98, bottom=.001, top=.96, wspace=.05,hspace=.01)
+        plot_num = 1
+
+        for i in range(2,12):
+            print("birch",i)
+            start_time = time.time()
+            birch = Birch(n_clusters=i)
+            labels = birch.fit_predict(data)
+            end_time = time.time()
+            sil.append(silhouette_score(data,labels))
+            db.append(davies_bouldin_score(data, labels))
+            ch.append(calinski_harabasz_score(data, labels))
+            gm_bic.append(GaussianMixture(n_components=i,n_init=10,tol=1e-3,max_iter=1000).fit(data).bic(data))
+            gm.append(GaussianMixture(n_components=i,n_init=10,tol=1e-3,max_iter=1000).fit(data).score(data))
+
+            plt.subplot(1, 10, plot_num)
+            colors = np.array(list(islice(cycle(['#377eb8', '#ff7f00', '#4daf4a',
+                                                '#f781bf', '#a65628', '#984ea3',
+                                                '#7c5999', '#e41a1c', '#dede00','#600628']),
+                                        int(max(labels) + 1))))
+            # add black color for outliers (if any)
+            colors = np.append(colors, ["#000000"])
+            plt.scatter(data[:,0], data[:,1], s=10, color=colors[labels])
+            plt.xlim(-2.5, 2.5)
+            plt.ylim(-2.5, 2.5)
+            plt.xticks(())
+            plt.yticks(())
+            plot_num += 1
+
+        plt.savefig('static/plot10.png', dpi=300, bbox_inches='tight')
+
+        responce=[]
+        responce.append(sil)
+        responce.append(db)
+        responce.append(ch)
+        responce.append(gm_bic)
+        responce.append(gm)
+        print('birch complete')
+        
+        return (responce)
+
+@app.route('/gmm', methods=['GET', 'POST'])
+def gmm():
+
+    df = pd.read_csv('Upload/1.csv', sep=',')
+    data = StandardScaler().fit_transform(df)
+    if request.method == 'GET':
+        # Just render the initial form, to get input
+        return(render_template('clustering.html'))
+    
+    if request.method == 'POST':
+        gs=[]
+        sil=[]
+        db=[]
+        ch=[]
+        gm=[]
+        gm_bic=[]
+
+        plt.figure(figsize=(9 * 2 + 3, 2.5))
+        plt.subplots_adjust(left=.02, right=.98, bottom=.001, top=.96, wspace=.05,hspace=.01)
+        plot_num = 1
+
+        for i in range(2,12):
+            print("gmm",i)
+            start_time = time.time()
+            gmm = GaussianMixture(n_components=i, covariance_type='full')
+            labels = gmm.fit_predict(data)
+            end_time = time.time()
+            gs.append(gmm.score(data))
+            sil.append(silhouette_score(data,labels))
+            db.append(davies_bouldin_score(data, labels))
+            ch.append(calinski_harabasz_score(data, labels))
+            gm_bic.append(GaussianMixture(n_components=i,n_init=10,tol=1e-3,max_iter=1000).fit(data).bic(data))
+            gm.append(GaussianMixture(n_components=i,n_init=10,tol=1e-3,max_iter=1000).fit(data).score(data))
+
+            plt.subplot(1, 10, plot_num)
+            colors = np.array(list(islice(cycle(['#377eb8', '#ff7f00', '#4daf4a',
+                                                '#f781bf', '#a65628', '#984ea3',
+                                                '#7c5999', '#e41a1c', '#dede00','#600628']),
+                                        int(max(labels) + 1))))
+            # add black color for outliers (if any)
+            colors = np.append(colors, ["#000000"])
+            plt.scatter(data[:,0], data[:,1], s=10, color=colors[labels])
+            plt.xlim(-2.5, 2.5)
+            plt.ylim(-2.5, 2.5)
+            plt.xticks(())
+            plt.yticks(())
+            plot_num += 1
+
+        plt.savefig('static/plot11.png', dpi=300, bbox_inches='tight')
+
+        responce=[]
+        responce.append(gs)
+        responce.append(sil)
+        responce.append(db)
+        responce.append(ch)
+        responce.append(gm_bic)
+        responce.append(gm)
+        print('gmm complete')
+        
+        return (responce)
 
 
 if __name__ == '__main__':
