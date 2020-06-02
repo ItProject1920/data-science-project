@@ -1,4 +1,6 @@
-<!doctype html>
+{% extends 'base.html' %}
+{% block head %}
+
 <html>
 <style>
 form {
@@ -11,6 +13,62 @@ form {
     width: 35%;
     border: 1px solid #ccc;
 }
+
+#top-container{
+    color: rgba(0,0,0,.87);
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    font-family: "Helvetica", "Arial", sans-serif;
+    border-bottom: 1px solid #ddd;
+    padding: 18px 0;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    background: white;
+    display: inline-flex;
+}
+
+#nav1{
+    align-items: left;
+    width: 320px;
+    position: relative;
+    top: 0;
+    left: 0;
+    height:150vh;
+    background: #254f63;
+    color: #fff;
+    transition: all 0.3s;
+    float:left;
+    margin-left: 5px;
+}
+#nav2{
+    width: 320px;
+    position: relative;
+    top: 0;
+    left: 0;
+    height:150vh;
+    background: #254f63;
+    color: #fff;
+    transition: all 0.3s; 
+    margin-right: 5px;  
+    float: right;
+}
+nav ul{
+    list-style-type: none;
+    margin-right: 180px;
+    margin-top: 60px;
+}
+nav ul li{
+    padding-bottom:40px;
+}
+input[type="submit"]{
+    width:250px;
+    color: white;
+}
+.result {
+    margin: auto;
+    width: 40%;
+    border: 1px solid #ccc;
+    text-transform: capitalize;
 </style>
 <style type="text/css"> 
     .panel,.flip
@@ -36,21 +94,25 @@ form {
     
     
     </style>
+	
+{% endblock %}
+{% block body %}	
 
-<head>
-    <title>WEB APPLICATION</title>
-</head>
+
 <body>
+	<center>
+	
     {{sc}}
     {{ JSGlue.include() }}
+	
     <table border="1">
             <tr>
                 <th><b>Algorithms</b></th>
-                <th><b>R-squared value</b></th>
-                <th><b> Mean Absolute Error</b></th>
-                <th><b> EVS</b></th>
-                <th><b> MSE</b></th>
-                <th><b> RMSE</b></th>
+                <th><b>MAE</b></th>
+                <th><b>MSE</b></th>
+                <th><b>RMSE</b></th>
+                <th><b>EVS</b></th>
+                <th><b>R-Squared</b></th>
             </tr>
             {% for i in range(6) %}
             <tr>
@@ -65,6 +127,7 @@ form {
             </tr>
                 
     </table>
-
+	</center>
 </body>
 </html>
+{% endblock %} 

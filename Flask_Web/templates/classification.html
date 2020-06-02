@@ -57,100 +57,51 @@ input[type="submit"]{
     border: 1px solid #ccc;
     text-transform: capitalize;
 }
+#maintable{
+    width:100%;
+}
 </style>
 {% endblock %}
 {% block body %}
- 
-<!--div id="top-container"-->
-<section id="menu1">
-    <nav id="nav1">
-        <ul>
-    <form action="{{ url_for('decisiontreeC') }}" method="POST">
-       <li>  <input class="btn btn-outline-primary" type="submit" value="Decision Tree"> </li>
-    </form>
-   <form action="{{ url_for('randomforestC') }}" method="POST">
-        <li> <input class="btn btn-outline-primary" type="submit" value="Randomforest"> </li>
-    </form>
-   <form action="{{ url_for('logisticR') }}" method="POST">
-       <li> <input class="btn btn-outline-primary" type="submit" value="Logistic Regression"> </li>
-    </form>
-    <form action="{{ url_for('svmC') }}" method="POST">
-         <li><input class="btn btn-outline-primary" type="submit" value="SVM Classifier"> </li>
-    </form>
-    <form action="{{ url_for('knnC') }}" method="POST">
-           <li><input class="btn btn-outline-primary" type="submit" value="Knn Classifier"> </li>
-    </form>
-    <form action="{{ url_for('gpC') }}" method="POST">
-             <li><input class="btn btn-outline-primary" type="submit" value="Guassian Process"> </li>
-    </form>
-</nav>
-</section>
-<section id="menu2">
-    <nav id="nav2">
-        <ul>
-    <form action="{{ url_for('mlpC') }}" method="POST">
-            <li> <input class="btn btn-outline-primary" type="submit" value="MLP Classifier"> </li>
-    </form>
-    <form action="{{ url_for('adC') }}" method="POST">
-        <li>     <input class="btn btn-outline-primary" type="submit" value="ADA Boost"> </li>
-    </form>
-    <form action="{{ url_for('nbC') }}" method="POST">
-         <li>    <input class="btn btn-outline-primary" type="submit" value="Gaussian Naive Bayes"> </li>
-    </form>
-    <form action="{{ url_for('qdaC') }}" method="POST">
-        <li>     <input class="btn btn-outline-primary" type="submit" value="Quadratic Discriminant Analysis"> </li>
-    </form>
-    <form action="{{ url_for('ngnbC') }}" method="POST">
-        <li>     <input class="btn btn-outline-primary" type="submit" value="MultinomialNB"> </li>
-    </form>
-</nav>
-</section>
-<!--/div-->
 <br>
-<h3>Select The Desired Algorithms Available Below And Get The Metrics For Comparison</h3>
-<div class="result" align="center">
-    <b>{{time}}</b><br>
-    {% if result %}
-    	<b>Accuracy</b>
-   		<p style="font-size:12px">{{ result }}</p>
-    {% endif %}
-    {% if result %}
-        
-        <p style="font-size:12px">
-    <table class="table table-striped">
-        
-    </table>
-    </p>
-    {% endif %}
-    {% if result %}
-        <b> Classification Report</b>
-        {{result2.to_html(classes="table table-striped") | safe}}
-    {% endif %}
-</div>
-<table border="1">
-    <tr>
-        <th><b>Algorithms</b></th>
-      <th><b> Confusion Matrix</b></th>
-      <th><b> Classification Report</b></th>
+<h3> Ranked List Of Algorithms</h3>
+<br>
+<center>
+ <p>{{ranks.to_html(classes="table table-striped") | safe}}</p>
+ <br>
+ <br>
+ <h3> Detailed Report</h3>
+ <br>
+<table id="maintable" border="3">
+    
+	<tr>
+        <th><center><b>Algorithm</b></center></th>
+		<th><center><b> Accuracy</b></center></th>
+      <th><center><b> Confusion Matrix</b></center></th>
+      <th><center><b> Classification Report</b></center></th>
+      <th><center><b> Rank </b></center></th>
     </tr>
     
-    {% for i in range(6) %}
+    {% for i in range(10) %}
     <tr>
-        <td><b>{{algo[i]}}<br>Accuracy:</b>{{mat[i][0]}}</td>
+		<td><center><b>{{mat[i][0]}}</b></center></td>
+        <td><b><br></b>{{mat[i][1]}}</td>
         <td>
             <p style="font-size:12px">
             <table class="table table-striped">
-            {% for j in mat[i][1] %}
+            {% for j in mat[i][2] %}
             <tr>
             {% for k in j %}
-                <td>{{k}}</td>
+                <td><center>{{k}}</center></td>
             {% endfor %}</tr>
             {% endfor %}
             </table>
             </p>
         </td>
-        <td>{{mat[i][2].to_html(classes="table table-striped") | safe}}</td>
+        <td>{{mat[i][3].to_html(classes="table table-striped") | safe}}</td>
+        <td>{{mat[i][4]}}</td>
     </tr>
     {% endfor %}
 </table>
+</center>
 {% endblock %} 
