@@ -1,0 +1,513 @@
+{% extends 'base.html' %}
+
+{% block head %}
+
+  <title>Clustering</title>
+  <style>
+    form {
+        margin: auto;
+        width: 35%;
+    }
+    
+    .result {
+        margin: auto;
+        width: 35%;
+        border: 1px solid #ccc;
+    }
+    </style>
+
+{% endblock %}
+
+{% block body %}
+<center><h3>Clustering Analysiis</h3></center>
+<br><br>
+<div class="table table-striped" id="table-container">
+<h4 style="background-color:{{color[0]}};">MinBatchKmeans</h4>
+<img src="static/plot1.png"  height="15%">
+<table border="1" style="background-color:{{color[0]}}; width: 100%;">
+    <tr>
+        <th><b>No of Clusters</b></th>
+        {% for i in range(10) %}
+        <td><b>{{i+2}}</b></td>
+        {% endfor %}
+    </tr>
+    <tr>
+        <th><b>Adjusted Rand Index</b></th>
+        {% for j in mat[0][0] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> Adjusted Mutual Information Score</b></th>
+        {% for j in mat[0][1] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b>Homogeneity Score</b></th>
+        {% for j in mat[0][2] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> Completeness Score</b></th>
+        {% for j in mat[0][3] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b>v_measure_score</b></th>
+        {% for j in mat[0][4] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+
+</table>
+<br>
+<h4 style="background-color:{{color[1]}};">Kmeans</h4>
+<img src="static/plot2.png"  height="15%">
+<table border="1" style="background-color:{{color[1]}}; width: 100%;">
+
+    <tr>
+        <th><b>No of Clusters</b></th>
+        {% for i in range(10) %}
+        <td><b>{{i+2}}</b></td>
+        {% endfor %}
+    </tr>
+    <tr>
+        <th><b>Adjusted Rand Index</b></th>
+        {% for j in mat[1][0] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> Adjusted Mutual Information Score</b></th>
+        {% for j in mat[1][1] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> Homogeneity Score</b></th>
+        {% for j in mat[1][2] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> Completeness Score</b></th>
+        {% for j in mat[1][3] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b>v_measure_score</b></th>
+        {% for j in mat[1][4] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> GaussianMixture_log</b></th>
+            {% for j in mat[1][5] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+</table>
+<br>
+<h4 style="background-color:{{color[2]}};">Affinity Propagation</h4>
+<img src="static/plot3.png"  height="15%">
+<table border="1" style="background-color:{{color[2]}}; width: 100%;">
+    <tr>
+
+        <th><b>Preference</b></th>
+        {% for i in range(10) %}
+        <td><b>{{(i+1)*10}}</b></td>
+        {% endfor %}
+    </tr>
+    <tr>
+        <th><b>Adjusted Rand Index</b></th>
+        {% for j in mat[2][0] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> Adjusted Mutual Information Score</b></th>
+        {% for j in mat[2][1] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> Homogeneity Score</b></th>
+        {% for j in mat[2][2] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> Completeness Score</b></th>
+        {% for j in mat[2][3] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b>v_measure_score</b></th>
+        {% for j in mat[2][4] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+
+</table>
+<br>
+<h4 style="background-color:{{color[3]}};">Mean Shift</h4>
+<img src="static/plot4.png"  height="15%">
+<table border="1" style="background-color:{{color[3]}}; width: 100%;">
+    <tr>
+        <th><b>Quantile</b></th>
+        {% for i in range(10) %}
+        <td><b>{{(i+1)}}</b></td>
+        {% endfor %}
+    </tr>
+    <tr>
+        <th><b>Adjusted Rand Index</b></th>
+        {% for j in mat[3][0] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> Adjusted Mutual Information Score</b></th>
+        {% for j in mat[3][1] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b>Homogeneity Score</b></th>
+        {% for j in mat[3][2] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b>Completeness Score</b></th>
+        {% for j in mat[3][3] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b>v_measure_score</b></th>
+        {% for j in mat[3][4] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+
+</table>
+<br>
+<h4 style="background-color:{{color[4]}};">DBSCAN</h4>
+<img src="static/plot5.png"  height="15%">
+<table border="1" style="background-color:{{color[4]}}; width: 100%;">
+    <tr>
+        <th><b>EPS</b></th>
+        {% for i in range(10) %}
+        <td><b>{{(i+1)*0.10}}</b></td>
+        {% endfor %}
+    </tr>
+    <tr>
+        <th><b>Adjusted Rand Index</b></th>
+        {% for j in mat[4][0] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b>Adjusted Mutual Information Score</b></th>
+        {% for j in mat[4][1] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b>Homogeneity Score</b></th>
+        {% for j in mat[4][2] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b>Completeness Score</b></th>
+        {% for j in mat[4][3] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b>v_measure_score</b></th>
+        {% for j in mat[4][4] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> GaussianMixture_BIC</b></th>
+        {% for j in mat[4][5] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+
+</table>
+<br>
+<h4 style="background-color:{{color[5]}};">OPTICS</h4>
+<img src="static/plot6.png"  height="15%">
+
+<table border="1" style="background-color:{{color[5]}}; width: 100%;">
+    <tr>
+        <th><b>EPS</b></th>
+        {% for i in range(10) %}
+        <td><b>{{(i+1)*0.10}}</b></td>
+        {% endfor %}
+    </tr>
+    <tr>
+        <th><b>Adjusted Rand Index</b></th>
+        {% for j in mat[5][0] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    
+    <tr>
+        <th><b> Adjusted Mutual Information Score</b></th>
+        {% for j in mat[5][1] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b>Homogeneity Score</b></th>
+        {% for j in mat[5][2] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b>Completeness Score</b></th>
+        {% for j in mat[5][3] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b>v_measure_score</b></th>
+        {% for j in mat[5][4] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+
+</table>
+
+<br>
+<h4 style="background-color:{{color[8]}};">Spectral Clustering</h4>
+<img src="static/plot7.png"  height="15%">
+<table border="1" style="background-color:{{color[6]}}; width: 100%;">
+    <tr>
+        <th><b>No of Clusters</b></th>
+        {% for i in range(10) %}
+        <td><b>{{i+2}}</b></td>
+        {% endfor %}
+    </tr>
+    
+    <tr>
+        <th><b> Adjusted Rand Index</b></th>
+        {% for j in mat[6][0] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> Adjusted Mutual Information Score</b></th>
+        {% for j in mat[6][1] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b>Homogeneity Score</b></th>
+        {% for j in mat[6][2] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b>Completeness Score</b></th>
+        {% for j in mat[6][3] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b>v_measure_score</b></th>
+            {% for j in mat[6][4] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+</table>
+<br>
+<h4 style="background-color:{{color[7]}};">Birch</h4>
+<img src="static/plot10.png"  height="15%">
+<table border="1" style="background-color:{{color[7]}}; width: 100%;">
+    <tr>
+        <th><b>No of Clusters</b></th>
+        {% for i in range(10) %}
+        <td><b>{{i+2}}</b></td>
+        {% endfor %}
+    </tr>
+    
+    <tr>
+        <th><b> Adjusted Rand Index</b></th>
+        {% for j in mat[7][0] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> Adjusted Mutual Information Score</b></th>
+        {% for j in mat[7][1] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b>Homogeneity Score</b></th>
+        {% for j in mat[7][2] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b>Completeness Score</b></th>
+        {% for j in mat[7][3] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b>v_measure_score</b></th>
+            {% for j in mat[7][4] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+</table>
+<br>
+<h4 style="background-color:{{color[8]}};">Gaussian Mixture</h4>
+<img src="static/plot11.png"  height="15%">
+<table border="1" style="background-color:{{color[8]}}; width: 100%;">
+    <tr>
+        <th><b>No of Clusters</b></th>
+        {% for i in range(10) %}
+        <td><b>{{i+2}}</b></td>
+        {% endfor %}
+    </tr>
+    <tr>
+        <th><b>Adjusted Rand Index</b></th>
+        {% for j in mat[8][0] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b>Adjusted Mutual Information Score</b></th>
+        {% for j in mat[8][1] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b>Homogeneity Score</b></th>
+        {% for j in mat[8][2] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b>Completeness Score</b></th>
+        {% for j in mat[8][3] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b>v_measure_score</b></th>
+        {% for j in mat[8][4] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+
+</table>
+</div>
+{% endblock %}

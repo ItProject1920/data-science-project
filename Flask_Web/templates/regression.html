@@ -101,11 +101,11 @@ input[type="submit"]{
 
 <body>
 	<center>
-	
-    {{sc}}
+	<p>{{ranks.to_html(classes="table table-striped") | safe}}</p>
+    <br>
     {{ JSGlue.include() }}
 	
-    <table border="1">
+    <!--table border="1">
             <tr>
                 <th><b>Algorithms</b></th>
                 <th><b>MAE</b></th>
@@ -126,7 +126,7 @@ input[type="submit"]{
             
             </tr>
                 
-    </table>
+    </table-->
 	</center>
 </body>
 </html>
