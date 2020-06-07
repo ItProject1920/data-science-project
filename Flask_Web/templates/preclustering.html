@@ -19,7 +19,17 @@
 {% endblock %}
 
 {% block body %}
-<form action="/prediction_clustering" id="frm" method="post" enctype="multipart/form-data">
+<div id="dropBox">
+				<h3> Upload CSV File</h3>
+				<div id="content">
+				    <form action="/handleUpload2" method="post" enctype="multipart/form-data">
+			         <input id="file" type="file" name="photo"/>
+			         <label for="file"/>Choose a file</label>
+			         <input id="buttonone"  type="submit" value="Upload"/>
+			        </form>
+			    </div>
+	    	</div>
+<form id="frm" method="post" enctype="multipart/form-data">
     <fieldset class="border p-2">
       <legend class="w-auto">Choose</legend>
         <label for="Pattern">Does your data contain Pattern:</label>
@@ -42,9 +52,18 @@
         <label for="quantile">Max quantile:</label>
         <input type="number" name="maxquantile"><br>
         <br>
-        <input type="submit" value="Submit">
+        <!--
+		<input type="submit" value="Not Labelled" onclick="submitMe2(this)">
+		<input type="submit" value="Labelled" onclick="submitMe2(this)">
+		-->
+
 </fieldset>
 </form>
+{% block buttons %}
+<input id="button1"  type='button' onclick="submitMe2(this)" value='Labelled'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<input id="button2"  type='button' onclick="submitMe2(this)" value='Not Labelled'>
+{% endblock %}
+
 
 <script>
 var slider = document.getElementById("myRange");
@@ -54,6 +73,14 @@ output.innerHTML = slider.value;
 slider.oninput = function() {
   output.innerHTML = this.value*.01;
 }
+ function submitMe2(obj){
+    if(obj.value == "Labelled"){
+      document.getElementById('frm').action = "/prediction_clusteringLables";
+    }else if(obj.value == "Not Labelled"){
+     document.getElementById('frm').action = "/prediction_clustering";
+    }
+   document.getElementById('frm').submit();
+  }
 </script>
 
 

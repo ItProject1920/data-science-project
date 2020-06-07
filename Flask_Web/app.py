@@ -69,7 +69,9 @@ jsglue = JSGlue(app)
 def fileFrontPage():
     return render_template('index.html')
 
-
+@app.route("/fileFrontPage2")
+def fileFrontPage2():
+    return render_template('preclustering.html')
 
 @app.route("/handleUpload", methods=['POST'])
 def handleFileUpload():
@@ -79,6 +81,15 @@ def handleFileUpload():
             path = os.path.join('Upload/', '1.csv')
             photo.save(path)
     return redirect(url_for('fileFrontPage'))
+
+@app.route("/handleUpload2", methods=['POST'])
+def handleFileUpload2():
+    if 'photo' in request.files:
+        photo = request.files['photo']
+        if photo.filename != '': 
+            path = os.path.join('Upload/', '2.csv')
+            photo.save(path)
+    return redirect(url_for('fileFrontPage2'))
 	
 @app.route("/display")
 def Display():
@@ -836,7 +847,7 @@ def Preclustering():
         return render_template('preclustering.html')
 
 @app.route("/handleUploadLabel", methods=['POST'])
-def handleFileUpload():
+def handleFileUploadLabel():
     if 'photo' in request.files:
         photo = request.files['photo']
         if photo.filename != '': 
@@ -855,10 +866,6 @@ def Prediction_clustering():
         size=df.size
         dfl = pd.read_csv('Upload/2.csv', sep=',')
         sizel=dfl.size
-        if size!=sizel :
-            error='Size Mismatch'
-            return render_template('preclustering.html',error=error)
-
         pattern = request.form["pattern"]
         catagories = request.form["catagories"]
         eps = request.form["eps"]
@@ -869,6 +876,7 @@ def Prediction_clustering():
         # Just render the initial form, to get input
         return render_template('clustering.html')
     select=[]
+    print("unlabeled")
     for i in range(9):
         select.append('white')
     if pattern=='no' and catagories=='yes':
@@ -1626,8 +1634,9 @@ def Prediction_clusteringLables():
         size=df.size
         dfl = pd.read_csv('Upload/2.csv', sep=',')
         sizel=dfl.size
-        if size!=sizel :
+        if size/2 !=sizel :
             error='Size Mismatch'
+            print(size," ",sizel)
             return render_template('preclustering.html',error=error)
         pattern = request.form["pattern"]
         catagories = request.form["catagories"]
@@ -1658,29 +1667,30 @@ def Prediction_clusteringLables():
     elif pattern=='yes' and catagories=='no' : 
         select[3]='green'
         select[2]='aqua'
-
+    print("with label")
     matrix=[]
-    matrix.append(mbkmean())
-    matrix.append(kmean())
-    matrix.append(AffPropagation())
-    matrix.append(MShift())
-    matrix.append(dbs())
-    matrix.append(opt())
-    matrix.append(spectral())
-    matrix.append(birch())
-    matrix.append(gmm())
+    matrix.append(mbkmeanLabels())
+    matrix.append(kmeanLabels())
+    matrix.append(AffPropagationLabels())
+    matrix.append(MShiftLabels())
+    matrix.append(dbsLabels())
+    matrix.append(optLabels())
+    matrix.append(spectralLabels())
+    matrix.append(birchLabels())
+    matrix.append(gmmLabels())
     
     if request.method == 'POST':
         # Extract the input
-        return render_template('clustering.html', mat=matrix,color=select,i=2)
+        return render_template('clusteringlabels.html', mat=matrix,color=select,i=2)
 
 
-@app.route('/mbkmean', methods=['GET', 'POST'])
-def mbkmean():
+@app.route('/mbkmeanLabels', methods=['GET', 'POST'])
+def mbkmeanLabels():
 
     df = pd.read_csv('Upload/1.csv', sep=',')
     data = StandardScaler().fit_transform(df)
-    dfl = pd.read_csv('Upload/2.csv', sep=',')
+    dflabel = pd.read_csv('Upload/2.csv', sep=',').to_numpy()
+    dfl = dflabel.flatten()
     if request.method == 'POST':
         km=[]
         ari=[]
@@ -1733,12 +1743,13 @@ def mbkmean():
         return (responce)
 
 
-@app.route('/kmean', methods=['GET', 'POST'])
-def kmean():
+@app.route('/kmeanLabels', methods=['GET', 'POST'])
+def kmeanLabels():
 
     df = pd.read_csv('Upload/1.csv', sep=',')
     data = StandardScaler().fit_transform(df)
-    dfl = pd.read_csv('Upload/2.csv', sep=',')
+    dflabel = pd.read_csv('Upload/2.csv', sep=',').to_numpy()
+    dfl = dflabel.flatten()
     if request.method == 'GET':
         # Just render the initial form, to get input
         return(render_template('clustering.html'))
@@ -1795,12 +1806,13 @@ def kmean():
         
         return (responce)
 
-@app.route('/AffPropagation', methods=['GET', 'POST'])
-def AffPropagation():
+@app.route('/AffPropagationLabels', methods=['GET', 'POST'])
+def AffPropagationLabels():
 
     df = pd.read_csv('Upload/1.csv', sep=',')
     data = StandardScaler().fit_transform(df)
-    dfl = pd.read_csv('Upload/2.csv', sep=',')
+    dflabel = pd.read_csv('Upload/2.csv', sep=',').to_numpy()
+    dfl = dflabel.flatten()
     if request.method == 'GET':
         # Just render the initial form, to get input
         return(render_template('clustering.html'))
@@ -1864,12 +1876,13 @@ def AffPropagation():
 
 
 
-@app.route('/MShift', methods=['GET', 'POST'])
-def MShift():
+@app.route('/MShiftLabels', methods=['GET', 'POST'])
+def MShiftLabels():
 
     df = pd.read_csv('Upload/1.csv', sep=',')
     data = StandardScaler().fit_transform(df)
-    dfl = pd.read_csv('Upload/2.csv', sep=',')
+    dflabel = pd.read_csv('Upload/2.csv', sep=',').to_numpy()
+    dfl = dflabel.flatten()
     if request.method == 'GET':
         # Just render the initial form, to get input
         return(render_template('clustering.html'))
@@ -1937,12 +1950,13 @@ def MShift():
     return (responce)
 
 
-@app.route('/dbs', methods=['GET', 'POST'])
-def dbs():
+@app.route('/dbsLabels', methods=['GET', 'POST'])
+def dbsLabels():
 
     df = pd.read_csv('Upload/1.csv', sep=',')
     data = StandardScaler().fit_transform(df)
-    dfl = pd.read_csv('Upload/2.csv', sep=',')
+    dflabel = pd.read_csv('Upload/2.csv', sep=',').to_numpy()
+    dfl = dflabel.flatten()
     if request.method == 'GET':
         # Just render the initial form, to get input
         return(render_template('clustering.html'))
@@ -2014,20 +2028,21 @@ def dbs():
 
 
 
-@app.route('/opt', methods=['GET', 'POST'])
-def opt():
+@app.route('/optLabels', methods=['GET', 'POST'])
+def optLabels():
 
     df = pd.read_csv('Upload/1.csv', sep=',')
     data = StandardScaler().fit_transform(df)
-    dfl = pd.read_csv('Upload/2.csv', sep=',')
+    dflabel = pd.read_csv('Upload/2.csv', sep=',').to_numpy()
+    dfl = dflabel.flatten()
     if request.method == 'GET':
         # Just render the initial form, to get input
         return(render_template('clustering.html'))
     
     if request.method == 'POST':
+        nc=[]
         ari=[]
         mibs=[]
-        ch=[]
         homo=[]
         comp=[]
         vm=[]
@@ -2087,12 +2102,13 @@ def opt():
     return (responce)
 
 
-@app.route('/spectral', methods=['GET', 'POST'])
-def spectral():
+@app.route('/spectralLabels', methods=['GET', 'POST'])
+def spectralLabels():
 
     df = pd.read_csv('Upload/1.csv', sep=',')
     data = StandardScaler().fit_transform(df)
-    dfl = pd.read_csv('Upload/2.csv', sep=',')
+    dflabel = pd.read_csv('Upload/2.csv', sep=',').to_numpy()
+    dfl = dflabel.flatten()
     if request.method == 'GET':
         # Just render the initial form, to get input
         return(render_template('clustering.html'))
@@ -2146,12 +2162,13 @@ def spectral():
         
         return (responce)
 
-@app.route('/ward', methods=['GET', 'POST'])
-def ward():
+@app.route('/wardLabels', methods=['GET', 'POST'])
+def wardLabels():
 
     df = pd.read_csv('Upload/1.csv', sep=',')
     data = StandardScaler().fit_transform(df)
-    dfl = pd.read_csv('Upload/2.csv', sep=',')
+    dflabel = pd.read_csv('Upload/2.csv', sep=',').to_numpy()
+    dfl = dflabel.flatten()
     if request.method == 'GET':
         # Just render the initial form, to get input
         return(render_template('clustering.html'))
@@ -2210,12 +2227,13 @@ def ward():
         return (responce)
 
 
-@app.route('/AgglomerativeClustering', methods=['GET', 'POST'])
-def AgglomerativeClustering():
+@app.route('/AgglomerativeClusteringLabels', methods=['GET', 'POST'])
+def AgglomerativeClusteringLabels():
 
     df = pd.read_csv('Upload/1.csv', sep=',')
     data = StandardScaler().fit_transform(df)
-    dfl = pd.read_csv('Upload/2.csv', sep=',')
+    dflabel = pd.read_csv('Upload/2.csv', sep=',').to_numpy()
+    dfl = dflabel.flatten()
     if request.method == 'GET':
         # Just render the initial form, to get input
         return(render_template('clustering.html'))
@@ -2274,12 +2292,13 @@ def AgglomerativeClustering():
         
         return (responce)
 
-@app.route('/birch', methods=['GET', 'POST'])
-def birch():
+@app.route('/birchLabels', methods=['GET', 'POST'])
+def birchLabels():
 
     df = pd.read_csv('Upload/1.csv', sep=',')
     data = StandardScaler().fit_transform(df)
-    dfl = pd.read_csv('Upload/2.csv', sep=',')
+    dflabel = pd.read_csv('Upload/2.csv', sep=',').to_numpy()
+    dfl = dflabel.flatten()
     if request.method == 'GET':
         # Just render the initial form, to get input
         return(render_template('clustering.html'))
@@ -2334,12 +2353,13 @@ def birch():
         
         return (responce)
 
-@app.route('/gmm', methods=['GET', 'POST'])
-def gmm():
+@app.route('/gmmLabels', methods=['GET', 'POST'])
+def gmmLabels():
 
     df = pd.read_csv('Upload/1.csv', sep=',')
     data = StandardScaler().fit_transform(df)
-    dfl = pd.read_csv('Upload/2.csv', sep=',')
+    dflabel = pd.read_csv('Upload/2.csv', sep=',').to_numpy()
+    dfl = dflabel.flatten()
     if request.method == 'GET':
         # Just render the initial form, to get input
         return(render_template('clustering.html'))
