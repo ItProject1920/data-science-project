@@ -166,11 +166,13 @@ def comparison():
         })
     #dataF['Rank'] = dataF.evs + dataF.r2 
     #dataF['Rank2'] = dataF.mse + dataF.mae+ dataF.rmse
-    dataF.sort_values(by=['EVS'], inplace=True, ascending=False)
-    dataF.sort_values(by=['R2'], inplace=True, ascending=False)
+    dataF.sort_values(by=['RMSE'], inplace=True, ascending=True)
     dataF.sort_values(by=['MSE'], inplace=True, ascending=True)
     dataF.sort_values(by=['MAE'], inplace=True, ascending=True)
-    dataF.sort_values(by=['RMSE'], inplace=True, ascending=True)
+    dataF.sort_values(by=['EVS'], inplace=True, ascending=False)
+    dataF.sort_values(by=['R2'], inplace=True, ascending=False)
+
+    
 
     if request.method == 'GET':
         # Just render the initial form, to get input
@@ -288,17 +290,17 @@ def ridgeR():
         return render_template('regression.html')
     
     if request.method == 'POST':
-        alpha = [1e-15, 1e-10, 1e-8, 1e-4, 1e-3,1e-2, 1, 5, 10, 20]
+        #alpha = [1e-15, 1e-10, 1e-8, 1e-4, 1e-3,1e-2, 1, 5, 10, 20]
         ridge = Ridge()
-        parameters = {'alpha': [1e-15, 1e-10, 1e-8, 1e-4, 1e-3,1e-2, 1, 5, 10, 20]}
-        ridge_reg = GridSearchCV(ridge, parameters,scoring='neg_mean_squared_error', cv=5)
+        #parameters = {'alpha': [1e-15, 1e-10, 1e-8, 1e-4, 1e-3,1e-2, 1, 5, 10, 20]}
+        #ridge_reg = GridSearchCV(ridge, parameters,scoring='neg_mean_squared_error', cv=5)
 
         #ridge_reg = Ridge(alpha=0.01, solver="cholesky")
-        ridge_reg.fit(X_train, y_train)
+        ridge.fit(X_train, y_train)
 
         from sklearn.metrics import r2_score, explained_variance_score, mean_absolute_error, mean_squared_error
 
-        predictions = ridge_reg.predict(X_test)
+        predictions = ridge.predict(X_test)
         responce=[]
         responce.append(mean_absolute_error(y_true=y_test, y_pred=predictions))
         responce.append(mean_squared_error(y_true=y_test, y_pred=predictions))
@@ -324,17 +326,17 @@ def lassoR():
         return(render_template('regression.html'))
     
     if request.method == 'POST':
-        parameters = {'alpha': [1e-15, 1e-10, 1e-8, 1e-4, 1e-3,1e-2, 1, 5, 10, 20]}
+        #parameters = {'alpha': [1e-15, 1e-10, 1e-8, 1e-4, 1e-3,1e-2, 1, 5, 10, 20]}
         lasso=Lasso()
-        lassoReg = GridSearchCV(lasso, parameters, scoring='neg_mean_squared_error', cv = 5)
+        #lassoReg = GridSearchCV(lasso, parameters, scoring='neg_mean_squared_error', cv = 5)
         #lassoReg = Lasso(alpha=0.0001,normalize=True)
-        lassoReg.fit(X_train,y_train)
+        lasso.fit(X_train,y_train)
 
 
         
         from sklearn.metrics import r2_score, explained_variance_score, mean_absolute_error, mean_squared_error
 
-        predictions = lassoReg.predict(X_test)
+        predictions = lasso.predict(X_test)
         responce=[]
         responce.append(mean_absolute_error(y_true=y_test, y_pred=predictions))
         responce.append(mean_squared_error(y_true=y_test, y_pred=predictions))
@@ -362,14 +364,14 @@ def elastNetR():
         return(render_template('regression.html'))
     
     if request.method == 'POST':
-        parameters = {'alpha': [1e-15, 1e-10, 1e-8, 1e-4, 1e-3,1e-2, 1, 5, 10, 20],'l1_ratio':[0.1]}
+        #parameters = {'alpha': [1e-15, 1e-10, 1e-8, 1e-4, 1e-3,1e-2, 1, 5, 10, 20],'l1_ratio':[0.1]}
         elasticNet=ElasticNet()
-        elasNetReg = GridSearchCV(elasticNet, parameters, scoring='neg_mean_squared_error', cv = 5)
+        #elasNetReg = GridSearchCV(elasticNet, parameters, scoring='neg_mean_squared_error', cv = 5)
         # Fit/train LASSO
-        elasNetReg.fit(X_train,y_train)
+        elasticNet.fit(X_train,y_train)
         from sklearn.metrics import r2_score, explained_variance_score, mean_absolute_error, mean_squared_error
 
-        predictions = elasNetReg.predict(X_test)
+        predictions = elasticNet.predict(X_test)
         responce=[]
         responce.append(mean_absolute_error(y_true=y_test, y_pred=predictions))
         responce.append(mean_squared_error(y_true=y_test, y_pred=predictions))
@@ -1114,7 +1116,7 @@ def MShift(minq,maxq):
                     db.append(davies_bouldin_score(data, labels))
                     ch.append(calinski_harabasz_score(data, labels))
                     quan.append(i)             
-                i =np.round(i+count,decimal=3)
+                i =np.round(i+count,3)
 
                 plt.subplot(1, 10, plot_num)
                 colors = np.array(list(islice(cycle(['#377eb8', '#ff7f00', '#4daf4a',
@@ -1188,7 +1190,7 @@ def dbs(epsmin,epsmax):
                     dbm.append(davies_bouldin_score(data, labels))
                     ch.append(calinski_harabasz_score(data, labels))
                     eps.append(i)
-                i =np.round(i+count,decimal=2)
+                i =np.round(i+count,2)
 
                 plt.subplot(1, 10, plot_num)
                 colors = np.array(list(islice(cycle(['#377eb8', '#ff7f00', '#4daf4a',
@@ -1259,7 +1261,7 @@ def opt():
                 db.append(davies_bouldin_score(data, labels))
                 ch.append(calinski_harabasz_score(data, labels))
                 xi.append(i)
-                i =np.round(i+0.04,decimal=3)
+                i =np.round(i+0.04,3)
 
                 plt.subplot(1, 10, plot_num)
                 colors = np.array(list(islice(cycle(['#377eb8', '#ff7f00', '#4daf4a',
@@ -1844,7 +1846,7 @@ def MShiftLabels(minq,maxq):
         comp=[]
         vm=[]
         nc=[]
-        i = np.round(minq, decimals=3)
+        i = np.round(minq, 3)
         count=(maxq-minq)/10
 
         plt.figure(figsize=(9 * 2 + 3, 2.5))
@@ -1868,7 +1870,7 @@ def MShiftLabels(minq,maxq):
                     comp.append(completeness_score(dfl,labels))
                     vm.append(v_measure_score(dfl,labels))  
                     quan.append(i)             
-                i =np.round(i+count,decimal=3)
+                i =np.round(i+count,3)
 
                 plt.subplot(1, 10, plot_num)
                 colors = np.array(list(islice(cycle(['#377eb8', '#ff7f00', '#4daf4a',
@@ -1924,7 +1926,7 @@ def dbsLabels(epsmin,epsmax):
         nc=[]
         nn=[]
         #0.1 is min value
-        i = np.round(epsmin,decimal=2)
+        i = np.round(epsmin,2)
         count=(epsmax-epsmin)/10
 
         plt.figure(figsize=(9 * 2 + 3, 2.5))
@@ -1950,7 +1952,7 @@ def dbsLabels(epsmin,epsmax):
                     comp.append(completeness_score(dfl,labels))
                     vm.append(v_measure_score(dfl,labels))
                     eps.append(i)
-                i =np.round(i+count,decimal=2)
+                i =np.round(i+count,2)
 
                 plt.subplot(1, 10, plot_num)
                 colors = np.array(list(islice(cycle(['#377eb8', '#ff7f00', '#4daf4a',
@@ -2018,9 +2020,8 @@ def optLabels():
                 # Run the fit
                 clust.fit(data)
                 labels = clust.labels_.astype(np.int)
-                space = np.arange(len(data))
-                reachability = clust.reachability_[clust.ordering_]
-                labels = clust.labels_[clust.ordering_]
+                #space = np.arange(len(data))
+                #reachability = clust.reachability_[clust.ordering_]
                 labels_unique = np.unique(labels)
                 n_clusters = len(labels_unique)
                 nc.append(n_clusters)
@@ -2030,7 +2031,7 @@ def optLabels():
                 comp.append(completeness_score(dfl,labels))
                 vm.append(v_measure_score(dfl,labels))
                 xi.append(i)
-                i =np.round(i+0.04,decimal=3)
+                i =np.round(i+0.04,3)
 
                 plt.subplot(1, 10, plot_num)
                 colors = np.array(list(islice(cycle(['#377eb8', '#ff7f00', '#4daf4a',
