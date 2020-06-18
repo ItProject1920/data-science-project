@@ -19,24 +19,27 @@
 {% endblock %}
 
 {% block body %}
+<br>
+<br>
+<br>
 <div id="dropBox">
-				<h3> Upload CSV File</h3>
-				<div id="content">
-				    <form action="/handleUpload2" method="post" enctype="multipart/form-data">
-			         <input id="file" type="file" name="photo"/>
-			         <label for="file"/>Choose a file</label>
-			         <input id="buttonone"  type="submit" value="Upload"/>
-			        </form>
-			    </div>
-	    	</div>
-<form id="frm" method="post" enctype="multipart/form-data">
+    <h3> Upload CSV File</h3>
+    <div id="content">
+        <form action="/handleUpload2" method="post" enctype="multipart/form-data">
+            <input id="file" type="file" name="photo"/>
+            <label for="file"/>Choose a file</label>
+            <input id="buttonone"  type="submit" value="Upload"/>
+        </form>
+    </div>
+</div>
+<form  id="frm" method="post" enctype="multipart/form-data">
     <fieldset class="border p-2">
       <legend class="w-auto">Choose</legend>
         <label for="Pattern">Does your data contain Pattern:</label>&nbsp;&nbsp;
         <input type="radio"  name="pattern" value="yes">
-        <label for="pattern">Yes </label>
+        <label for="Pattern">Yes </label>
         <input type="radio"  name="pattern" value="no">
-        <label for="pattern">No</label><br>
+        <label for="Pattern">No</label><br>
         <label for="catagories">Are the no. of catagories Known:</label>
         <input type="radio"  name="catagories" value="yes">
         <label for="catagories">Yes </label>
@@ -52,11 +55,26 @@
         <label for="quantile">Max quantile:</label>
         <input type="number" min=0.2 max=0.9 step ="0.01" name="maxquantile"><br>
         <br>
-        <input type="submit" class="btn btn-primary" value="Submit">
     </fieldset>
 </form>
+
 {% block buttons %}
-<input id="button1"  type='button' onclick="submitMe2(this)" value='Labelled'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<input id="button1"  type='button' onclick="submitMe2(this)" value='Labelled'>
 <input id="button2"  type='button' onclick="submitMe2(this)" value='Not Labelled'>
 {% endblock %}
+<script>
+    var slider = document.getElementById("myRange");
+    slider.oninput = function() {
+      output.innerHTML = this.value*.01;
+    }
+     function submitMe2(obj){
+        if(obj.value == "Labelled"){
+          document.getElementById('frm').action = "/prediction_clusteringLables";
+        }else if(obj.value == "Not Labelled"){
+         document.getElementById('frm').action = "/prediction_clustering";
+        }
+       document.getElementById('frm').submit();
+      }
+    </script>
+
 {% endblock %}

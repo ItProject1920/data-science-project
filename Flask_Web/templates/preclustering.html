@@ -19,21 +19,17 @@
 {% endblock %}
 
 {% block body %}
-<br>
-<br>
-<br>
-<form action="/prediction_clustering" id="frm" method="post" enctype="multipart/form-data">
 <div id="dropBox">
-				<h3> Upload CSV File</h3>
-				<div id="content">
-				    <form action="/handleUpload2" method="post" enctype="multipart/form-data">
-			         <input id="file" type="file" name="photo"/>
-			         <label for="file"/>Choose a file</label>
-			         <input id="buttonone"  type="submit" value="Upload"/>
-			        </form>
-			    </div>
-	    	</div>
-<form id="frm" method="post" enctype="multipart/form-data">
+    <h3> Upload CSV File</h3>
+    <div id="content">
+        <form action="/handleUpload2" method="post" enctype="multipart/form-data">
+            <input id="file" type="file" name="photo"/>
+            <label for="file"/>Choose a file</label>
+            <input id="buttonone"  type="submit" value="Upload"/>
+        </form>
+    </div>
+</div>
+<form  id="frm" method="post" enctype="multipart/form-data">
     <fieldset class="border p-2">
       <legend class="w-auto">Choose</legend>
         <label for="Pattern">Does your data contain Pattern:</label>&nbsp;&nbsp;
@@ -59,7 +55,6 @@
     </fieldset>
 </form>
 {% block buttons %}
-<input id="button1"  type='button' onclick="submitMe2(this)" value='Labelled'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <input id="button2"  type='button' onclick="submitMe2(this)" value='Not Labelled'>
 {% endblock %}
 <script>

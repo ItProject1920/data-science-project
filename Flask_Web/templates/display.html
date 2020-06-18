@@ -66,9 +66,9 @@
 </div>
 <script>
   function submitMe(obj){
-    if(obj.value == "Labelled"){
+    if(obj.value == "Classification"){
       document.getElementById('frm').action = "/prediction_classification";
-    }else if(obj.value == "Unlabelled"){
+    }else if(obj.value == "Clustering"){
      document.getElementById('frm').action = "/preclustering";
     }else{
      document.getElementById('frm').action = "/comparison";

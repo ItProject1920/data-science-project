@@ -845,15 +845,6 @@ def Preclustering():
         # Just render the initial form, to get input
         return render_template('preclustering.html')
 
-@app.route("/handleUploadLabel", methods=['POST'])
-def handleFileUploadLabel():
-    if 'photo' in request.files:
-        photo = request.files['photo']
-        if photo.filename != '': 
-            path = os.path.join('Upload/', '2.csv')
-            photo.save(path)
-    return redirect(url_for('Preclustering'))
-
 
 @app.route('/prediction_clustering', methods=['GET', 'POST'])
 def Prediction_clustering():
@@ -865,18 +856,19 @@ def Prediction_clustering():
         size=df.size
         dfl = pd.read_csv('Upload/2.csv', sep=',')
         sizel=dfl.size
-        pattern = request.form.get("pattern")
-        catagories = request.form.get("catagories")
-        epsmin = request.form.get("mineps")
-        epsmax = request.form.get("maxeps")
-        minq = request.form.get("minquantile")
-        maxq =request.form.get("maxquantile")
-
+        pattern = request.form["pattern"]
+        catagories = request.form["catagories"]
+        epsmin = float(request.form.get("mineps"))
+        epsmax = float(request.form.get("maxeps"))
+        minq = float(request.form.get("minquantile"))
+        maxq = float(request.form.get("maxquantile"))
+    print(pattern)
+    print(catagories)
     if request.method == 'GET':
         # Just render the initial form, to get input
         return render_template('clustering.html')
     select=[]
-    print("unlabeled")
+
     for i in range(9):
         select.append('white')
     if pattern=='no' and catagories=='yes':
@@ -1034,7 +1026,7 @@ def AffPropagation():
         sil=[]
         db=[]
         ch=[]
-         
+        pref=[]
         nc=[]
         i = 20
 
@@ -1053,6 +1045,7 @@ def AffPropagation():
                     sil.append(silhouette_score(data, labels, metric='sqeuclidean'))
                     db.append(davies_bouldin_score(data, labels))
                     ch.append(calinski_harabasz_score(data, labels))
+                    pref.append(i)
                 i += 20
 
                 plt.subplot(1, 10, plot_num)
@@ -1075,6 +1068,7 @@ def AffPropagation():
 
 
         responce=[]
+        responce.append(pref)
         responce.append(nc)
         responce.append(sil)
         responce.append(db)
@@ -1097,7 +1091,7 @@ def MShift(minq,maxq):
         sil=[]
         db=[]
         ch=[]
-        
+        quan=[]
         nc=[]
         i = minq
         count=(maxq-minq)/10
@@ -1119,7 +1113,8 @@ def MShift(minq,maxq):
                     sil.append(silhouette_score(data, labels, metric='sqeuclidean'))
                     db.append(davies_bouldin_score(data, labels))
                     ch.append(calinski_harabasz_score(data, labels))
-                i +=count
+                    quan.append(i)             
+                i =np.round(i+count,decimal=3)
 
                 plt.subplot(1, 10, plot_num)
                 colors = np.array(list(islice(cycle(['#377eb8', '#ff7f00', '#4daf4a',
@@ -1143,6 +1138,7 @@ def MShift(minq,maxq):
         plt.savefig('static/plot4.png', dpi=300, bbox_inches='tight')
 
         responce=[]
+        responce.append(quan)
         responce.append(nc)
         responce.append(sil)
         responce.append(db)
@@ -1165,7 +1161,7 @@ def dbs(epsmin,epsmax):
         sil=[]
         dbm=[]
         ch=[]
-         
+        eps=[]
         nc=[]
         nn=[]
         #0.1 is min value
@@ -1191,7 +1187,8 @@ def dbs(epsmin,epsmax):
                     sil.append(silhouette_score(data, labels, metric='sqeuclidean'))
                     dbm.append(davies_bouldin_score(data, labels))
                     ch.append(calinski_harabasz_score(data, labels))
-                i+=count
+                    eps.append(i)
+                i =np.round(i+count,decimal=2)
 
                 plt.subplot(1, 10, plot_num)
                 colors = np.array(list(islice(cycle(['#377eb8', '#ff7f00', '#4daf4a',
@@ -1213,6 +1210,7 @@ def dbs(epsmin,epsmax):
         plt.savefig('static/plot5.png', dpi=300, bbox_inches='tight')
 
         responce=[]
+        responce.append(eps)
         responce.append(nc)
         responce.append(nn)
         responce.append(sil)
@@ -1236,7 +1234,7 @@ def opt():
         sil=[]
         db=[]
         ch=[]
-         
+        xi=[]
         nc=[]
 
         plt.figure(figsize=(9 * 2 + 3, 2.5))
@@ -1260,7 +1258,8 @@ def opt():
                 sil.append(silhouette_score(data, labels, metric='sqeuclidean'))
                 db.append(davies_bouldin_score(data, labels))
                 ch.append(calinski_harabasz_score(data, labels))
-                i +=0.04
+                xi.append(i)
+                i =np.round(i+0.04,decimal=3)
 
                 plt.subplot(1, 10, plot_num)
                 colors = np.array(list(islice(cycle(['#377eb8', '#ff7f00', '#4daf4a',
@@ -1281,6 +1280,7 @@ def opt():
         plt.savefig('static/plot6.png', dpi=300, bbox_inches='tight')
 
         responce=[]
+        responce.append(xi)
         responce.append(nc)
         responce.append(sil)
         responce.append(db)
@@ -1582,12 +1582,12 @@ def Prediction_clusteringLables():
             error='Size Mismatch'
             print(size," ",sizel)
             return render_template('preclustering.html',error=error)
-        pattern = request.form.get("pattern")
-        catagories = request.form.get("catagories")
-        epsmin = request.form.get("mineps")
-        epsmax = request.form.get("maxeps")
-        minq = request.form.get("minquantile")
-        maxq =request.form.get("maxquantile")
+        pattern = request.form["pattern"]
+        catagories = request.form["catagories"]
+        epsmin = float(request.form.get("mineps"))
+        epsmax = float(request.form.get("maxeps"))
+        minq = float(request.form.get("minquantile"))
+        maxq = float(request.form.get("maxquantile"))
 
     if request.method == 'GET':
         # Just render the initial form, to get input
@@ -1617,8 +1617,8 @@ def Prediction_clusteringLables():
     matrix.append(mbkmeanLabels())
     matrix.append(kmeanLabels())
     matrix.append(AffPropagationLabels())
-    matrix.append(MShiftLabels())
-    matrix.append(dbsLabels())
+    matrix.append(MShiftLabels(minq,maxq))
+    matrix.append(dbsLabels(epsmin,epsmax))
     matrix.append(optLabels())
     matrix.append(spectralLabels())
     matrix.append(birchLabels())
@@ -1763,6 +1763,7 @@ def AffPropagationLabels():
         return(render_template('clustering.html'))
     
     if request.method == 'POST':
+        pref=[]
         ari=[]
         mibs=[]
         homo=[]
@@ -1778,6 +1779,7 @@ def AffPropagationLabels():
         while i < 200:
             try:
                 print('aff %d' %i)
+                
                 af_model= AffinityPropagation(damping=0.9, preference=-i).fit(data)
                 cluster_centers_indices = af_model.cluster_centers_indices_
                 labels = af_model.labels_
@@ -1788,6 +1790,7 @@ def AffPropagationLabels():
                     homo.append(homogeneity_score(dfl,labels))
                     comp.append(completeness_score(dfl,labels))
                     vm.append(v_measure_score(dfl,labels))
+                    pref.append(i)
                 i += 20
 
                 plt.subplot(1, 10, plot_num)
@@ -1810,6 +1813,7 @@ def AffPropagationLabels():
 
 
         responce=[]
+        responce.append(pref)
         responce.append(nc)
         responce.append(ari)
         responce.append(mibs)
@@ -1822,7 +1826,7 @@ def AffPropagationLabels():
 
 
 @app.route('/MShiftLabels', methods=['GET', 'POST'])
-def MShiftLabels():
+def MShiftLabels(minq,maxq):
 
     df = pd.read_csv('Upload/1.csv', sep=',')
     data = StandardScaler().fit_transform(df)
@@ -1833,19 +1837,21 @@ def MShiftLabels():
         return(render_template('clustering.html'))
     
     if request.method == 'POST':
+        quan=[]
         ari=[]
         mibs=[]
         homo=[]
         comp=[]
         vm=[]
         nc=[]
-        i = 0.02
+        i = np.round(minq, decimals=3)
+        count=(maxq-minq)/10
 
         plt.figure(figsize=(9 * 2 + 3, 2.5))
         plt.subplots_adjust(left=.02, right=.98, bottom=.001, top=.96, wspace=.05,hspace=.01)
         plot_num = 1
 
-        while i < 0.23:
+        while i < maxq:
             try:
                 bandwidth = estimate_bandwidth(data, quantile=i)
                 print("quantile %d", i)
@@ -1860,8 +1866,9 @@ def MShiftLabels():
                     mibs.append(adjusted_mutual_info_score(dfl,labels))
                     homo.append(homogeneity_score(dfl,labels))
                     comp.append(completeness_score(dfl,labels))
-                    vm.append(v_measure_score(dfl,labels))                
-                i +=0.02
+                    vm.append(v_measure_score(dfl,labels))  
+                    quan.append(i)             
+                i =np.round(i+count,decimal=3)
 
                 plt.subplot(1, 10, plot_num)
                 colors = np.array(list(islice(cycle(['#377eb8', '#ff7f00', '#4daf4a',
@@ -1885,6 +1892,7 @@ def MShiftLabels():
         plt.savefig('static/plot4.png', dpi=300, bbox_inches='tight')
 
         responce=[]
+        responce.append(quan)
         responce.append(nc)
         responce.append(ari)
         responce.append(mibs)
@@ -1896,7 +1904,7 @@ def MShiftLabels():
 
 
 @app.route('/dbsLabels', methods=['GET', 'POST'])
-def dbsLabels():
+def dbsLabels(epsmin,epsmax):
 
     df = pd.read_csv('Upload/1.csv', sep=',')
     data = StandardScaler().fit_transform(df)
@@ -1907,6 +1915,7 @@ def dbsLabels():
         return(render_template('clustering.html'))
     
     if request.method == 'POST':
+        eps=[]
         ari=[]
         mibs=[]
         homo=[]
@@ -1915,13 +1924,14 @@ def dbsLabels():
         nc=[]
         nn=[]
         #0.1 is min value
-        i = 0.1
+        i = np.round(epsmin,decimal=2)
+        count=(epsmax-epsmin)/10
 
         plt.figure(figsize=(9 * 2 + 3, 2.5))
         plt.subplots_adjust(left=.02, right=.98, bottom=.001, top=.96, wspace=.05,hspace=.01)
         plot_num = 1
         
-        while i < 0.3:
+        while i < epsmax:
             try:
                 print("eps %d", i)
                 db = DBSCAN(eps=i).fit(data)
@@ -1939,7 +1949,8 @@ def dbsLabels():
                     homo.append(homogeneity_score(dfl,labels))
                     comp.append(completeness_score(dfl,labels))
                     vm.append(v_measure_score(dfl,labels))
-                i+=0.02
+                    eps.append(i)
+                i =np.round(i+count,decimal=2)
 
                 plt.subplot(1, 10, plot_num)
                 colors = np.array(list(islice(cycle(['#377eb8', '#ff7f00', '#4daf4a',
@@ -1961,6 +1972,7 @@ def dbsLabels():
         plt.savefig('static/plot5.png', dpi=300, bbox_inches='tight')
 
         responce=[]
+        responce.append(eps)
         responce.append(nc)
         responce.append(nn)
         responce.append(ari)
@@ -1985,6 +1997,7 @@ def optLabels():
         return(render_template('clustering.html'))
     
     if request.method == 'POST':
+        xi=[]
         nc=[]
         ari=[]
         mibs=[]
@@ -1996,9 +2009,9 @@ def optLabels():
         plt.subplots_adjust(left=.02, right=.98, bottom=.001, top=.96, wspace=.05,hspace=.01)
         plot_num = 1
 
-        i = 0.025
+        i = 0.02
         #1
-        while i < 0.26:
+        while i < 0.4:
             try:
                 print("opt",i)
                 clust = OPTICS(min_samples=20, xi=i, min_cluster_size=0.1)
@@ -2016,7 +2029,8 @@ def optLabels():
                 homo.append(homogeneity_score(dfl,labels))
                 comp.append(completeness_score(dfl,labels))
                 vm.append(v_measure_score(dfl,labels))
-                i +=0.025
+                xi.append(i)
+                i =np.round(i+0.04,decimal=3)
 
                 plt.subplot(1, 10, plot_num)
                 colors = np.array(list(islice(cycle(['#377eb8', '#ff7f00', '#4daf4a',
@@ -2037,6 +2051,7 @@ def optLabels():
         plt.savefig('static/plot6.png', dpi=300, bbox_inches='tight')
 
         responce=[]
+        responce.append(xi)
         responce.append(nc)
         responce.append(ari)
         responce.append(mibs)
