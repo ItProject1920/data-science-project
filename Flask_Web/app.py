@@ -865,12 +865,12 @@ def Prediction_clustering():
         size=df.size
         dfl = pd.read_csv('Upload/2.csv', sep=',')
         sizel=dfl.size
-        pattern = request.form["pattern"]
-        catagories = request.form["catagories"]
-        epsmin = request.form["mineps"]
-        epsmax = request.form["maxeps"]
-        minq = request.form["minquantile"]
-        maxq =request.form["maxquantile"]
+        pattern = request.form.get("pattern")
+        catagories = request.form.get("catagories")
+        epsmin = request.form.get("mineps")
+        epsmax = request.form.get("maxeps")
+        minq = request.form.get("minquantile")
+        maxq =request.form.get("maxquantile")
 
     if request.method == 'GET':
         # Just render the initial form, to get input
@@ -1036,14 +1036,13 @@ def AffPropagation():
         ch=[]
          
         nc=[]
-        i = minq
-        count=round((maxq-minq)/10)
+        i = 20
 
         plt.figure(figsize=(9 * 2 + 3, 2.5))
         plt.subplots_adjust(left=.02, right=.98, bottom=.001, top=.96, wspace=.05,hspace=.01)
         plot_num = 1
 
-        while i < maxq:
+        while i < 210:
             try:
                 print('aff %d' %i)
                 af_model= AffinityPropagation(damping=0.9, preference=-i).fit(data)
@@ -1054,7 +1053,7 @@ def AffPropagation():
                     sil.append(silhouette_score(data, labels, metric='sqeuclidean'))
                     db.append(davies_bouldin_score(data, labels))
                     ch.append(calinski_harabasz_score(data, labels))
-                i += count
+                i += 20
 
                 plt.subplot(1, 10, plot_num)
                 colors = np.array(list(islice(cycle(['#377eb8', '#ff7f00', '#4daf4a',
@@ -1583,11 +1582,12 @@ def Prediction_clusteringLables():
             error='Size Mismatch'
             print(size," ",sizel)
             return render_template('preclustering.html',error=error)
-        pattern = request.form["pattern"]
-        catagories = request.form["catagories"]
-        eps = request.form["eps"]
-        minq = request.form["minquantile"]
-        maxq =request.form["maxquantile"]
+        pattern = request.form.get("pattern")
+        catagories = request.form.get("catagories")
+        epsmin = request.form.get("mineps")
+        epsmax = request.form.get("maxeps")
+        minq = request.form.get("minquantile")
+        maxq =request.form.get("maxquantile")
 
     if request.method == 'GET':
         # Just render the initial form, to get input
