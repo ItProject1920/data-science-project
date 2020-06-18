@@ -867,7 +867,8 @@ def Prediction_clustering():
         sizel=dfl.size
         pattern = request.form["pattern"]
         catagories = request.form["catagories"]
-        eps = request.form["eps"]
+        epsmin = request.form["mineps"]
+        epsmax = request.form["maxeps"]
         minq = request.form["minquantile"]
         maxq =request.form["maxquantile"]
 
@@ -900,7 +901,7 @@ def Prediction_clustering():
     matrix.append(mbkmean())
     matrix.append(kmean())
     matrix.append(AffPropagation())
-    matrix.append(MShift())
+    matrix.append(MShift(minq,maxq))
     matrix.append(dbs())
     matrix.append(opt())
     matrix.append(spectral())
@@ -1085,7 +1086,7 @@ def AffPropagation():
 
 
 @app.route('/MShift', methods=['GET', 'POST'])
-def MShift():
+def MShift(minq,maxq):
 
     df = pd.read_csv('Upload/1.csv', sep=',')
     data = StandardScaler().fit_transform(df)
@@ -1099,13 +1100,13 @@ def MShift():
         ch=[]
         
         nc=[]
-        i = 0.02
-
+        i = minq
+        count=(maxq-minq)/10
         plt.figure(figsize=(9 * 2 + 3, 2.5))
         plt.subplots_adjust(left=.02, right=.98, bottom=.001, top=.96, wspace=.05,hspace=.01)
         plot_num = 1
 
-        while i < 0.23:
+        while i < maxq:
             try:
                 bandwidth = estimate_bandwidth(data, quantile=i)
                 print("quantile %d", i)
@@ -1119,7 +1120,7 @@ def MShift():
                     sil.append(silhouette_score(data, labels, metric='sqeuclidean'))
                     db.append(davies_bouldin_score(data, labels))
                     ch.append(calinski_harabasz_score(data, labels))
-                i +=0.02
+                i +=count
 
                 plt.subplot(1, 10, plot_num)
                 colors = np.array(list(islice(cycle(['#377eb8', '#ff7f00', '#4daf4a',
@@ -1169,13 +1170,13 @@ def dbs():
         nc=[]
         nn=[]
         #0.1 is min value
-        i = 0.1
-
+        i = epsmin
+        count=(epsmax-epsmin)/10
         plt.figure(figsize=(9 * 2 + 3, 2.5))
         plt.subplots_adjust(left=.02, right=.98, bottom=.001, top=.96, wspace=.05,hspace=.01)
         plot_num = 1
         
-        while i < 0.3:
+        while i < epsmax:
             try:
                 print("eps %d", i)
                 db = DBSCAN(eps=i).fit(data)
@@ -1191,7 +1192,7 @@ def dbs():
                     sil.append(silhouette_score(data, labels, metric='sqeuclidean'))
                     dbm.append(davies_bouldin_score(data, labels))
                     ch.append(calinski_harabasz_score(data, labels))
-                i+=0.02
+                i+=count
 
                 plt.subplot(1, 10, plot_num)
                 colors = np.array(list(islice(cycle(['#377eb8', '#ff7f00', '#4daf4a',
