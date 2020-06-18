@@ -70,7 +70,7 @@ def fileFrontPage():
 
 @app.route("/fileFrontPage2")
 def fileFrontPage2():
-    return render_template('preclustering.html')
+    return render_template('preclustering2.html')
 
 @app.route("/handleUpload", methods=['POST'])
 def handleFileUpload():
