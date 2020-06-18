@@ -19,6 +19,10 @@
 {% endblock %}
 
 {% block body %}
+<br>
+<br>
+<br>
+<form action="/prediction_clustering" id="frm" method="post" enctype="multipart/form-data">
 <div id="dropBox">
 				<h3> Upload CSV File</h3>
 				<div id="content">
@@ -32,16 +36,16 @@
 <form id="frm" method="post" enctype="multipart/form-data">
     <fieldset class="border p-2">
       <legend class="w-auto">Choose</legend>
-        <label for="Pattern">Does your data contain Pattern:</label>
+        <label for="Pattern">Does your data contain Pattern:</label>&nbsp;&nbsp;
         <input type="radio"  name="pattern" value="yes">
         <label for="pattern">Yes </label>
         <input type="radio"  name="pattern" value="no">
-        <label for="pattern">no</label><br>
-        <label for="catagories">Are the no of catagories Known:</label>
+        <label for="pattern">No</label><br>
+        <label for="catagories">Are the no. of catagories Known:</label>
         <input type="radio"  name="catagories" value="yes">
         <label for="catagories">Yes </label>
         <input type="radio"  name="catagories" value="no">
-        <label for="catagories">no</label><br>
+        <label for="catagories">No</label><br>
         <label>EPS</label><p>(The maximum distance between two samples for one to be considered as in the neighborhood of the other.)</p>
         <label for="EPS">Min:</label>
         <input type="number" min=0.1 max=0.5 step ="0.01" name="mineps"><br>
@@ -52,12 +56,8 @@
         <label for="quantile">Max quantile:</label>
         <input type="number" min=0.2 max=0.9 step ="0.01" name="maxquantile"><br>
         <br>
-        <!--
-		<input type="submit" value="Not Labelled" onclick="submitMe2(this)">
-		<input type="submit" value="Labelled" onclick="submitMe2(this)">
-		-->
-
-</fieldset>
+        <input type="submit" class="btn btn-primary" value="Submit">
+    </fieldset>
 </form>
 {% block buttons %}
 <input id="button1"  type='button' onclick="submitMe2(this)" value='Labelled'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
