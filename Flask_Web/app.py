@@ -46,8 +46,6 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.cluster import *
 from sklearn import cluster, datasets, mixture
 from sklearn.neighbors import kneighbors_graph
-from sklearn.cluster import AgglomerativeClustering
-from sklearn.cluster import AffinityPropagation
 from sklearn.preprocessing import StandardScaler
 from sklearn.mixture import GaussianMixture
 from sklearn.metrics import *
@@ -56,6 +54,7 @@ from flask_jsglue import JSGlue
 from sklearn.feature_selection import RFE
 import matplotlib.pyplot as plt
 from itertools import cycle, islice
+
 
 app = Flask(__name__, template_folder='templates')
 #app.config['SQLALCHEMY_DATABASE_URL'] = 'sqlite:///test.db'
@@ -923,8 +922,7 @@ def mbkmean():
         sil=[]
         db=[]
         ch=[]
-        gm=[]
-        gm_bic=[]
+         
 
         plt.figure(figsize=(9 * 2 + 3, 2.5))
         plt.subplots_adjust(left=.02, right=.98, bottom=.001, top=.96, wspace=.05,hspace=.01)
@@ -940,9 +938,6 @@ def mbkmean():
             sil.append(silhouette_score(data,labels))
             db.append(davies_bouldin_score(data, labels))
             ch.append(calinski_harabasz_score(data, labels))
-            gm_bic.append(GaussianMixture(n_components=i,n_init=10,tol=1e-3,max_iter=1000).fit(data).bic(data))
-            gm.append(GaussianMixture(n_components=i,n_init=10,tol=1e-3,max_iter=1000).fit(data).score(data))
-            
             plt.subplot(1, 10, plot_num)
             colors = np.array(list(islice(cycle(['#377eb8', '#ff7f00', '#4daf4a',
                                                 '#f781bf', '#a65628', '#984ea3',
@@ -964,8 +959,6 @@ def mbkmean():
         responce.append(sil)
         responce.append(db)
         responce.append(ch)
-        responce.append(gm_bic)
-        responce.append(gm)
         print('kmeans complete')
         return (responce)
 
@@ -984,8 +977,7 @@ def kmean():
         sil=[]
         db=[]
         ch=[]
-        gm=[]
-        gm_bic=[]
+         
 
         plt.figure(figsize=(9 * 2 + 3, 2.5))
         plt.subplots_adjust(left=.02, right=.98, bottom=.001, top=.96, wspace=.05,hspace=.01)
@@ -1001,9 +993,7 @@ def kmean():
             sil.append(silhouette_score(data,labels))
             db.append(davies_bouldin_score(data, labels))
             ch.append(calinski_harabasz_score(data, labels))
-            gm_bic.append(GaussianMixture(n_components=i,n_init=10,tol=1e-3,max_iter=1000).fit(data).bic(data))
-            gm.append(GaussianMixture(n_components=i,n_init=10,tol=1e-3,max_iter=1000).fit(data).score(data))
-
+            
             plt.subplot(1, 10, plot_num)
             colors = np.array(list(islice(cycle(['#377eb8', '#ff7f00', '#4daf4a',
                                                 '#f781bf', '#a65628', '#984ea3',
@@ -1025,8 +1015,7 @@ def kmean():
         responce.append(sil)
         responce.append(db)
         responce.append(ch)
-        responce.append(gm_bic)
-        responce.append(gm)
+
         print('kmeans complete')
         
         return (responce)
@@ -1044,16 +1033,16 @@ def AffPropagation():
         sil=[]
         db=[]
         ch=[]
-        gm=[]
-        gm_bic=[]
+         
         nc=[]
-        i = 20
+        i = minq
+        count=round((maxq-minq)/10)
 
         plt.figure(figsize=(9 * 2 + 3, 2.5))
         plt.subplots_adjust(left=.02, right=.98, bottom=.001, top=.96, wspace=.05,hspace=.01)
         plot_num = 1
 
-        while i < 200:
+        while i < maxq:
             try:
                 print('aff %d' %i)
                 af_model= AffinityPropagation(damping=0.9, preference=-i).fit(data)
@@ -1064,9 +1053,7 @@ def AffPropagation():
                     sil.append(silhouette_score(data, labels, metric='sqeuclidean'))
                     db.append(davies_bouldin_score(data, labels))
                     ch.append(calinski_harabasz_score(data, labels))
-                    gm_bic.append(GaussianMixture(n_components=len(cluster_centers_indices),n_init=10,tol=1e-3,max_iter=1000).fit(data).bic(data))
-                    gm.append(GaussianMixture(n_components=len(cluster_centers_indices),n_init=10,tol=1e-3,max_iter=1000).fit(data).score(data))
-                i += 20
+                i += count
 
                 plt.subplot(1, 10, plot_num)
                 colors = np.array(list(islice(cycle(['#377eb8', '#ff7f00', '#4daf4a',
@@ -1092,8 +1079,6 @@ def AffPropagation():
         responce.append(sil)
         responce.append(db)
         responce.append(ch)
-        responce.append(gm_bic)
-        responce.append(gm)
         
     return (responce)
 
@@ -1112,8 +1097,7 @@ def MShift():
         sil=[]
         db=[]
         ch=[]
-        gm=[]
-        gm_bic=[]
+        
         nc=[]
         i = 0.02
 
@@ -1135,8 +1119,6 @@ def MShift():
                     sil.append(silhouette_score(data, labels, metric='sqeuclidean'))
                     db.append(davies_bouldin_score(data, labels))
                     ch.append(calinski_harabasz_score(data, labels))
-                    gm_bic.append(GaussianMixture(n_components=n_clusters,n_init=10,tol=1e-3,max_iter=1000).fit(data).bic(data))
-                    gm.append(GaussianMixture(n_components=n_clusters,n_init=10,tol=1e-3,max_iter=1000).fit(data).score(data))
                 i +=0.02
 
                 plt.subplot(1, 10, plot_num)
@@ -1165,8 +1147,7 @@ def MShift():
         responce.append(sil)
         responce.append(db)
         responce.append(ch)
-        responce.append(gm)
-        responce.append(gm_bic)
+
 
     return (responce)
 
@@ -1184,8 +1165,7 @@ def dbs():
         sil=[]
         dbm=[]
         ch=[]
-        gm=[]
-        gm_bic=[]
+         
         nc=[]
         nn=[]
         #0.1 is min value
@@ -1211,8 +1191,6 @@ def dbs():
                     sil.append(silhouette_score(data, labels, metric='sqeuclidean'))
                     dbm.append(davies_bouldin_score(data, labels))
                     ch.append(calinski_harabasz_score(data, labels))
-                    gm_bic.append(GaussianMixture(n_components=2,n_init=10,tol=1e-3,max_iter=1000).fit(data).bic(data))
-                    gm.append(GaussianMixture(n_components=2,n_init=10,tol=1e-3,max_iter=1000).fit(data).score(data))
                 i+=0.02
 
                 plt.subplot(1, 10, plot_num)
@@ -1240,8 +1218,6 @@ def dbs():
         responce.append(sil)
         responce.append(dbm)
         responce.append(ch)
-        responce.append(gm)
-        responce.append(gm_bic)
 
     return (responce)
 
@@ -1260,35 +1236,31 @@ def opt():
         sil=[]
         db=[]
         ch=[]
-        gm=[]
-        gm_bic=[]
+         
         nc=[]
 
         plt.figure(figsize=(9 * 2 + 3, 2.5))
         plt.subplots_adjust(left=.02, right=.98, bottom=.001, top=.96, wspace=.05,hspace=.01)
         plot_num = 1
 
-        i = 0.025
+        i = 0.020
         #1
-        while i < 0.26:
+        while i < 0.4:
             try:
                 print("opt",i)
                 clust = OPTICS(min_samples=20, xi=i, min_cluster_size=0.1)
                 # Run the fit
                 clust.fit(data)
                 labels = clust.labels_.astype(np.int)
-                space = np.arange(len(data))
-                reachability = clust.reachability_[clust.ordering_]
-                labels = clust.labels_[clust.ordering_]
+                #space = np.arange(len(data))
+                #reachability = clust.reachability_[clust.ordering_]
                 labels_unique = np.unique(labels)
                 n_clusters = len(labels_unique)
                 nc.append(n_clusters)
                 sil.append(silhouette_score(data, labels, metric='sqeuclidean'))
                 db.append(davies_bouldin_score(data, labels))
                 ch.append(calinski_harabasz_score(data, labels))
-                gm_bic.append(GaussianMixture(n_components=2,n_init=10,tol=1e-3,max_iter=1000).fit(data).bic(data))
-                gm.append(GaussianMixture(n_components=2,n_init=10,tol=1e-3,max_iter=1000).fit(data).score(data))
-                i +=0.025
+                i +=0.04
 
                 plt.subplot(1, 10, plot_num)
                 colors = np.array(list(islice(cycle(['#377eb8', '#ff7f00', '#4daf4a',
@@ -1313,8 +1285,6 @@ def opt():
         responce.append(sil)
         responce.append(db)
         responce.append(ch)
-        responce.append(gm)
-        responce.append(gm_bic)
 
     return (responce)
 
@@ -1332,8 +1302,7 @@ def spectral():
         sil=[]
         db=[]
         ch=[]
-        gm=[]
-        gm_bic=[]
+         
 
         plt.figure(figsize=(9 * 2 + 3, 2.5))
         plt.subplots_adjust(left=.02, right=.98, bottom=.001, top=.96, wspace=.05,hspace=.01)
@@ -1348,8 +1317,6 @@ def spectral():
             sil.append(silhouette_score(data,labels))
             db.append(davies_bouldin_score(data, labels))
             ch.append(calinski_harabasz_score(data, labels))
-            gm_bic.append(GaussianMixture(n_components=i,n_init=10,tol=1e-3,max_iter=1000).fit(data).bic(data))
-            gm.append(GaussianMixture(n_components=i,n_init=10,tol=1e-3,max_iter=1000).fit(data).score(data))
 
             plt.subplot(1, 10, plot_num)
             colors = np.array(list(islice(cycle(['#377eb8', '#ff7f00', '#4daf4a',
@@ -1371,8 +1338,6 @@ def spectral():
         responce.append(sil)
         responce.append(db)
         responce.append(ch)
-        responce.append(gm_bic)
-        responce.append(gm)
         print('spectral complete')
         
         return (responce)
@@ -1387,12 +1352,11 @@ def ward():
         return(render_template('clustering.html'))
     
     if request.method == 'POST':
-        al=[]
+        ws=[]
         sil=[]
         db=[]
         ch=[]
-        gm=[]
-        gm_bic=[]
+         
 
         plt.figure(figsize=(9 * 2 + 3, 2.5))
         plt.subplots_adjust(left=.02, right=.98, bottom=.001, top=.96, wspace=.05,hspace=.01)
@@ -1401,7 +1365,7 @@ def ward():
         for i in range(2,12):
             print("ward",i)
             start_time = time.time()
-            connectivity = kneighbors_graph(data, n_neighbors=i, include_self=False)
+            connectivity = kneighbors_graph(data, n_neighbors=15, include_self=False)
             ward = AgglomerativeClustering(linkage='ward', n_clusters=i, connectivity=connectivity)
             labels = ward.fit_predict(data)
             end_time = time.time()
@@ -1409,8 +1373,6 @@ def ward():
             sil.append(silhouette_score(data,labels))
             db.append(davies_bouldin_score(data, labels))
             ch.append(calinski_harabasz_score(data, labels))
-            gm_bic.append(GaussianMixture(n_components=i,n_init=10,tol=1e-3,max_iter=1000).fit(data).bic(data))
-            gm.append(GaussianMixture(n_components=i,n_init=10,tol=1e-3,max_iter=1000).fit(data).score(data))
 
             plt.subplot(1, 10, plot_num)
             colors = np.array(list(islice(cycle(['#377eb8', '#ff7f00', '#4daf4a',
@@ -1433,9 +1395,7 @@ def ward():
         responce.append(sil)
         responce.append(db)
         responce.append(ch)
-        responce.append(gm_bic)
-        responce.append(gm)
-        print('agg complete')
+        print('ward complete')
         
         return (responce)
 
@@ -1454,8 +1414,7 @@ def AgglomerativeClustering():
         sil=[]
         db=[]
         ch=[]
-        gm=[]
-        gm_bic=[]
+         
 
         plt.figure(figsize=(9 * 2 + 3, 2.5))
         plt.subplots_adjust(left=.02, right=.98, bottom=.001, top=.96, wspace=.05,hspace=.01)
@@ -1464,17 +1423,15 @@ def AgglomerativeClustering():
         for i in range(2,12):
             print("agg",i)
             start_time = time.time()
-            connectivity = kneighbors_graph(data, n_neighbors=i, include_self=False)
+            connectivity = kneighbors_graph(data, n_neighbors=15, include_self=False)
             connectivity = 0.5 * (connectivity + connectivity.T)
             average_linkage = AgglomerativeClustering(linkage="average", affinity="cityblock",n_clusters=i, connectivity=connectivity)
-            labels = spectral.fit_predict(data)
+            labels = average_linkage.fit_predict(data)
             end_time = time.time()
             al.append(average_linkage.score(data))
             sil.append(silhouette_score(data,labels))
             db.append(davies_bouldin_score(data, labels))
             ch.append(calinski_harabasz_score(data, labels))
-            gm_bic.append(GaussianMixture(n_components=i,n_init=10,tol=1e-3,max_iter=1000).fit(data).bic(data))
-            gm.append(GaussianMixture(n_components=i,n_init=10,tol=1e-3,max_iter=1000).fit(data).score(data))
 
             plt.subplot(1, 10, plot_num)
             colors = np.array(list(islice(cycle(['#377eb8', '#ff7f00', '#4daf4a',
@@ -1497,8 +1454,6 @@ def AgglomerativeClustering():
         responce.append(sil)
         responce.append(db)
         responce.append(ch)
-        responce.append(gm_bic)
-        responce.append(gm)
         print('agg complete')
         
         return (responce)
@@ -1517,8 +1472,7 @@ def birch():
         sil=[]
         db=[]
         ch=[]
-        gm=[]
-        gm_bic=[]
+         
 
         plt.figure(figsize=(9 * 2 + 3, 2.5))
         plt.subplots_adjust(left=.02, right=.98, bottom=.001, top=.96, wspace=.05,hspace=.01)
@@ -1533,9 +1487,6 @@ def birch():
             sil.append(silhouette_score(data,labels))
             db.append(davies_bouldin_score(data, labels))
             ch.append(calinski_harabasz_score(data, labels))
-            gm_bic.append(GaussianMixture(n_components=i,n_init=10,tol=1e-3,max_iter=1000).fit(data).bic(data))
-            gm.append(GaussianMixture(n_components=i,n_init=10,tol=1e-3,max_iter=1000).fit(data).score(data))
-
             plt.subplot(1, 10, plot_num)
             colors = np.array(list(islice(cycle(['#377eb8', '#ff7f00', '#4daf4a',
                                                 '#f781bf', '#a65628', '#984ea3',
@@ -1556,8 +1507,6 @@ def birch():
         responce.append(sil)
         responce.append(db)
         responce.append(ch)
-        responce.append(gm_bic)
-        responce.append(gm)
         print('birch complete')
         
         return (responce)
@@ -1576,8 +1525,7 @@ def gmm():
         sil=[]
         db=[]
         ch=[]
-        gm=[]
-        gm_bic=[]
+         
 
         plt.figure(figsize=(9 * 2 + 3, 2.5))
         plt.subplots_adjust(left=.02, right=.98, bottom=.001, top=.96, wspace=.05,hspace=.01)
@@ -1593,9 +1541,7 @@ def gmm():
             sil.append(silhouette_score(data,labels))
             db.append(davies_bouldin_score(data, labels))
             ch.append(calinski_harabasz_score(data, labels))
-            gm_bic.append(GaussianMixture(n_components=i,n_init=10,tol=1e-3,max_iter=1000).fit(data).bic(data))
-            gm.append(GaussianMixture(n_components=i,n_init=10,tol=1e-3,max_iter=1000).fit(data).score(data))
-
+            
             plt.subplot(1, 10, plot_num)
             colors = np.array(list(islice(cycle(['#377eb8', '#ff7f00', '#4daf4a',
                                                 '#f781bf', '#a65628', '#984ea3',
@@ -1617,8 +1563,6 @@ def gmm():
         responce.append(sil)
         responce.append(db)
         responce.append(ch)
-        responce.append(gm_bic)
-        responce.append(gm)
         print('gmm complete')
         
         return (responce)
@@ -2177,9 +2121,9 @@ def wardLabels():
         al=[]
         ari=[]
         mibs=[]
-        ch=[]
-        gm=[]
-        gm_bic=[]
+        homo=[]
+        comp=[]
+        vm=[]
 
         plt.figure(figsize=(9 * 2 + 3, 2.5))
         plt.subplots_adjust(left=.02, right=.98, bottom=.001, top=.96, wspace=.05,hspace=.01)
@@ -2195,9 +2139,9 @@ def wardLabels():
             ws.append(ward.score(data))
             ari.append(adjusted_rand_score(dfl,labels))
             mibs.append(adjusted_mutual_info_score(dfl,labels))
-            ch.append(homogeneity_score(dfl,labels))
-            gm_bic.append(completeness_score(dfl,labels))
-            gm.append(v_measure_score(dfl,labels))
+            homo.append(homogeneity_score(dfl,labels))
+            comp.append(completeness_score(dfl,labels))
+            vm.append(v_measure_score(dfl,labels))
 
             plt.subplot(1, 10, plot_num)
             colors = np.array(list(islice(cycle(['#377eb8', '#ff7f00', '#4daf4a',
@@ -2219,9 +2163,9 @@ def wardLabels():
         responce.append(ws)
         responce.append(ari)
         responce.append(mibs)
-        responce.append(ch)
-        responce.append(gm_bic)
-        responce.append(gm)
+        responce.append(homo)
+        responce.append(comp)
+        responce.append(vm)
         print('agg complete')
         
         return (responce)
@@ -2243,8 +2187,8 @@ def AgglomerativeClusteringLabels():
         ari=[]
         mibs=[]
         ch=[]
-        gm=[]
-        gm_bic=[]
+        comp=[]
+        vm=[]
 
         plt.figure(figsize=(9 * 2 + 3, 2.5))
         plt.subplots_adjust(left=.02, right=.98, bottom=.001, top=.96, wspace=.05,hspace=.01)
@@ -2262,8 +2206,8 @@ def AgglomerativeClusteringLabels():
             ari.append(adjusted_rand_score(dfl,labels))
             mibs.append(adjusted_mutual_info_score(dfl,labels))
             ch.append(homogeneity_score(dfl,labels))
-            gm_bic.append(completeness_score(dfl,labels))
-            gm.append(v_measure_score(dfl,labels))
+            comp.append(completeness_score(dfl,labels))
+            vm.append(v_measure_score(dfl,labels))
 
             plt.subplot(1, 10, plot_num)
             colors = np.array(list(islice(cycle(['#377eb8', '#ff7f00', '#4daf4a',

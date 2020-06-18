@@ -63,22 +63,7 @@
         </td>
             {% endfor %}
     </tr>
-    <tr>
-        <th><b> GaussianMixture_BIC</b></th>
-        {% for j in mat[0][4] %}
-        <td>
-                {{j}}
-        </td>
-            {% endfor %}
-    </tr>
-    <tr>
-        <th><b> GaussianMixture_log</b></th>
-            {% for j in mat[0][5] %}
-        <td>
-                {{j}}
-        </td>
-            {% endfor %}
-    </tr>
+    
 </table>
 <br>
 <h4 style="background-color:{{color[1]}};">Kmeans</h4>
@@ -118,22 +103,6 @@
     <tr>
         <th><b> calinski_harabasz_score</b></th>
         {% for j in mat[1][3] %}
-        <td>
-                {{j}}
-        </td>
-            {% endfor %}
-    </tr>
-    <tr>
-        <th><b> GaussianMixture_BIC</b></th>
-        {% for j in mat[1][4] %}
-        <td>
-                {{j}}
-        </td>
-            {% endfor %}
-    </tr>
-    <tr>
-        <th><b> GaussianMixture_log</b></th>
-            {% for j in mat[1][5] %}
         <td>
                 {{j}}
         </td>
@@ -183,22 +152,6 @@
         </td>
             {% endfor %}
     </tr>
-    <tr>
-        <th><b> GaussianMixture_BIC</b></th>
-        {% for j in mat[2][4] %}
-        <td>
-                {{j}}
-        </td>
-            {% endfor %}
-    </tr>
-    <tr>
-        <th><b> GaussianMixture_log</b></th>
-            {% for j in mat[2][5] %}
-        <td>
-                {{j}}
-        </td>
-            {% endfor %}
-    </tr>
 </table>
 <br>
 <h4 style="background-color:{{color[3]}};">Mean Shift</h4>
@@ -237,22 +190,6 @@
     <tr>
         <th><b> calinski_harabasz_score</b></th>
         {% for j in mat[3][3] %}
-        <td>
-                {{j}}
-        </td>
-            {% endfor %}
-    </tr>
-    <tr>
-        <th><b> GaussianMixture_BIC</b></th>
-        {% for j in mat[3][4] %}
-        <td>
-                {{j}}
-        </td>
-            {% endfor %}
-    </tr>
-    <tr>
-        <th><b> GaussianMixture_log</b></th>
-            {% for j in mat[3][5] %}
         <td>
                 {{j}}
         </td>
@@ -309,22 +246,7 @@
         </td>
             {% endfor %}
     </tr>
-    <tr>
-        <th><b> GaussianMixture_BIC</b></th>
-        {% for j in mat[4][5] %}
-        <td>
-                {{j}}
-        </td>
-            {% endfor %}
-    </tr>
-    <tr>
-        <th><b> GaussianMixture_log</b></th>
-            {% for j in mat[4][6] %}
-        <td>
-                {{j}}
-        </td>
-            {% endfor %}
-    </tr>
+    
 </table>
 <br>
 <h4 style="background-color:{{color[5]}};">OPTICS</h4>
@@ -370,22 +292,6 @@
         </td>
             {% endfor %}
     </tr>
-    <tr>
-        <th><b> GaussianMixture_BIC</b></th>
-        {% for j in mat[5][4] %}
-        <td>
-                {{j}}
-        </td>
-            {% endfor %}
-    </tr>
-    <tr>
-        <th><b> GaussianMixture_log</b></th>
-            {% for j in mat[5][5] %}
-        <td>
-                {{j}}
-        </td>
-            {% endfor %}
-    </tr>
 </table>
 
 <br>
@@ -418,22 +324,6 @@
     <tr>
         <th><b> calinski_harabasz_score</b></th>
         {% for j in mat[6][2] %}
-        <td>
-                {{j}}
-        </td>
-            {% endfor %}
-    </tr>
-    <tr>
-        <th><b> GaussianMixture_BIC</b></th>
-        {% for j in mat[6][3] %}
-        <td>
-                {{j}}
-        </td>
-            {% endfor %}
-    </tr>
-    <tr>
-        <th><b> GaussianMixture_log</b></th>
-            {% for j in mat[6][4] %}
         <td>
                 {{j}}
         </td>
@@ -475,22 +365,6 @@
         </td>
             {% endfor %}
     </tr>
-    <tr>
-        <th><b> GaussianMixture_BIC</b></th>
-        {% for j in mat[7][3] %}
-        <td>
-                {{j}}
-        </td>
-            {% endfor %}
-    </tr>
-    <tr>
-        <th><b> GaussianMixture_log</b></th>
-            {% for j in mat[7][4] %}
-        <td>
-                {{j}}
-        </td>
-            {% endfor %}
-    </tr>
 </table>
 <br>
 <h4 style="background-color:{{color[8]}};">Gaussian Mixture</h4>
@@ -503,7 +377,7 @@
         {% endfor %}
     </tr>
     <tr>
-        <th><b>Kmeans Score</b></th>
+        <th><b>GMM Score</b></th>
         {% for j in mat[8][0] %}
         <td>
                 {{j}}
@@ -534,17 +408,45 @@
         </td>
             {% endfor %}
     </tr>
+</table>
+</div>
+<!--
+<h4 style="background-color:{{color[8]}};">Ward</h4>
+<img src="static/plot8.png" width="100%" height="15%">
+<table border="1" style="background-color:{{color[8]}}; width: 100%;">
     <tr>
-        <th><b> GaussianMixture_BIC</b></th>
-        {% for j in mat[8][4] %}
+        <th><b>No of Clusters</b></th>
+        {% for i in range(10) %}
+        <td><b>{{i+2}}</b></td>
+        {% endfor %}
+    </tr>
+    <tr>
+        <th><b>Ward Score</b></th>
+        {% for j in mat[9][0] %}
         <td>
                 {{j}}
         </td>
             {% endfor %}
     </tr>
     <tr>
-        <th><b> GaussianMixture_log</b></th>
-            {% for j in mat[8][5] %}
+        <th><b> silhouette_score</b></th>
+        {% for j in mat[9][1] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> davies_bouldin_score</b></th>
+        {% for j in mat[9][2] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> calinski_harabasz_score</b></th>
+        {% for j in mat[9][3] %}
         <td>
                 {{j}}
         </td>
@@ -552,4 +454,48 @@
     </tr>
 </table>
 </div>
+<h4 style="background-color:{{color[8]}};">Agglomarative Clustering</h4>
+<img src="static/plot9.png" width="100%" height="15%">
+<table border="1" style="background-color:{{color[8]}}; width: 100%;">
+    <tr>
+        <th><b>No of Clusters</b></th>
+        {% for i in range(10) %}
+        <td><b>{{i+2}}</b></td>
+        {% endfor %}
+    </tr>
+    <tr>
+        <th><b>Avg Linkage Score</b></th>
+        {% for j in mat[10][0] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> silhouette_score</b></th>
+        {% for j in mat[10][1] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> davies_bouldin_score</b></th>
+        {% for j in mat[10][2] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+    <tr>
+        <th><b> calinski_harabasz_score</b></th>
+        {% for j in mat[10][3] %}
+        <td>
+                {{j}}
+        </td>
+            {% endfor %}
+    </tr>
+</table>
+</div>
+-->
 {% endblock %}

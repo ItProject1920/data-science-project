@@ -43,14 +43,14 @@
         <input type="radio"  name="catagories" value="no">
         <label for="catagories">no</label><br>
         <label>EPS</label><p>(The maximum distance between two samples for one to be considered as in the neighborhood of the other.)</p>
-        <div class="slidecontainer">
-        <input name="eps" type="range" min="0" max="100" value="0" class="slider" id="myRange">
-        <p>Value: <span id="demo"></span></p>
-        </div>
+        <label for="EPS">Min:</label>
+        <input type="number" min=0.1 max=0.5 step ="0.01" name="mineps"><br>
+        <label for="EPS">Max:</label>
+        <input type="number" min=0.2 max=0.9 step ="0.01" name="maxeps"><br>
         <label for="quantile">Min quantile:</label>
-        <input type="number" name="minquantile"><br>
+        <input type="number" min=0.02 max=0.5 step ="0.01" name="minquantile"><br>
         <label for="quantile">Max quantile:</label>
-        <input type="number" name="maxquantile"><br>
+        <input type="number" min=0.2 max=0.9 step ="0.01" name="maxquantile"><br>
         <br>
         <!--
 		<input type="submit" value="Not Labelled" onclick="submitMe2(this)">
@@ -64,24 +64,6 @@
 <input id="button2"  type='button' onclick="submitMe2(this)" value='Not Labelled'>
 {% endblock %}
 
-
-<script>
-var slider = document.getElementById("myRange");
-var output = document.getElementById("demo");
-output.innerHTML = slider.value;
-
-slider.oninput = function() {
-  output.innerHTML = this.value*.01;
-}
- function submitMe2(obj){
-    if(obj.value == "Labelled"){
-      document.getElementById('frm').action = "/prediction_clusteringLables";
-    }else if(obj.value == "Not Labelled"){
-     document.getElementById('frm').action = "/prediction_clustering";
-    }
-   document.getElementById('frm').submit();
-  }
-</script>
 
 
 
