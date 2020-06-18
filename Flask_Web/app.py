@@ -902,7 +902,7 @@ def Prediction_clustering():
     matrix.append(kmean())
     matrix.append(AffPropagation())
     matrix.append(MShift(minq,maxq))
-    matrix.append(dbs())
+    matrix.append(dbs(epsmin,epsmax))
     matrix.append(opt())
     matrix.append(spectral())
     matrix.append(birch())
@@ -1154,7 +1154,7 @@ def MShift(minq,maxq):
 
 
 @app.route('/dbs', methods=['GET', 'POST'])
-def dbs():
+def dbs(epsmin,epsmax):
 
     df = pd.read_csv('Upload/1.csv', sep=',')
     data = StandardScaler().fit_transform(df)
