@@ -22,13 +22,12 @@
 {% endblock %}
 
 {% block body %}
-<center><h3>Your Data Set Looks Like:</h3></center>
+<center><h3>Select Attributes</h3></center>
 <center><div class="table table-striped" id="table-container">
   
 
   <form action="" id="frm" method="post" enctype="multipart/form-data">
-    <fieldset class="border p-2">
-      <legend class="w-auto">Choose</legend>
+    <fieldset class="border p-2"> 
   <div>
     {% for table in tables1 %}
         {{ table|safe }}
@@ -53,7 +52,7 @@
 {% for table in tables2 %}
     {{ table|safe }}
 {% endfor %}
-<br><br><br>
+<br><br>
 {% block buttons %}{% endblock %}
 </fieldset>
 </form>
