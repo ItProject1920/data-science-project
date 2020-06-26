@@ -874,22 +874,26 @@ def Prediction_clustering():
     for i in range(9):
         select.append('white')
     if pattern=='no' and catagories=='yes':
-        select[6]='green'
+        select[6]='Yellow'
         select[4]='aqua'
     if pattern=='no' and catagories=='yes' :
         if size>10000:
-            select[0]='green'
-            select[1]= 'green'
+            select[0]='Yellow'
+            select[1]= 'Yellow'
         else:
-            select[1]='green'
+            select[1]='Yellow'
             select[6]='aqua'
             select[8]='aqua'
     elif pattern=='no' and catagories=='no' :
-        select[4]='green'
+        select[4]='Yellow'
         select[5]='aqua'
     elif pattern=='yes' and catagories=='no' : 
-        select[3]='green'
+        select[3]='Yellow'
         select[2]='aqua'
+    elif pattern=='yes' and catagories=='no' : 
+        select[4]='aqua'
+        select[5]='aqua'
+    
 
     matrix=[]
     matrix.append(mbkmean())
@@ -924,7 +928,7 @@ def mbkmean():
         plot_num = 1
 
         for i in range(2,12):
-            print("mbk ",i)
+            print("mbkmeans Cluster: ",i)
             kmeans = MiniBatchKMeans(n_clusters=i, random_state=0, batch_size=6)
             start_time = time.time()
             labels = kmeans.fit_predict(data)
@@ -954,7 +958,7 @@ def mbkmean():
         responce.append(sil)
         responce.append(db)
         responce.append(ch)
-        print('kmeans complete')
+
         return (responce)
 
 
@@ -979,7 +983,7 @@ def kmean():
         plot_num = 1
 
         for i in range(2,12):
-            print("k ",i)
+            print("kmeans Cluster: ",i)
             kmeans = KMeans(n_clusters=i)
             start_time = time.time()
             labels = kmeans.fit_predict(data)
@@ -1011,7 +1015,7 @@ def kmean():
         responce.append(db)
         responce.append(ch)
 
-        print('kmeans complete')
+
         
         return (responce)
 
@@ -1038,7 +1042,7 @@ def AffPropagation():
 
         while i < 210:
             try:
-                print('aff %d' %i)
+                print('AffinityPropagation Preference: %d' %i)
                 af_model= AffinityPropagation(damping=0.9, preference=-i).fit(data)
                 cluster_centers_indices = af_model.cluster_centers_indices_
                 labels = af_model.labels_
@@ -1104,7 +1108,7 @@ def MShift(minq,maxq):
         while i < maxq:
             try:
                 bandwidth = estimate_bandwidth(data, quantile=i)
-                print("quantile %d", i)
+                print("Mean Shift Quantile %d", i)
                 ms = MeanShift(bandwidth=bandwidth, bin_seeding=True)
                 ms.fit(data)
                 labels = ms.labels_
@@ -1175,7 +1179,7 @@ def dbs(epsmin,epsmax):
         
         while i < epsmax:
             try:
-                print("eps %d", i)
+                print("DBSCAN eps %d", i)
                 db = DBSCAN(eps=i).fit(data)
                 core_samples_mask = np.zeros_like(db.labels_, dtype=bool)
                 core_samples_mask[db.core_sample_indices_] = True
@@ -1247,7 +1251,7 @@ def opt():
         #1
         while i < 0.4:
             try:
-                print("opt",i)
+                print("OPTICS xi: ",i)
                 clust = OPTICS(min_samples=20, xi=i, min_cluster_size=0.1)
                 # Run the fit
                 clust.fit(data)
@@ -1311,7 +1315,7 @@ def spectral():
         plot_num = 1
 
         for i in range(2,12):
-            print("spec",i)
+            print("Spectral Cluster: ",i)
             start_time = time.time()
             spectral = SpectralClustering(n_clusters=i, eigen_solver='arpack', affinity="nearest_neighbors")
             labels = spectral.fit_predict(data)
@@ -1481,7 +1485,7 @@ def birch():
         plot_num = 1
 
         for i in range(2,12):
-            print("birch",i)
+            print("birch cluster: ",i)
             start_time = time.time()
             birch = Birch(n_clusters=i)
             labels = birch.fit_predict(data)
@@ -1534,7 +1538,7 @@ def gmm():
         plot_num = 1
 
         for i in range(2,12):
-            print("gmm",i)
+            print("GMM Cluster:",i)
             start_time = time.time()
             gmm = GaussianMixture(n_components=i, covariance_type='full')
             labels = gmm.fit_predict(data)
@@ -1598,22 +1602,26 @@ def Prediction_clusteringLables():
     for i in range(9):
         select.append('white')
     if pattern=='no' and catagories=='yes':
-        select[6]='green'
+        select[6]='Yellow'
         select[4]='aqua'
     if pattern=='no' and catagories=='yes' :
         if size>10000:
-            select[0]='green'
-            select[1]= 'green'
+            select[0]='Yellow'
+            select[1]= 'Yellow'
         else:
-            select[1]='green'
+            select[1]='Yellow'
             select[6]='aqua'
             select[8]='aqua'
     elif pattern=='no' and catagories=='no' :
-        select[4]='green'
+        select[4]='Yellow'
         select[5]='aqua'
     elif pattern=='yes' and catagories=='no' : 
-        select[3]='green'
+        select[3]='Yellow'
         select[2]='aqua'
+    elif pattern=='yes' and catagories=='no' : 
+        select[4]='aqua'
+        select[5]='aqua'
+
     print("with label")
     matrix=[]
     matrix.append(mbkmeanLabels())
