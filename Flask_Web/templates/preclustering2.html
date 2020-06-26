@@ -9,10 +9,41 @@
         width: 35%;
     }
     
-    .result {
-        margin: auto;
-        width: 35%;
-        border: 1px solid #ccc;
+     #content{
+        align-self: center;
+   }
+    [type="file"] {
+          border: 0;
+          clip: rect(0, 0, 0, 0);
+          height: 1px;
+          overflow: hidden;
+          padding: 0;
+          position: absolute !important;
+          white-space: nowrap;
+          width: 1px;
+    }
+    [type="file"] + label {
+      background-color: inherit;
+      border-radius: 4rem;
+      color: #000;
+      cursor: pointer;
+      display: inline-block;
+      width:100px;
+      padding-left: 2rem 4rem;
+      margin-bottom: 20px;
+    }
+    [type="file"]:focus + label,
+    [type="file"] + label:hover {
+        background-color: #63b9f1;
+    } 
+    [type="file"]:focus + label {
+      outline: 1px dotted #000;
+    }
+    #q{
+        margin-left:32px;
+    }
+    #w{
+        margin-left:30px;
     }
     </style>
 
@@ -23,12 +54,12 @@
 <br>
 <br>
 <div id="dropBox">
-    <h3> Upload CSV File</h3>
     <div id="content">
         <form action="/handleUpload2" method="post" enctype="multipart/form-data">
+            <label style="font-size: 18px;"> Upload Labeled CSV File: </label>
             <input id="file" type="file" name="photo"/>
             <label for="file"/>Choose a file</label>
-            <input id="buttonone"  type="submit" value="Upload"/>
+            <input id="buttonone" class="btn btn-outline-primary" type="submit" value="Upload"/>
         </form>
     </div>
 </div>
@@ -46,21 +77,21 @@
         <input type="radio"  name="catagories" value="no">
         <label for="catagories">No</label><br>
         <label>EPS</label><p>(The maximum distance between two samples for one to be considered as in the neighborhood of the other.)</p>
-        <label for="EPS">Min:</label>
-        <input type="number" min=0.1 max=0.5 step ="0.01" name="mineps"><br>
-        <label for="EPS">Max:</label>
-        <input type="number" min=0.2 max=0.9 step ="0.01" name="maxeps"><br>
-        <label for="quantile">Min quantile:</label>
-        <input type="number" min=0.02 max=0.5 step ="0.01" name="minquantile"><br>
-        <label for="quantile">Max quantile:</label>
-        <input type="number" min=0.2 max=0.9 step ="0.01" name="maxquantile"><br>
+        <label for="EPS">Min EPS:</label>
+       <input type="number" min=0.1 max=0.5 step ="0.01" name="mineps" id='q'><br>
+        <label for="EPS">Max EPS:</label>
+        <input type="number" min=0.2 max=0.9 step ="0.01" name="maxeps" id='w'><br>
+        <label for="quantile">Min Quantile:</label>
+        <input type="number" min=0.02 max=0.5 step ="0.01" name="minquantile" id='e'><br>
+        <label for="quantile">Max Quantile:</label>
+        <input type="number" min=0.2 max=0.9 step ="0.01" name="maxquantile" id='r'><br>
         <br>
     </fieldset>
 </form>
-
+<br>
 {% block buttons %}
-<input id="button1"  type='button' onclick="submitMe2(this)" value='Labelled'>
-<input id="button2"  type='button' onclick="submitMe2(this)" value='Not Labelled'>
+<input id="button1" class="btn btn-primary" type='button' onclick="submitMe2(this)" value='Labelled'>
+<input id="button2" class="btn btn-primary" type='button' onclick="submitMe2(this)" value='Not Labelled'>
 {% endblock %}
 <script>
     var slider = document.getElementById("myRange");
