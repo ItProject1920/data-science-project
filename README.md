@@ -42,11 +42,11 @@ https://youtu.be/DIy-OfDKNnc
 
 ## Screenshots
 
-<img alt="Regression" src="Flask_Web/static/AppFlowChart.png"> </img>
-
 <img alt="Regression" src="Flask_Web/templates/plot1.png"> </img>
 
-<img alt="Clustering" src="Flask_Web/templates/plot2.png"> </img>
+<img alt="Clustering" src="Results/REGRESSION/CEMENT/1,2,3/1,2,3.PNG"> </img>
+
+<img alt="Regression" src="Flask_Web/static/AppFlowChart.PNG"> </img>
 
 
 ## Research Paper 
